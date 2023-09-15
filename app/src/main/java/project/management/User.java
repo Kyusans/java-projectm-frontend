@@ -5,6 +5,7 @@ public class User {
   public String user_password;
   public int user_id;
   public String user_fullName;
+  public String user_email;
   public int user_level;
 
   public User(String username, String password, int userId, String fullname, int level){
@@ -13,12 +14,18 @@ public class User {
     this.user_id = userId;
     this.user_fullName = fullname;
     this.user_level = level;
-    
   }
 
   public User(String username, String password){
     this.user_username = username;
     this.user_password = password;
+  }
+
+  public User(String fullName, String username, String password, String email){
+    this.user_fullName = fullName;
+    this.user_username = username;
+    this.user_password = password;
+    this.user_email = email;
   }
 
   public String getUsername(){
@@ -35,6 +42,10 @@ public class User {
 
   public int getUserId(){
     return this.user_id;
+  }
+
+  public String getEmail(){
+    return this.user_email;
   }
 
   public int getLevel(){
