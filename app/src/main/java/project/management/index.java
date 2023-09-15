@@ -10,42 +10,10 @@ class Index{
 
     public String login(String username, String password) {
         User user = new User(username, password);
-        //convert object to json using GSON class
-        Gson gson = new Gson();
-        OkHttpClient client = new OkHttpClient();
-
-        // Define the request body
-        RequestBody requestBody = new MultipartBody.Builder()
-        .setType(MultipartBody.FORM)
-        .addFormDataPart("operation", "login")
-        .addFormDataPart("json", gson.toJson(user))
-        .build();
-
-        //Create the POST request
-        Request request = new Request.Builder()
-            .url("http://localhost/management/users.php")
-            .post(requestBody)
-            .build();
-
-        String responseBody="0";
-        try {
-            // Execute the request
-            Response response = client.newCall(request).execute();
-            // Handle the response
-            if (response.isSuccessful()) {
-                responseBody = response.body().string();
-            } else {
-                System.err.println("Request failed with code: " + response.code());
-            }
-            response.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return responseBody;
+        return HttpUtil.sendPostRequest("login", user, "users.php");
     }
    
     public void adminMenu() {
-        String response = "";
         int choice = 0;
         while (choice != 4) {
             System.out.println("\nAdmin Menu:");
@@ -59,17 +27,10 @@ class Index{
 
             switch (choice) {
                 case 1:
-                    response = addStudent();
-                    System.out.println("response: " + response);
-                    if(response.equalsIgnoreCase("0")){
-                        System.out.println("Failed to add student");
-                    }else{
-                        System.out.println("Successfully added student");
-                    }
+                    addStudent();
                     break;
                 case 2:
-                    response = addStaff();
-                    System.out.println("response: " + response);
+                    addStaff();
                     break;
                 case 3:
                     System.out.println("Signed out as admin.");
@@ -85,48 +46,38 @@ class Index{
     }
 
     public void staffMenu(){
-        while (true) {
-            System.out.println("Student List:");
-            // List<Student> students = manager.getStudents();
-            // for (int i = 0; i < students.size(); i++) {
-            //     System.out.println((i + 1) + ". " + students.get(i).fullName);
-            // }
-
-            System.out.println("Enter the number of the student you want to view:");
-            int index = scanner.nextInt() - 1;
-            // System.out.println(manager.getStudent(index));
-
-            System.out.println("1. Edit Information\n2. Delete / Remove file\n3. Back to Student list");
+         while (true) {
+            System.out.println("Staff Home Program");
+            System.out.println("1. Add Staff");
+            System.out.println("2. View Staff List");
+            System.out.println("3. Exit");
+            System.out.print("Select an option: ");
             int choice = scanner.nextInt();
             switch (choice) {
                 case 1:
-                    System.out.println("Enter new full name:");
-                    scanner.nextLine(); // consume newline
-                    String fullName = scanner.nextLine();
-                    System.out.println("Enter new school ID:");
-                    String schoolID = scanner.nextLine();
-                    System.out.println("Enter new LRN:");
-                    String LRN = scanner.nextLine();
-                    System.out.println("Enter new birthday:");
-                    String birthday = scanner.nextLine();
-                    System.out.println("Enter new gender:");
-                    String gender = scanner.nextLine();
-                    // manager.getStudent(index).fullName = fullName;
-                    // manager.getStudent(index).schoolID = schoolID;
-                    // manager.getStudent(index).LRN = LRN;
-                    // manager.getStudent(index).birthday = birthday;
-                    // manager.getStudent(index).gender = gender;
-                    break;
+                    // Add Student
+                  break;
                 case 2:
-                    // manager.removeStudent(index);
-                    break;
+                  // View Student List
+                  break;
                 case 3:
+                  // go back login
+                  break;
+                case 4:
+                    // Exit
+                    System.out.println("Exiting the program.");
+                    scanner.close();
+                    System.exit(0);
+                    break;
+                default:
+                    System.out.println("Invalid option. Please try again.\n");
                     break;
             }
         }
+       
     }
 
-    public String addStudent() {
+    public void addStudent() {
         System.out.println("\nAdding Student");
         System.out.print("Enter student Full Name: ");
         String fullName = scanner.nextLine();
@@ -147,41 +98,17 @@ class Index{
         String address = scanner.nextLine();
 
         Student student = new Student(schoolId, fullName, gender, email, courseCode, yearLevel, dateEnrolled, address);
-        //convert object to json using GSON class
-        Gson gson = new Gson();
-        OkHttpClient client = new OkHttpClient();
-
-        // Define the request body
-        RequestBody requestBody = new MultipartBody.Builder()
-        .setType(MultipartBody.FORM)
-        .addFormDataPart("operation", "addStudent")
-        .addFormDataPart("json", gson.toJson(student))
-        .build();
-
-        //Create the POST request
-        Request request = new Request.Builder()
-            .url("http://localhost/management/users.php")
-            .post(requestBody)
-            .build();
-
-        String responseBody="0";
-        try {
-            // Execute the request
-            Response response = client.newCall(request).execute();
-            // Handle the response
-            if (response.isSuccessful()) {
-                responseBody = response.body().string();
-            } else {
-                System.err.println("Request failed with code: " + response.code());
-            }
-            response.close();
-        } catch (Exception e) {
-            e.printStackTrace();
+        String response = HttpUtil.sendPostRequest("addStudent", student, "users.php");
+        if (response.equalsIgnoreCase("1")) {
+            System.out.println("Staff added successfully");
+        } else if (response.equalsIgnoreCase("0")) {
+            System.out.println("Failed to add staff");
+        } else {
+            System.out.println("Unexpected response from the server: " + response);
         }
-        return responseBody;
     }
 
-    public String addStaff() {
+    public void addStaff() {
         String fullName, username, password, email;
         System.out.println("\nAdding Staff");
         System.out.print("Enter staff full name: ");
@@ -192,41 +119,17 @@ class Index{
         password = scanner.nextLine();
         System.out.print("Enter staff email: ");
         email = scanner.nextLine();
-        
+
         User user = new User(fullName, username, password, email);
+        String response = HttpUtil.sendPostRequest("addStaff", user, "admin.php");
 
-        Gson gson = new Gson();
-        OkHttpClient client = new OkHttpClient();
-
-        // Define the request body
-        RequestBody requestBody = new MultipartBody.Builder()
-        .setType(MultipartBody.FORM)
-        .addFormDataPart("operation", "addStaff")
-        .addFormDataPart("json", gson.toJson(user))
-        .build();
-
-        //Create the POST request
-        Request request = new Request.Builder()
-            .url("http://localhost/management/admin.php")
-            .post(requestBody)
-            .build();
-
-        String responseBody="0";
-        try {
-            // Execute the request
-            Response response = client.newCall(request).execute();
-            // Handle the response
-            if (response.isSuccessful()) {
-                responseBody = response.body().string();
-            } else {
-                System.err.println("Request failed with code: " + response.code());
-            }
-            response.close();
-        } catch (Exception e) {
-            e.printStackTrace();
+        if (response.equalsIgnoreCase("1")) {
+            System.out.println("Staff added successfully");
+        } else if (response.equalsIgnoreCase("0")) {
+            System.out.println("Failed to add staff");
+        } else {
+            System.out.println("Unexpected response from the server: " + response);
         }
-        return responseBody;
     }
-
 
 }

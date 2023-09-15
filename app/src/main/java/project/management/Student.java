@@ -21,6 +21,8 @@ public class Student {
     this.stud_address = address;
   } 
 
+  public Student(){}
+
   public String getStudentFullName(){
     return this.stud_fullName;
   }
