@@ -1,5 +1,6 @@
 package project.management;
 import okhttp3.*;
+import java.io.Console;
 import java.util.Scanner;
 import com.google.gson.Gson;
 
@@ -22,10 +23,8 @@ public class App {
                 System.out.println("Success!");
                 loginSuccessful = true;
             }
-
             System.out.println(jsonString);
         }
-        
         return jsonString;
     }
 
@@ -52,7 +51,6 @@ public class App {
         try {
             // Execute the request
             Response response = client.newCall(request).execute();
-
             // Handle the response
             if (response.isSuccessful()) {
                 responseBody = response.body().string();
@@ -65,13 +63,20 @@ public class App {
         }
         return responseBody;
     }
-
     public static void main(String[] args) {
         String jsonString = new App().begin();
         try {
                 Gson gson = new Gson();
                 User user = gson.fromJson(jsonString, User.class);
-
+                Index index = new Index();
+                System.out.println("user level: " + user.getLevel());
+                if(user.getLevel() == 100){
+                    System.out.println("Administrator");
+                    index.adminMenu();
+                }else{
+                    System.out.println("User");
+                    index.staffMenu();
+                }
                 String fullname = user.getFullname();
                 int userId = user.getUserId();
 
@@ -80,5 +85,17 @@ public class App {
         } catch (Exception e) {
             System.out.println("Error : " + e.getMessage());
         }
+    }
+
+    private static String hidePassword() {
+        Console console = System.console();
+        if (console == null) {
+            Scanner scanner = new Scanner(System.in);
+            return scanner.nextLine();
+        } else {
+            char[] passwordChars = console.readPassword();
+            return new String(passwordChars);
+        }
+        
     }
 }
