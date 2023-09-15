@@ -1,6 +1,4 @@
 package project.management;
-import okhttp3.*;
-import java.io.Console;
 import java.util.Scanner;
 import com.google.gson.Gson;
 

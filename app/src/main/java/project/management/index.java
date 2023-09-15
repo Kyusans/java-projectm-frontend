@@ -1,10 +1,13 @@
 package project.management;
 import java.util.Scanner;
-import okhttp3.*;
-import java.io.Console;
-import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
 
 class Index{
+    String response = "";
     Scanner scanner = new Scanner(System.in);
     App app = new App();
 
@@ -48,17 +51,17 @@ class Index{
     public void staffMenu(){
          while (true) {
             System.out.println("Staff Home Program");
-            System.out.println("1. Add Staff");
-            System.out.println("2. View Staff List");
+            System.out.println("1. Add Student");
+            System.out.println("2. View Student List");
             System.out.println("3. Exit");
             System.out.print("Select an option: ");
             int choice = scanner.nextInt();
             switch (choice) {
                 case 1:
-                    // Add Student
+                  addStudent();
                   break;
                 case 2:
-                  // View Student List
+                  viewStudentList();
                   break;
                 case 3:
                   // go back login
@@ -98,13 +101,29 @@ class Index{
         String address = scanner.nextLine();
 
         Student student = new Student(schoolId, fullName, gender, email, courseCode, yearLevel, dateEnrolled, address);
-        String response = HttpUtil.sendPostRequest("addStudent", student, "users.php");
+        response = HttpUtil.sendPostRequest("addStudent", student, "users.php");
         if (response.equalsIgnoreCase("1")) {
-            System.out.println("Staff added successfully");
+            System.out.println("Student added successfully");
         } else if (response.equalsIgnoreCase("0")) {
-            System.out.println("Failed to add staff");
+            System.out.println("Student failed to add");
         } else {
             System.out.println("Unexpected response from the server: " + response);
+        }
+    }
+
+    public void viewStudentList() {
+        System.out.println("\nStudent List: ");
+        Student student = new Student();
+        response = HttpUtil.sendPostRequest("getAllStudent", student, "users.php");
+
+        JsonArray jsonArray = JsonParser.parseString(response).getAsJsonArray();
+        // Iterate over the JSON array
+        for (JsonElement element : jsonArray) {
+            int i = 1;
+            JsonObject response = element.getAsJsonObject();
+            String fullName = response.get("stud_fullName").getAsString();
+            System.out.println(i + ". " + fullName);
+            i+=1;
         }
     }
 
@@ -121,7 +140,7 @@ class Index{
         email = scanner.nextLine();
 
         User user = new User(fullName, username, password, email);
-        String response = HttpUtil.sendPostRequest("addStaff", user, "admin.php");
+        response = HttpUtil.sendPostRequest("addStaff", user, "admin.php");
 
         if (response.equalsIgnoreCase("1")) {
             System.out.println("Staff added successfully");
