@@ -1,15 +1,20 @@
 package project.management;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.google.gson.Gson;
 
 
 class Index{
     String response = "";
     Scanner scanner = new Scanner(System.in);
     App app = new App();
+    Student student = new Student();
+    Gson gson = new Gson();
 
     public String login(String username, String password) {
         User user = new User(username, password);
@@ -117,14 +122,39 @@ class Index{
         response = HttpUtil.sendPostRequest("getAllStudent", student, "users.php");
 
         JsonArray jsonArray = JsonParser.parseString(response).getAsJsonArray();
-        // Iterate over the JSON array
+        
+        int i = 1;
         for (JsonElement element : jsonArray) {
-            int i = 1;
             JsonObject response = element.getAsJsonObject();
             String fullName = response.get("stud_fullName").getAsString();
             System.out.println(i + ". " + fullName);
-            i+=1;
+            i++;
         }
+        System.out.print("Enter the number of the student you want to view: ");
+        int index = scanner.nextInt() - 1;
+        if(index >= 0 && index < jsonArray.size()){
+            JsonObject selectedStudent = jsonArray.get(index).getAsJsonObject();
+            // String studentJsonString = selectedStudent.toString();
+            int studId = selectedStudent.get("stud_id").getAsInt();
+            Map<String, String> queryParams = new HashMap<>();
+            queryParams.put("stud_Id", String.valueOf(studId));
+            response = HttpUtil.sendPostRequest("getSelectedStudent", queryParams, "users.php" );
+            student = gson.fromJson(response, Student.class);
+            System.out.println("\nStudent information: \n");
+            System.out.println("Full name: " + student.getStudentFullName());
+            System.out.println("School Id: " + student.getStudentSchoolId());
+            System.out.println("Gender: " + student.getStudentGender());
+            System.out.println("Email: " + student.getStudentEmail());
+            System.out.println("Course Code: " + student.getStudentCourseCode());
+            System.out.println("Year Level: " + student.getStudentYearLevel());
+            System.out.println("Date Enrolled: " + student.getStudentDateEnrolled());
+            
+        } else {
+            System.out.println("Invalid student number.");
+        }
+
+          System.out.println("1. Edit Information\n2. Delete / Remove file\n3. Back to Student list");
+          int choice = scanner.nextInt();
     }
 
     public void addStaff() {
@@ -132,7 +162,7 @@ class Index{
         System.out.println("\nAdding Staff");
         System.out.print("Enter staff full name: ");
         fullName = scanner.nextLine();
-        System.out.print("Enter staff username(ID): ");
+        System.out.print("Enter staff username: ");
         username = scanner.nextLine();
         System.out.print("Enter staff password: ");
         password = scanner.nextLine();

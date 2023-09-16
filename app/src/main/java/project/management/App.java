@@ -22,7 +22,7 @@ public class App {
                 System.out.println("Success!");
                 loginSuccessful = true;
             }
-            System.out.println(jsonString);
+            // System.out.println(jsonString);
         }
     
         return jsonString;

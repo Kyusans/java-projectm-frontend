@@ -1,6 +1,7 @@
 package project.management;
 
 public class Student {
+  int stud_id;
   String stud_schoolId;
   String stud_fullName;
   String stud_gender;
@@ -21,7 +22,15 @@ public class Student {
     this.stud_address = address;
   } 
 
+  public Student(int id){
+    this.stud_id = id;
+  }
+
   public Student(){}
+
+  public int getStudentId(){
+    return this.stud_id;
+  }
 
   public String getStudentFullName(){
     return this.stud_fullName;
