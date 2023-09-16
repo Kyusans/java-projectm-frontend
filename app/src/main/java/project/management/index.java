@@ -148,14 +148,31 @@ class Index{
             System.out.println("Course Code: " + student.getStudentCourseCode());
             System.out.println("Year Level: " + student.getStudentYearLevel());
             System.out.println("Date Enrolled: " + student.getStudentDateEnrolled());
+            System.out.println("Address: " + student.getStudentAddress());
             
         } else {
             System.out.println("Invalid student number.");
         }
 
-          System.out.println("1. Edit Information\n2. Delete / Remove file\n3. Back to Student list");
-          int choice = scanner.nextInt();
+        while (true) {
+            System.out.print("\n\n1. Edit Information\n2. Delete / Remove file\n3. Back to Student list\nChoice: ");
+            int choice = scanner.nextInt();
+            switch (choice) {
+                case 1:
+                    // update student
+                    break; 
+                case 2:
+                    System.out.println("Not implemented yet.");
+                    break; 
+                case 3:
+                    System.out.println("Returning to student list.");
+                    break; 
+                default:
+                    System.out.println("Invalid choice. Please try again.");
+            }
+        }
     }
+
 
     public void addStaff() {
         String fullName, username, password, email;

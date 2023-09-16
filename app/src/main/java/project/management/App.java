@@ -34,10 +34,8 @@ public class App {
             User user = gson.fromJson(jsonString, User.class);
             Index index = new Index();
             if(user.getLevel() == 100){
-                System.out.println("Administrator");
                 index.adminMenu();
             }else{
-                System.out.println("User");
                 index.staffMenu();
             }
         } catch (Exception e) {

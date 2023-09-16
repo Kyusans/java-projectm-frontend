@@ -28,6 +28,38 @@ public class Student {
 
   public Student(){}
 
+  public void setStudentSchoolId(String schoolId){
+    this.stud_schoolId = schoolId;
+  }
+  
+  public void setStudentFullName(String fullName){
+    this.stud_fullName = fullName;
+  }
+
+  public void setStudentGender(String gender){
+    this.stud_gender = gender;
+  }
+
+  public void setStudentEmail(String email){
+    this.stud_email = email;
+  }
+
+  public void setStudentCourseCode(String courseCode){
+    this.stud_courseCode = courseCode;
+  }
+
+  public void setStudentYearLevel(int yearLevel){
+    this.stud_yearLevel = yearLevel;
+  }
+
+  public void setStudentDateEnrolled(String dateEnrolled){
+    this.stud_dateEnrolled = dateEnrolled;
+  }
+
+  public void setStudentAddress(String address){
+    this.stud_address = address;
+  }
+
   public int getStudentId(){
     return this.stud_id;
   }
