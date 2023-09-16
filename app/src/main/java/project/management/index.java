@@ -147,19 +147,20 @@ class Index{
             System.out.println("Email: " + student.getStudentEmail());
             System.out.println("Course Code: " + student.getStudentCourseCode());
             System.out.println("Year Level: " + student.getStudentYearLevel());
-            System.out.println("Date Enrolled: " + student.getStudentDateEnrolled());
             System.out.println("Address: " + student.getStudentAddress());
+            System.out.println("Date Enrolled: " + student.getStudentDateEnrolled());
             
         } else {
             System.out.println("Invalid student number.");
         }
 
         while (true) {
-            System.out.print("\n\n1. Edit Information\n2. Delete / Remove file\n3. Back to Student list\nChoice: ");
+            System.out.print("\n1. Edit Information\n2. Delete / Remove file\n3. Back to Student list\nChoice: ");
             int choice = scanner.nextInt();
+            scanner.nextLine();
             switch (choice) {
                 case 1:
-                    // update student
+                    updateStudent(student);
                     break; 
                 case 2:
                     System.out.println("Not implemented yet.");
@@ -173,6 +174,63 @@ class Index{
         }
     }
 
+    public void updateStudent(Student studentToUpdate){
+        System.out.println("\n\nEdit Student Information:");
+        System.out.println("Leave fields blank to keep the current values.\n");
+        System.out.print("Full name [" + studentToUpdate.getStudentFullName() + "]: ");
+        String studFullName = scanner.nextLine();
+        if(!studFullName.isEmpty()){
+            studentToUpdate.setStudentFullName(studFullName);
+        }
+
+        System.out.print("School Id [" + studentToUpdate.stud_schoolId + "]: ");
+        String studSchoolId = scanner.nextLine();
+        if(!studSchoolId.isEmpty()){
+            studentToUpdate.setStudentSchoolId(studSchoolId);
+        }
+
+        System.out.print("Gender [" + studentToUpdate.stud_gender + "]: ");
+        String studGender = scanner.nextLine();
+        if(!studGender.isEmpty()){
+            studentToUpdate.setStudentGender(studGender);
+        }
+
+        System.out.print("Email [" + studentToUpdate.stud_email + "]: ");
+        String studEmail = scanner.nextLine();
+        if(!studEmail.isEmpty()){
+            studentToUpdate.setStudentEmail(studEmail);
+        }
+
+        System.out.print("Course Code [" + studentToUpdate.stud_courseCode + "]: ");
+        String studCourseCode = scanner.nextLine();
+        if(!studCourseCode.isEmpty()){
+            studentToUpdate.setStudentCourseCode(studCourseCode);
+        }
+        System.out.print("Year Level [" + studentToUpdate.stud_yearLevel + "]: ");
+        String studYearLevel = scanner.nextLine();
+        if(!studYearLevel.isEmpty()){
+            int yearLevel = Integer.parseInt(studYearLevel);
+            studentToUpdate.setStudentYearLevel(yearLevel);
+        }
+        
+        System.out.print("Address [" + studentToUpdate.stud_address + "]: ");
+        String studAddress = scanner.nextLine();
+        if(!studAddress.isEmpty()){
+            studentToUpdate.setStudentAddress(studAddress);
+        }
+        
+        Student student = new Student(studentToUpdate.stud_id, studentToUpdate.stud_schoolId, studentToUpdate.stud_fullName, studentToUpdate.stud_gender, studentToUpdate.stud_email, studentToUpdate.stud_courseCode, studentToUpdate.stud_yearLevel, studentToUpdate.stud_dateEnrolled, studentToUpdate.stud_address);
+        response = HttpUtil.sendPostRequest("updateStudent", student, "users.php");
+        
+        if (response.equalsIgnoreCase("1")) {
+            System.out.println("\nStudent information has been successfully updated!");
+            viewStudentList();
+        } else if (response.equalsIgnoreCase("0")) {
+            System.out.println("Failed to update student information. Please check your input and try again.");
+        } else {
+            System.out.println("Unexpected response from the server: " + response);
+        }
+    }
 
     public void addStaff() {
         String fullName, username, password, email;

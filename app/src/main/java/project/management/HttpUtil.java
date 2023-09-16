@@ -20,10 +20,7 @@ public class HttpUtil {
               .build();
 
           // Create the POST request
-          Request request = new Request.Builder()
-              .url(BASE_URL)
-              .post(requestBody)
-              .build();
+          Request request = new Request.Builder().url(BASE_URL).post(requestBody).build();
 
           // Execute the request
           Response response = client.newCall(request).execute();

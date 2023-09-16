@@ -11,7 +11,20 @@ public class Student {
   String stud_dateEnrolled;
   String stud_address;
 
+  // pang add student
   public Student(String schoolId, String fullName, String gender, String email, String courseCode, int yearLevel, String dateEnrolled, String address){
+    this.stud_schoolId = schoolId;
+    this.stud_fullName = fullName;
+    this.stud_gender = gender;
+    this.stud_email = email;
+    this.stud_courseCode = courseCode;
+    this.stud_yearLevel = yearLevel;
+    this.stud_dateEnrolled = dateEnrolled;
+    this.stud_address = address;
+  } 
+
+    public Student(int studId, String schoolId, String fullName, String gender, String email, String courseCode, int yearLevel, String dateEnrolled, String address){
+    this.stud_id = studId;
     this.stud_schoolId = schoolId;
     this.stud_fullName = fullName;
     this.stud_gender = gender;
