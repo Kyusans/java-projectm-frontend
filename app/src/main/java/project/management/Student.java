@@ -39,6 +39,12 @@ public class Student {
     this.user_id = userId;
   } 
 
+  public Student(int studId, int userId, String fullName){
+    this.stud_id = studId;
+    this.user_id = userId;
+    this.stud_fullName = fullName;
+  }
+
   public Student(int id){
     this.stud_id = id;
   }

@@ -35,6 +35,6 @@ public class HttpUtil {
         } catch (Exception e) {
           e.printStackTrace();
         }
-        return "0"; // Default response in case of failure
+        return "0";
     }
 }

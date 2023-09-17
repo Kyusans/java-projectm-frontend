@@ -149,7 +149,8 @@ class Index{
             System.out.println("Date Enrolled: " + student.getStudentDateEnrolled());
             
         } else {
-            System.out.println("Invalid student number.");
+            System.out.println("\nInvalid student number.");
+            viewStudentList();
         }
 
         while (true) {
@@ -161,10 +162,11 @@ class Index{
                     updateStudent(student);
                     break; 
                 case 2:
-                    System.out.println("Not implemented yet.");
+                    deleteStudent(student.getStudentId(), SessionStorage.userId, student.getStudentFullName());
                     break; 
                 case 3:
                     System.out.println("Returning to student list.");
+                    viewStudentList();
                     break; 
                 default:
                     System.out.println("Invalid choice. Please try again.");
@@ -217,10 +219,10 @@ class Index{
             studentToUpdate.setStudentAddress(studAddress);
         }
         
-        int userId = user.getUserId();
+        int userId = SessionStorage.userId;
         Student student = new Student(studentToUpdate.stud_id, studentToUpdate.stud_schoolId, studentToUpdate.stud_fullName, studentToUpdate.stud_gender, studentToUpdate.stud_email, studentToUpdate.stud_courseCode, studentToUpdate.stud_yearLevel, studentToUpdate.stud_dateEnrolled, studentToUpdate.stud_address, userId);
         response = HttpUtil.sendPostRequest("updateStudent", student, "users.php");
-        
+        System.out.println("response: " + response);
         if (response.equalsIgnoreCase("1")) {
             System.out.println("\nStudent information has been successfully updated!");
             viewStudentList();
@@ -229,6 +231,19 @@ class Index{
         } else {
             System.out.println("Unexpected response from the server: " + response);
         }
+    }
+
+    public void deleteStudent(int studId, int userId, String fullName){
+        Student student = new Student(studId, userId, fullName);
+        response = HttpUtil.sendPostRequest("deleteStudent", student, "users.php");
+        if (response.equalsIgnoreCase("1")) {
+            System.out.println("Student successfully deleted");
+        }else if(response.equalsIgnoreCase("0")){
+            System.out.println("Failed to delete student");
+        }else{
+            System.out.println("Unexpected response from the server: " + response);
+        }
+        viewStudentList();
     }
 
     public void addStaff() {
