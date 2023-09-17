@@ -28,6 +28,12 @@ public class User {
     this.user_email = email;
   }
 
+  public User(){}
+
+  public void setUserId(int userId){
+    this.user_id = userId;
+  }
+
   public String getUsername(){
     return this.user_username;
   }
@@ -51,4 +57,5 @@ public class User {
   public int getLevel(){
     return this.user_level;
   }
+
 }

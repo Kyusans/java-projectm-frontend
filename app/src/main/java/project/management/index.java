@@ -13,8 +13,9 @@ class Index{
     String response = "";
     Scanner scanner = new Scanner(System.in);
     App app = new App();
-    Student student = new Student();
     Gson gson = new Gson();
+    Student student = new Student();
+    User user = new User();
 
     public String login(String username, String password) {
         User user = new User(username, password);
@@ -61,6 +62,7 @@ class Index{
             System.out.println("3. Exit");
             System.out.print("Select an option: ");
             int choice = scanner.nextInt();
+            scanner.nextLine();
             switch (choice) {
                 case 1:
                   addStudent();
@@ -69,9 +71,6 @@ class Index{
                   viewStudentList();
                   break;
                 case 3:
-                  // go back login
-                  break;
-                case 4:
                     // Exit
                     System.out.println("Exiting the program.");
                     scanner.close();
@@ -100,19 +99,18 @@ class Index{
         System.out.print("Enter student year level: ");
         int yearLevel = scanner.nextInt(); 
         scanner.nextLine();
-        System.out.print("Enter student date enrolled: ");
-        String dateEnrolled = scanner.nextLine();
         System.out.print("Enter student address: ");
         String address = scanner.nextLine();
 
-        Student student = new Student(schoolId, fullName, gender, email, courseCode, yearLevel, dateEnrolled, address);
+        int userId = SessionStorage.userId;
+        Student student = new Student(schoolId, fullName, gender, email, courseCode, yearLevel, address, userId);
         response = HttpUtil.sendPostRequest("addStudent", student, "users.php");
         if (response.equalsIgnoreCase("1")) {
-            System.out.println("Student added successfully");
+            System.out.println("\nStudent added successfully\n");
         } else if (response.equalsIgnoreCase("0")) {
-            System.out.println("Student failed to add");
+            System.out.println("\nStudent failed to add\n");
         } else {
-            System.out.println("Unexpected response from the server: " + response);
+            System.out.println("\nUnexpected response from the server: " + response);
         }
     }
 
@@ -219,7 +217,8 @@ class Index{
             studentToUpdate.setStudentAddress(studAddress);
         }
         
-        Student student = new Student(studentToUpdate.stud_id, studentToUpdate.stud_schoolId, studentToUpdate.stud_fullName, studentToUpdate.stud_gender, studentToUpdate.stud_email, studentToUpdate.stud_courseCode, studentToUpdate.stud_yearLevel, studentToUpdate.stud_dateEnrolled, studentToUpdate.stud_address);
+        int userId = user.getUserId();
+        Student student = new Student(studentToUpdate.stud_id, studentToUpdate.stud_schoolId, studentToUpdate.stud_fullName, studentToUpdate.stud_gender, studentToUpdate.stud_email, studentToUpdate.stud_courseCode, studentToUpdate.stud_yearLevel, studentToUpdate.stud_dateEnrolled, studentToUpdate.stud_address, userId);
         response = HttpUtil.sendPostRequest("updateStudent", student, "users.php");
         
         if (response.equalsIgnoreCase("1")) {

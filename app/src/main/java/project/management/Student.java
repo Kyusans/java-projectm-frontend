@@ -1,6 +1,8 @@
 package project.management;
 
 public class Student {
+  // user_id para sa staff or admin (history)
+  int user_id;
   int stud_id;
   String stud_schoolId;
   String stud_fullName;
@@ -12,18 +14,19 @@ public class Student {
   String stud_address;
 
   // pang add student
-  public Student(String schoolId, String fullName, String gender, String email, String courseCode, int yearLevel, String dateEnrolled, String address){
+  public Student(String schoolId, String fullName, String gender, String email, String courseCode, int yearLevel, String address, int userId){
     this.stud_schoolId = schoolId;
     this.stud_fullName = fullName;
     this.stud_gender = gender;
     this.stud_email = email;
     this.stud_courseCode = courseCode;
     this.stud_yearLevel = yearLevel;
-    this.stud_dateEnrolled = dateEnrolled;
     this.stud_address = address;
+    this.user_id = userId;
   } 
 
-    public Student(int studId, String schoolId, String fullName, String gender, String email, String courseCode, int yearLevel, String dateEnrolled, String address){
+  // pang update student
+  public Student(int studId, String schoolId, String fullName, String gender, String email, String courseCode, int yearLevel, String dateEnrolled, String address, int userId){
     this.stud_id = studId;
     this.stud_schoolId = schoolId;
     this.stud_fullName = fullName;
@@ -33,6 +36,7 @@ public class Student {
     this.stud_yearLevel = yearLevel;
     this.stud_dateEnrolled = dateEnrolled;
     this.stud_address = address;
+    this.user_id = userId;
   } 
 
   public Student(int id){
@@ -40,6 +44,10 @@ public class Student {
   }
 
   public Student(){}
+
+  public int getUserId(){
+    return this.user_id;
+  }
 
   public void setStudentSchoolId(String schoolId){
     this.stud_schoolId = schoolId;

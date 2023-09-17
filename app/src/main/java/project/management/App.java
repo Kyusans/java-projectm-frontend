@@ -33,6 +33,7 @@ public class App {
             Gson gson = new Gson();
             User user = gson.fromJson(jsonString, User.class);
             Index index = new Index();
+            SessionStorage.userId = user.getUserId();
             if(user.getLevel() == 100){
                 index.adminMenu();
             }else{
