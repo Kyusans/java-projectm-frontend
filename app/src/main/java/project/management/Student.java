@@ -12,6 +12,8 @@ public class Student {
   int stud_yearLevel;
   String stud_dateEnrolled;
   String stud_address;
+  // school id ni nga di ma update 
+  String stud_school_id;
 
   // pang add student
   public Student(String schoolId, String fullName, String gender, String email, String courseCode, int yearLevel, String address, int userId){
@@ -23,6 +25,7 @@ public class Student {
     this.stud_yearLevel = yearLevel;
     this.stud_address = address;
     this.user_id = userId;
+    
   } 
 
   // pang update student

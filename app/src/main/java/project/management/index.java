@@ -16,6 +16,7 @@ class Index{
     Gson gson = new Gson();
     Student student = new Student();
     User user = new User();
+    Map<String, String> queryParams = new HashMap<>();
 
     public String login(String username, String password) {
         User user = new User(username, password);
@@ -28,8 +29,9 @@ class Index{
             System.out.println("\nAdmin Menu:");
             System.out.println("1. Add student");
             System.out.println("2. Add staff");
-            System.out.println("3. Sign out");
-            System.out.println("4. Exit");
+            System.out.println("3. See history");
+            System.out.println("4. Sign out");
+            System.out.println("5. Exit");
             System.out.print("Enter your choice: ");
             choice = scanner.nextInt();
             scanner.nextLine(); 
@@ -42,10 +44,13 @@ class Index{
                     addStaff();
                     break;
                 case 3:
+                    seeHistory();
+                    break;
+                case 4:
                     System.out.println("Signed out as admin.");
                     App.main(null);
                     break;
-                case 4:
+                case 5:
                     System.out.println("Exiting...");
                     System.exit(0);
                 default:
@@ -54,9 +59,44 @@ class Index{
         }
     }
 
+    public void seeHistory(){
+        System.out.print("Select History\n1.Add student history\n2.Update student history\n3.Delete student history\nChoice: ");
+        int choice = scanner.nextInt();
+        scanner.nextLine();
+
+        switch(choice) {
+            case 1:
+                getAddStudentHistory();
+                break;
+            case 2:
+                //getUpdateStudentHistory
+                break;
+            case 3:
+                //getDeleteStudentHistory
+                break;
+        }
+    }
+
+    public void getAddStudentHistory(){
+        response = HttpUtil.sendPostRequest("getAddStudentHistory", null, "admin.php");
+        System.out.println("response: " + response);
+
+        JsonArray jsonArray = JsonParser.parseString(response).getAsJsonArray();
+        int i = 1;
+        System.out.println("\nAdd student history: \n");
+        for (JsonElement element : jsonArray) {
+            JsonObject response = element.getAsJsonObject();
+            String username = response.get("user_fullName").getAsString();
+            String studname = response.get("stud_fullName").getAsString();
+            String date = response.get("addhist_dateAdded").getAsString();
+            System.out.println(i + ". " + username + " Added " + studname + " in " + date);
+            i++;
+        }
+    }
+
     public void staffMenu(){
          while (true) {
-            System.out.println("Staff Home Program");
+            System.out.println("\nStaff Home Program");
             System.out.println("1. Add Student");
             System.out.println("2. View Student List");
             System.out.println("3. Exit");
@@ -134,7 +174,6 @@ class Index{
             JsonObject selectedStudent = jsonArray.get(index).getAsJsonObject();
             // String studentJsonString = selectedStudent.toString();
             int studId = selectedStudent.get("stud_id").getAsInt();
-            Map<String, String> queryParams = new HashMap<>();
             queryParams.put("stud_Id", String.valueOf(studId));
             response = HttpUtil.sendPostRequest("getSelectedStudent", queryParams, "users.php" );
             student = gson.fromJson(response, Student.class);
@@ -154,7 +193,7 @@ class Index{
         }
 
         while (true) {
-            System.out.print("\n1. Edit Information\n2. Delete / Remove file\n3. Back to Student list\nChoice: ");
+            System.out.print("\n1. Edit Information\n2. Delete / Remove file\n3. Back to Student list\n4. Home\nChoice: ");
             int choice = scanner.nextInt();
             scanner.nextLine();
             switch (choice) {
@@ -168,6 +207,9 @@ class Index{
                     System.out.println("Returning to student list.");
                     viewStudentList();
                     break; 
+                case 4:
+                    staffMenu();
+                    break;
                 default:
                     System.out.println("Invalid choice. Please try again.");
             }
