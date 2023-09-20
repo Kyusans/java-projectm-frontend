@@ -17,7 +17,6 @@ class Index{
     Student student = new Student();
     User user = new User();
     Map<String, String> queryParams = new HashMap<>();
-
     public String login(String username, String password) {
         User user = new User(username, password);
         return HttpUtil.sendPostRequest("login", user, "users.php");
@@ -60,27 +59,25 @@ class Index{
     }
 
     public void seeHistory(){
-        System.out.print("Select History\n1.Add student history\n2.Update student history\n3.Delete student history\nChoice: ");
+        System.out.print("Select History\n1. Add student history\n2. Update student history\n3. Delete student history\nChoice: ");
         int choice = scanner.nextInt();
         scanner.nextLine();
 
         switch(choice) {
             case 1:
-                getAddStudentHistory();
+                getHistory("getAddStudentHistory", "addhist_dateAdded", " added ");
                 break;
             case 2:
-                //getUpdateStudentHistory
+                getHistory("getUpdateHistory", "uphist_dateUpdated", " updated ");
                 break;
             case 3:
-                //getDeleteStudentHistory
+                //getHistory("getDeleteHistory", "delhist_dateAdded", " deleted ");
                 break;
         }
     }
 
-    public void getAddStudentHistory(){
-        response = HttpUtil.sendPostRequest("getAddStudentHistory", null, "admin.php");
-        System.out.println("response: " + response);
-
+    public void getHistory(String operation, String dateString, String textWord){
+        response = HttpUtil.sendPostRequest(operation, null, "admin.php");
         JsonArray jsonArray = JsonParser.parseString(response).getAsJsonArray();
         int i = 1;
         System.out.println("\nAdd student history: \n");
@@ -88,8 +85,8 @@ class Index{
             JsonObject response = element.getAsJsonObject();
             String username = response.get("user_fullName").getAsString();
             String studname = response.get("stud_fullName").getAsString();
-            String date = response.get("addhist_dateAdded").getAsString();
-            System.out.println(i + ". " + username + " Added " + studname + " in " + date);
+            String date = response.get(dateString).getAsString();
+            System.out.println(i + ". " + username + textWord + studname + " in " + date);
             i++;
         }
     }
