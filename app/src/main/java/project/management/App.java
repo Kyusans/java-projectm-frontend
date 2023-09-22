@@ -10,12 +10,14 @@ public class App {
         String jsonString = "";
 
         while(!loginSuccessful){
+            index.clearScreen();
             System.out.print("Enter username: ");
             String username = scanner.nextLine();
             System.out.print("Enter password: ");
             String password = scanner.nextLine();
             jsonString = index.login(username, password);
 
+            index.clearScreen();
             if(jsonString.equalsIgnoreCase("0")){
                 System.out.println("Invalid username or password!");
             }else{

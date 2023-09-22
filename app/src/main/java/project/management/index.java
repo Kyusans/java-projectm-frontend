@@ -8,7 +8,6 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.Gson;
 
-
 class Index{
     String response = "";
     Scanner scanner = new Scanner(System.in);
@@ -24,7 +23,7 @@ class Index{
    
     public void adminMenu() {
         int choice = 0;
-        while (choice != 4) {
+        while (true) {
             System.out.println("\nAdmin Menu:");
             System.out.println("1. Add student");
             System.out.println("2. Add staff");
@@ -59,7 +58,7 @@ class Index{
     }
 
     public void seeHistory(){
-        System.out.print("Select History\n1. Add student history\n2. Update student history\n3. Delete student history\nChoice: ");
+        System.out.print("\nSelect History\n1. Add student history\n2. Update student history\n3. Delete student history\nChoice: ");
         int choice = scanner.nextInt();
         scanner.nextLine();
 
@@ -71,22 +70,21 @@ class Index{
                 getHistory("getUpdateHistory", "uphist_dateUpdated", " updated ");
                 break;
             case 3:
-                //getHistory("getDeleteHistory", "delhist_dateAdded", " deleted ");
+                getHistory("getDeleteHistory", "delhist_dateDeleted", " deleted ");
                 break;
         }
     }
 
-    public void getHistory(String operation, String dateString, String textWord){
+    public void getHistory(String operation, String dateString, String statusMessage){
         response = HttpUtil.sendPostRequest(operation, null, "admin.php");
         JsonArray jsonArray = JsonParser.parseString(response).getAsJsonArray();
         int i = 1;
-        System.out.println("\nAdd student history: \n");
         for (JsonElement element : jsonArray) {
             JsonObject response = element.getAsJsonObject();
             String username = response.get("user_fullName").getAsString();
-            String studname = response.get("stud_fullName").getAsString();
+            String studname = response.get(operation.equals("getDeleteHistory") ? "delhist_fullName" : "stud_fullName" ).getAsString();
             String date = response.get(dateString).getAsString();
-            System.out.println(i + ". " + username + textWord + studname + " in " + date);
+            System.out.println(i + ". " + username + statusMessage + studname + " in " + date);
             i++;
         }
     }
@@ -122,6 +120,7 @@ class Index{
     }
 
     public void addStudent() {
+        clearScreen();
         System.out.println("\nAdding Student");
         System.out.print("Enter student Full Name: ");
         String fullName = scanner.nextLine();
@@ -309,4 +308,16 @@ class Index{
         }
     }
 
+    public void clearScreen(){
+        try {
+            String os = System.getProperty("os.name").toLowerCase();
+            if (os.contains("win")) {
+                new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
+            } else {
+                new ProcessBuilder("clear").inheritIO().start().waitFor();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }
