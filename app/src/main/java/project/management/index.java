@@ -21,7 +21,7 @@ class Index{
         User user = new User(username, password);
         return HttpUtil.sendPostRequest("login", user, "users.php");
     }
-    
+
     public void adminMenu() {
         int choice = 0;
         while (true) {
@@ -232,8 +232,8 @@ class Index{
 
         response = HttpUtil.sendPostRequest("addStudent", student, "users.php");
         clearScreen();
-        String studentJson = new Gson().toJson(student);
-        System.out.println("JSON Sent: " + studentJson);
+        // String studentJson = new Gson().toJson(student);
+        // System.out.println("JSON Sent: " + studentJson);
 
         System.out.println("response: " + response);
         if (response.equalsIgnoreCase("1")) {
@@ -264,8 +264,9 @@ class Index{
         }
         System.out.print("\nEnter the number of the student you want to view: ");
         int index = scanner.nextInt() - 1;
-        if(index == 0){
-            //search
+        if(index == -1){
+            System.out.println("index : " + index);
+            System.out.println("search ni siya diri");
         }else if(index >= 0 && index < jsonArray.size()){
             JsonObject selectedStudent = jsonArray.get(index).getAsJsonObject();
             int studId = selectedStudent.get("stud_id").getAsInt();
@@ -276,13 +277,27 @@ class Index{
             System.out.println("Student information: \n");
             System.out.println("Full name: " + student.getStudFullName());
             System.out.println("School Id: " + student.getStudSchoolId());
+            System.out.println("Date of Birth: " + student.getStudBirthday());
+            System.out.println("Place of Birth: " + student.getStudBirthplace());
             System.out.println("Gender: " + student.getStudGender());
-            System.out.println("Email: " + student.getStudEmail());
-            System.out.println("Course Code: " + student.getStudCourse());
-            System.out.println("Year Level: " + student.getStudGradeLevel());
+            System.out.println("Religion: " + student.getStudReligion());
             System.out.println("Address: " + student.getStudAddress());
-            System.out.println("Date Enrolled: " + student.getStudDateEnrolled());
-            
+            System.out.println("Email: " + student.getStudEmail());
+            System.out.println("Contact Number: " + student.getStudContactNumber());
+            System.out.println("Previous School: " + student.getStudPrevSchool());
+            System.out.println("Course Code: " + student.getStudCourse());
+            System.out.println("Grade Level: " + student.getStudGradeLevel());
+            System.out.println("Year Graduated: " + student.getStudYearGraduated());
+            System.out.println("Father Name: " + student.getStudFatherName());
+            System.out.println("Father Occupation: " + student.getStudFatherOccupation());
+            System.out.println("Father Contact Number: " + student.getStudFatherContactNumber());
+            System.out.println("Mother Name: " + student.getStudMotherName());
+            System.out.println("Mother Occupation: " + student.getStudMotherOccupation());
+            System.out.println("Mother Contact Number: " + student.getStudMotherContactNumber());
+            System.out.println("\nPerson to contact in case of emergency:");
+            System.out.println("Name: " + student.getStudEmergencyName());
+            System.out.println("Relationship: " + student.getStudEmergencyRelationship());
+            System.out.println("Contact Number: " + student.getStudEmergencyPhone());
         } else {
             clearScreen();
             System.out.println("Invalid student number.");
@@ -330,11 +345,35 @@ class Index{
         if(!studSchoolId.isEmpty()){
             studentToUpdate.setStudSchoolId(studSchoolId);
         }
-
+        
+        System.out.print("Date of Birth [" + studentToUpdate.stud_birthday + "]: ");
+        String studBirthday = scanner.nextLine();
+        if(!studBirthday.isEmpty()){
+            studentToUpdate.setStudBirthday(studBirthday);
+        }
+        
+        System.out.print("Place of Birth [" + studentToUpdate.stud_birthplace + "]: ");
+        String studBirthplace = scanner.nextLine();
+        if(!studBirthplace.isEmpty()){
+            studentToUpdate.setStudBirthplace(studBirthplace);
+        }
+        
         System.out.print("Gender [" + studentToUpdate.stud_gender + "]: ");
         String studGender = scanner.nextLine();
         if(!studGender.isEmpty()){
             studentToUpdate.setStudGender(studGender);
+        }
+        
+        System.out.print("Religion [" + studentToUpdate.stud_religion + "]: ");
+        String studReligion = scanner.nextLine();
+        if(!studReligion.isEmpty()){
+            studentToUpdate.setStudReligion(studReligion);
+        }
+        
+        System.out.print("Address [" + studentToUpdate.stud_address + "]: ");
+        String studAddress = scanner.nextLine();
+        if(!studAddress.isEmpty()){
+            studentToUpdate.setStudAddress(studAddress);
         }
 
         System.out.print("Email [" + studentToUpdate.stud_email + "]: ");
@@ -343,10 +382,104 @@ class Index{
             studentToUpdate.setStudEmail(studEmail);
         }
         
+        System.out.print("Contact Number [" + studentToUpdate.stud_contactNumber + "]: ");
+        String studContactNumber = scanner.nextLine();
+        if(!studContactNumber.isEmpty()){
+            studentToUpdate.setStudContactNumber(studContactNumber);
+        }
+        
+        System.out.print("Previous School [" + studentToUpdate.stud_prevSchool + "]: ");
+        String studPrevSchool = scanner.nextLine();
+        if(!studPrevSchool.isEmpty()){
+            studentToUpdate.setStudPrevSchool(studPrevSchool);
+        }
+
+        System.out.print("Course Code [" + studentToUpdate.stud_course + "]: ");
+        String studCourse = scanner.nextLine();
+        if(!studCourse.isEmpty()){
+            studentToUpdate.setStudCourse(studCourse);
+        }
+        
+        System.out.print("Grade Level [" + studentToUpdate.stud_gradeLevel + "]: ");
+        String studGradeLevel = scanner.nextLine();
+        if(!studGradeLevel.isEmpty()){
+            studentToUpdate.setStudGradeLevel(studGradeLevel);
+        }
+
+        System.out.print("Year Graduated [" + studentToUpdate.stud_yearGraduated + "]: ");
+        String studYearGraduated = scanner.nextLine();
+        if(!studYearGraduated.isEmpty()){
+            studentToUpdate.setStudYearGraduated(studYearGraduated);
+        }
+
+        System.out.print("Father Name [" + studentToUpdate.stud_fatherName + "]: ");
+        String studFatherName = scanner.nextLine();
+        if(!studFatherName.isEmpty()){
+            studentToUpdate.setStudFatherName(studFatherName);
+        }
+
+        System.out.print("Father Occupation [" + studentToUpdate.stud_fatherOccupation + "]: ");
+        String studFatherOccupation = scanner.nextLine();
+        if(!studFatherOccupation.isEmpty()){
+            studentToUpdate.setStudFatherOccupation(studFatherOccupation);
+        }
+
+        System.out.print("Fahter Contact Number [" + studentToUpdate.getStudFatherContactNumber() + "]: ");
+        String studFatherContactNumber = scanner.nextLine();
+        if(!studFatherContactNumber.isEmpty()){
+            studentToUpdate.setStudFatherContactNumber(studFatherContactNumber);
+        }
+
+        System.out.print("Mother Name [" + studentToUpdate.stud_motherName + "]: ");
+        String studMotherName = scanner.nextLine();
+        if(!studMotherName.isEmpty()){
+            studentToUpdate.setStudMotherName(studMotherName);
+        }
+        
+        System.out.print("Mother Occupation [" + studentToUpdate.stud_motherOccupation + "]: ");
+        String studMotherOccupation = scanner.nextLine();
+        if(!studMotherOccupation.isEmpty()){
+            studentToUpdate.setStudMotherOccupation(studMotherOccupation);
+        }
+
+        System.out.println("\nPerson to contact in case of emergency:");
+        System.out.print("Name [" + studentToUpdate.stud_emergencyName + "]: ");
+        String studEmergencyName = scanner.nextLine();
+        if(!studEmergencyName.isEmpty()){
+            studentToUpdate.setStudEmergencyName(studEmergencyName);
+        }
+
+        System.out.print("Relationship[" + studentToUpdate.getStudEmergencyRelationship() + "]: ");
+        String studEmergencyRelationship = scanner.nextLine();
+        if(!studEmergencyRelationship.isEmpty()){
+            studentToUpdate.setStudEmergencyRelationship(studEmergencyRelationship);
+        }
+        
+        System.out.print("Contact Number [" + studentToUpdate.getStudEmergencyPhone() + "]: ");
+        String studEmergencyPhone = scanner.nextLine();
+        if(!studEmergencyPhone.isEmpty()){
+            studentToUpdate.setStudEmergencyPhone(studEmergencyPhone);
+        }
+
+        System.out.print("Address ["+ studentToUpdate.stud_emergencyAddress+"]: ");
+        String studEmergencyAddress = scanner.nextLine();
+        if(!studEmergencyAddress.isEmpty()){
+            studentToUpdate.setStudEmergencyAddress(studEmergencyAddress);
+        }
+        
         int userId = SessionStorage.userId;
-        // Student student = new Student(studentToUpdate.stud_id, studentToUpdate.stud_schoolId, studentToUpdate.stud_fullName, studentToUpdate.stud_gender, studentToUpdate.stud_email, studentToUpdate.stud_courseCode, studentToUpdate.stud_yearLevel, studentToUpdate.stud_dateEnrolled, studentToUpdate.stud_address, userId);
+        Student student = new Student(studentToUpdate.stud_id, userId, studentToUpdate.stud_fullName, studentToUpdate.stud_schoolId, studentToUpdate.stud_birthday,
+        studentToUpdate.stud_birthplace, studentToUpdate.stud_gender, studentToUpdate.stud_religion, studentToUpdate.stud_address,
+        studentToUpdate.stud_email, studentToUpdate.stud_contactNumber, studentToUpdate.stud_prevSchool, studentToUpdate.stud_course,
+        studentToUpdate.stud_gradeLevel, studentToUpdate.stud_yearGraduated, studentToUpdate.stud_fatherName, studentToUpdate.stud_fatherOccupation,
+        studentToUpdate.stud_fatherContactNumber, studentToUpdate.stud_motherName, studentToUpdate.stud_motherOccupation,
+        studentToUpdate.stud_motherContactNumber, studentToUpdate.stud_emergencyName, studentToUpdate.stud_emergencyRelationship,
+        studentToUpdate.stud_emergencyPhone, studentToUpdate.stud_emergencyAddress);
+        
         response = HttpUtil.sendPostRequest("updateStudent", student, "users.php");
         clearScreen();
+        String studentJson = new Gson().toJson(student);
+        System.out.println("JSON Sent: " + studentJson);
         if (response.equalsIgnoreCase("1")) {
             System.out.println("\nStudent information has been successfully updated!\n");
             viewStudentList();

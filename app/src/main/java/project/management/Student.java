@@ -63,38 +63,36 @@ public class Student {
 }
 
   // pang update student
-  public Student(int studId ,int user_id, String stud_fullName, String stud_schoolId, String stud_birthday, String stud_birthplace,
-  String stud_gender, String stud_religion, String stud_address, String stud_email, String stud_contactNumber,
-  String stud_prevSchool, String stud_course, String stud_gradeLevel, String stud_yearGraduated, String stud_fatherName,
-  String stud_fatherOccupation, String stud_fatherContactNumber, String stud_motherName, String stud_motherOccupation,
-  String stud_motherContactNumber, String stud_emergencyName, String stud_emergencyRelationship, String stud_emergencyPhone,
-  String stud_emergencyAddress, String stud_school_id) {
+  public Student(int studId , int user_id, String fullName, String schoolId,String birthday, String birthplace, String gender, String religion,
+  String address, String email, String contactNumber, String prevSchool, String course, String gradeLevel, String yearGraduated,
+  String fatherName, String fatherOccupation, String fatherContactNumber, String motherName, String motherOccupation, String motherContactNumber,
+  String emergencyName, String emergencyRelationship, String emergencyPhone, String emergencyAddress) {
   this.stud_id = studId;
   this.user_id = user_id;
-  this.stud_fullName = stud_fullName;
-  this.stud_schoolId = stud_schoolId;
-  this.stud_birthday = stud_birthday;
-  this.stud_birthplace = stud_birthplace;
-  this.stud_gender = stud_gender;
-  this.stud_religion = stud_religion;
-  this.stud_address = stud_address;
-  this.stud_email = stud_email;
-  this.stud_contactNumber = stud_contactNumber;
-  this.stud_prevSchool = stud_prevSchool;
-  this.stud_course = stud_course;
-  this.stud_gradeLevel = stud_gradeLevel;
-  this.stud_yearGraduated = stud_yearGraduated;
-  this.stud_fatherName = stud_fatherName;
-  this.stud_fatherOccupation = stud_fatherOccupation;
-  this.stud_fatherContactNumber = stud_fatherContactNumber;
-  this.stud_motherName = stud_motherName;
-  this.stud_motherOccupation = stud_motherOccupation;
-  this.stud_motherContactNumber = stud_motherContactNumber;
-  this.stud_emergencyName = stud_emergencyName;
-  this.stud_emergencyRelationship = stud_emergencyRelationship;
-  this.stud_emergencyPhone = stud_emergencyPhone;
-  this.stud_emergencyAddress = stud_emergencyAddress;
-  this.stud_school_id = stud_school_id;
+  this.stud_fullName = fullName;
+  this.stud_schoolId = schoolId;
+  this.stud_birthday = birthday;
+  this.stud_birthplace = birthplace;
+  this.stud_gender = gender;
+  this.stud_religion = religion;
+  this.stud_address = address;
+  this.stud_email = email;
+  this.stud_contactNumber = contactNumber;
+  this.stud_prevSchool = prevSchool;
+  this.stud_course = course;
+  this.stud_gradeLevel = gradeLevel;
+  this.stud_yearGraduated = yearGraduated;
+  this.stud_fatherName = fatherName;
+  this.stud_fatherOccupation = fatherOccupation;
+  this.stud_fatherContactNumber = fatherContactNumber;
+  this.stud_motherName = motherName;
+  this.stud_motherOccupation = motherOccupation;
+  this.stud_motherContactNumber = motherContactNumber;
+  this.stud_emergencyName = emergencyName;
+  this.stud_emergencyRelationship = emergencyRelationship;
+  this.stud_emergencyPhone = emergencyPhone;
+  this.stud_emergencyAddress = emergencyAddress;
+
 }
 
   public Student(int studId, int userId, String fullName){
@@ -307,13 +305,5 @@ public class Student {
 
   public void setStudEmergencyAddress(String studEmergencyAddress) {
       this.stud_emergencyAddress = studEmergencyAddress;
-  }
-
-  public void setStudDateEnrolled(String dateEnrolled){
-    this.stud_dateEnrolled = dateEnrolled;
-  }
-
-  public String getStudDateEnrolled(){
-    return this.stud_dateEnrolled;
   }
 }
