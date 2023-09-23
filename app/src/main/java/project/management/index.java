@@ -16,6 +16,7 @@ class Index{
     Student student = new Student();
     User user = new User();
     Map<String, String> queryParams = new HashMap<>();
+
     public String login(String username, String password) {
         User user = new User(username, password);
         return HttpUtil.sendPostRequest("login", user, "users.php");
@@ -24,7 +25,7 @@ class Index{
     public void adminMenu() {
         int choice = 0;
         while (true) {
-            System.out.println("\nAdmin Menu:");
+            System.out.println("Admin Menu:");
             System.out.println("1. Add student");
             System.out.println("2. Add staff");
             System.out.println("3. See history");
@@ -45,10 +46,11 @@ class Index{
                     seeHistory();
                     break;
                 case 4:
-                    System.out.println("Signed out as admin.");
+                    // sign out
                     App.main(null);
                     break;
                 case 5:
+                    clearScreen();
                     System.out.println("Exiting...");
                     System.exit(0);
                 default:
@@ -56,9 +58,41 @@ class Index{
             }
         }
     }
+    
+    public void staffMenu(){
+        while (true) {
+            System.out.println("Staff Home Program");
+            System.out.println("1. Add Student");
+            System.out.println("2. View Student List");
+            System.out.println("3. Exit");
+            System.out.print("Select an option: ");
+            int choice = scanner.nextInt();
+            scanner.nextLine();
+            switch (choice) {
+                case 1:
+                  addStudent();
+                  break;
+                case 2:
+                  clearScreen();
+                  viewStudentList();
+                  break;
+                case 3:
+                    // Exit
+                    System.out.println("Exiting the program.");
+                    scanner.close();
+                    System.exit(0);
+                    break;
+                default:
+                    clearScreen();
+                    System.out.println("Invalid option. Please try again.\n");
+                    break;
+            }
+        }
+    }
 
     public void seeHistory(){
-        System.out.print("\nSelect History\n1. Add student history\n2. Update student history\n3. Delete student history\nChoice: ");
+        clearScreen();
+        System.out.print("Select History\n1. Add student history\n2. Update student history\n3. Delete student history\nChoice: ");
         int choice = scanner.nextInt();
         scanner.nextLine();
 
@@ -76,52 +110,28 @@ class Index{
     }
 
     public void getHistory(String operation, String dateString, String statusMessage){
+        clearScreen();
         response = HttpUtil.sendPostRequest(operation, null, "admin.php");
-        JsonArray jsonArray = JsonParser.parseString(response).getAsJsonArray();
-        int i = 1;
-        for (JsonElement element : jsonArray) {
-            JsonObject response = element.getAsJsonObject();
-            String username = response.get("user_fullName").getAsString();
-            String studname = response.get(operation.equals("getDeleteHistory") ? "delhist_fullName" : "stud_fullName" ).getAsString();
-            String date = response.get(dateString).getAsString();
-            System.out.println(i + ". " + username + statusMessage + studname + " in " + date);
-            i++;
-        }
-    }
-
-    public void staffMenu(){
-         while (true) {
-            System.out.println("\nStaff Home Program");
-            System.out.println("1. Add Student");
-            System.out.println("2. View Student List");
-            System.out.println("3. Exit");
-            System.out.print("Select an option: ");
-            int choice = scanner.nextInt();
-            scanner.nextLine();
-            switch (choice) {
-                case 1:
-                  addStudent();
-                  break;
-                case 2:
-                  viewStudentList();
-                  break;
-                case 3:
-                    // Exit
-                    System.out.println("Exiting the program.");
-                    scanner.close();
-                    System.exit(0);
-                    break;
-                default:
-                    System.out.println("Invalid option. Please try again.\n");
-                    break;
+        if(!response.equalsIgnoreCase("0")){
+            JsonArray jsonArray = JsonParser.parseString(response).getAsJsonArray();
+            int i = 1;
+            for (JsonElement element : jsonArray) {
+                JsonObject response = element.getAsJsonObject();
+                String username = response.get("user_fullName").getAsString();
+                String studname = response.get(operation.equals("getDeleteHistory") ? "delhist_fullName" : "stud_fullName" ).getAsString();
+                String date = response.get(dateString).getAsString();
+                System.out.println(i + ". " + username + statusMessage + studname + " in " + date);
+                i++;
             }
+        }else{
+            System.out.println("No data found");
         }
-       
+        System.out.println("");
     }
 
     public void addStudent() {
         clearScreen();
-        System.out.println("\nAdding Student");
+        System.out.println("Adding Student");
         System.out.print("Enter student Full Name: ");
         String fullName = scanner.nextLine();
         System.out.print("Enter student school Id: ");
@@ -141,22 +151,25 @@ class Index{
         int userId = SessionStorage.userId;
         Student student = new Student(schoolId, fullName, gender, email, courseCode, yearLevel, address, userId);
         response = HttpUtil.sendPostRequest("addStudent", student, "users.php");
+        clearScreen();
         if (response.equalsIgnoreCase("1")) {
-            System.out.println("\nStudent added successfully\n");
+            System.out.println("\nStudent added successfully");
         } else if (response.equalsIgnoreCase("0")) {
-            System.out.println("\nStudent failed to add\n");
+            System.out.println("\nStudent failed to add");
         } else {
             System.out.println("\nUnexpected response from the server: " + response);
         }
     }
 
     public void viewStudentList() {
-        System.out.println("\nStudent List: ");
         Student student = new Student();
         response = HttpUtil.sendPostRequest("getAllStudent", student, "users.php");
-
+        if(response.equals("0")){
+            System.out.println("Student list is currently empty.");
+            staffMenu();
+        }
         JsonArray jsonArray = JsonParser.parseString(response).getAsJsonArray();
-        
+        System.out.println("Student List: \n");
         int i = 1;
         for (JsonElement element : jsonArray) {
             JsonObject response = element.getAsJsonObject();
@@ -164,16 +177,16 @@ class Index{
             System.out.println(i + ". " + fullName);
             i++;
         }
-        System.out.print("Enter the number of the student you want to view: ");
+        System.out.print("\nEnter the number of the student you want to view: ");
         int index = scanner.nextInt() - 1;
         if(index >= 0 && index < jsonArray.size()){
             JsonObject selectedStudent = jsonArray.get(index).getAsJsonObject();
-            // String studentJsonString = selectedStudent.toString();
             int studId = selectedStudent.get("stud_id").getAsInt();
             queryParams.put("stud_Id", String.valueOf(studId));
             response = HttpUtil.sendPostRequest("getSelectedStudent", queryParams, "users.php" );
             student = gson.fromJson(response, Student.class);
-            System.out.println("\nStudent information: \n");
+            clearScreen();
+            System.out.println("Student information: \n");
             System.out.println("Full name: " + student.getStudentFullName());
             System.out.println("School Id: " + student.getStudentSchoolId());
             System.out.println("Gender: " + student.getStudentGender());
@@ -184,7 +197,8 @@ class Index{
             System.out.println("Date Enrolled: " + student.getStudentDateEnrolled());
             
         } else {
-            System.out.println("\nInvalid student number.");
+            clearScreen();
+            System.out.println("Invalid student number.");
             viewStudentList();
         }
 
@@ -192,6 +206,7 @@ class Index{
             System.out.print("\n1. Edit Information\n2. Delete / Remove file\n3. Back to Student list\n4. Home\nChoice: ");
             int choice = scanner.nextInt();
             scanner.nextLine();
+            clearScreen();
             switch (choice) {
                 case 1:
                     updateStudent(student);
@@ -200,7 +215,8 @@ class Index{
                     deleteStudent(student.getStudentId(), SessionStorage.userId, student.getStudentFullName());
                     break; 
                 case 3:
-                    System.out.println("Returning to student list.");
+                    clearScreen();
+                    System.out.println("Returning to student list.\n");
                     viewStudentList();
                     break; 
                 case 4:
@@ -213,7 +229,8 @@ class Index{
     }
 
     public void updateStudent(Student studentToUpdate){
-        System.out.println("\n\nEdit Student Information:");
+        clearScreen();
+        System.out.println("Edit Student Information:");
         System.out.println("Leave fields blank to keep the current values.\n");
         System.out.print("Full name [" + studentToUpdate.getStudentFullName() + "]: ");
         String studFullName = scanner.nextLine();
@@ -260,24 +277,26 @@ class Index{
         int userId = SessionStorage.userId;
         Student student = new Student(studentToUpdate.stud_id, studentToUpdate.stud_schoolId, studentToUpdate.stud_fullName, studentToUpdate.stud_gender, studentToUpdate.stud_email, studentToUpdate.stud_courseCode, studentToUpdate.stud_yearLevel, studentToUpdate.stud_dateEnrolled, studentToUpdate.stud_address, userId);
         response = HttpUtil.sendPostRequest("updateStudent", student, "users.php");
-        System.out.println("response: " + response);
+        clearScreen();
         if (response.equalsIgnoreCase("1")) {
-            System.out.println("\nStudent information has been successfully updated!");
+            System.out.println("\nStudent information has been successfully updated!\n");
             viewStudentList();
         } else if (response.equalsIgnoreCase("0")) {
-            System.out.println("Failed to update student information. Please check your input and try again.");
+            System.out.println("Student information remains unchanged.\n");
         } else {
             System.out.println("Unexpected response from the server: " + response);
         }
+        viewStudentList();
     }
 
     public void deleteStudent(int studId, int userId, String fullName){
         Student student = new Student(studId, userId, fullName);
         response = HttpUtil.sendPostRequest("deleteStudent", student, "users.php");
+        clearScreen();
         if (response.equalsIgnoreCase("1")) {
-            System.out.println("Student successfully deleted");
+            System.out.println("Student successfully deleted\n");
         }else if(response.equalsIgnoreCase("0")){
-            System.out.println("Failed to delete student");
+            System.out.println("Failed to delete student\n");
         }else{
             System.out.println("Unexpected response from the server: " + response);
         }
@@ -285,8 +304,9 @@ class Index{
     }
 
     public void addStaff() {
+        clearScreen();
         String fullName, username, password, email;
-        System.out.println("\nAdding Staff");
+        System.out.println("Adding Staff");
         System.out.print("Enter staff full name: ");
         fullName = scanner.nextLine();
         System.out.print("Enter staff username: ");
@@ -298,7 +318,7 @@ class Index{
 
         User user = new User(fullName, username, password, email);
         response = HttpUtil.sendPostRequest("addStaff", user, "admin.php");
-
+        clearScreen();
         if (response.equalsIgnoreCase("1")) {
             System.out.println("Staff added successfully");
         } else if (response.equalsIgnoreCase("0")) {

@@ -3,14 +3,13 @@ import java.util.Scanner;
 import com.google.gson.Gson;
 
 public class App {
+    static Index index = new Index();
     public String begin(){
-        Index index = new Index();
         Scanner scanner = new Scanner(System.in);
         boolean loginSuccessful = false;
         String jsonString = "";
 
         while(!loginSuccessful){
-            index.clearScreen();
             System.out.print("Enter username: ");
             String username = scanner.nextLine();
             System.out.print("Enter password: ");
@@ -19,9 +18,9 @@ public class App {
 
             index.clearScreen();
             if(jsonString.equalsIgnoreCase("0")){
-                System.out.println("Invalid username or password!");
+                System.out.println("Invalid username or password!\n");
             }else{
-                System.out.println("Success!");
+                System.out.println("Success!\n");
                 loginSuccessful = true;
             }
             // System.out.println(jsonString);
@@ -30,6 +29,7 @@ public class App {
         return jsonString;
     }
     public static void main(String[] args) {
+        index.clearScreen();
         String jsonString = new App().begin();
         try {
             Gson gson = new Gson();
