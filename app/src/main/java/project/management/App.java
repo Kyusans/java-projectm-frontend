@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 
 public class App {
     static Index index = new Index();
+    
     public String begin(){
         Scanner scanner = new Scanner(System.in);
         boolean loginSuccessful = false;

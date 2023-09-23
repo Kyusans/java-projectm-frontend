@@ -21,7 +21,7 @@ class Index{
         User user = new User(username, password);
         return HttpUtil.sendPostRequest("login", user, "users.php");
     }
-   
+    
     public void adminMenu() {
         int choice = 0;
         while (true) {
@@ -132,26 +132,110 @@ class Index{
     public void addStudent() {
         clearScreen();
         System.out.println("Adding Student");
-        System.out.print("Enter student Full Name: ");
+
+        System.out.print("Enter Student Fullname: ");
         String fullName = scanner.nextLine();
-        System.out.print("Enter student school Id: ");
+
+        System.out.print("Enter School ID: ");
         String schoolId = scanner.nextLine();
-        System.out.print("Enter student gender: ");
+
+        System.out.print("Enter Date of Birth: ");
+        String dateBirth = scanner.nextLine();
+
+        System.out.print("Enter Place of Birth: ");
+        String placeBirth = scanner.nextLine();
+
+        System.out.print("Enter Gender: ");
         String gender = scanner.nextLine();
-        System.out.print("Enter student email: ");
+
+        System.out.print("Enter Email: ");
         String email = scanner.nextLine();
-        System.out.print("Enter student course code: ");
-        String courseCode = scanner.nextLine();
-        System.out.print("Enter student year level: ");
-        int yearLevel = scanner.nextInt(); 
-        scanner.nextLine();
-        System.out.print("Enter student address: ");
+
+        System.out.print("Enter Religion: ");
+        String religion = scanner.nextLine();
+
+        System.out.print("Enter Address: ");
         String address = scanner.nextLine();
 
+        System.out.print("Enter Contact Number: ");
+        String contactNum = scanner.nextLine();
+
+        System.out.print("Enter Previous School: ");
+        String prevSchool = scanner.nextLine();
+
+        System.out.print("Enter Course (1)GAS, (2)HUMMS, (3)STEM, (4)ABM: ");
+        int courseNum = scanner.nextInt();
+        scanner.nextLine(); 
+        String course = "";
+        switch(courseNum){
+            case 1:
+                course = "GAS";
+                break;
+            case 2:
+                course = "HUMMS";
+                break;
+            case 3:
+                course = "STEM";
+                break;
+            case 4:
+                course = "ABM";
+                break;
+            default:
+                System.out.println("Invalid option. Please try again.\n");
+                break;
+        }
+
+        System.out.print("Enter Year Level: ");
+        String yearLevel = scanner.nextLine();
+
+        System.out.print("Enter Year Graduated: ");
+        String yearGrad = scanner.nextLine();
+
+        System.out.print("Enter Father Fullname: ");
+        String fatherName = scanner.nextLine();
+
+        System.out.print("Enter Father Occupation: ");
+        String fatherOccup = scanner.nextLine();
+
+        System.out.print("Enter Father Contact Number: ");
+        String fatherContact = scanner.nextLine(); 
+
+        System.out.print("Enter Mother Fullname: ");
+        String motherName = scanner.nextLine();
+
+        System.out.print("Enter Mother Occupation: ");
+        String motherOccup = scanner.nextLine();
+
+        System.out.print("Enter Mother Contact Number: ");
+        String motherContact = scanner.nextLine(); 
+
+        System.out.println("Emergency Contact");
+        System.out.print("Enter Emergency FullName: ");
+        String emergencyName = scanner.nextLine();
+
+        System.out.print("Enter Emergency Relationship: ");
+        String emergencyRel = scanner.nextLine();
+
+        System.out.print("Enter Emergency Contact Number: ");
+        String emergencyContact = scanner.nextLine(); 
+
+        System.out.print("Enter Emergency Address: ");
+        String emergencyAdd = scanner.nextLine();
+
         int userId = SessionStorage.userId;
-        Student student = new Student(schoolId, fullName, gender, email, courseCode, yearLevel, address, userId);
+
+        Student student = new Student(fullName, schoolId, dateBirth, placeBirth, gender, religion, 
+        address, email, contactNum, prevSchool, course, yearLevel, yearGrad, fatherName, fatherOccup, 
+        fatherContact, motherName, motherOccup, motherContact, emergencyName, emergencyRel, emergencyContact, 
+        emergencyAdd, userId);
+
+
         response = HttpUtil.sendPostRequest("addStudent", student, "users.php");
         clearScreen();
+        String studentJson = new Gson().toJson(student);
+        System.out.println("JSON Sent: " + studentJson);
+
+        System.out.println("response: " + response);
         if (response.equalsIgnoreCase("1")) {
             System.out.println("\nStudent added successfully");
         } else if (response.equalsIgnoreCase("0")) {
@@ -170,6 +254,7 @@ class Index{
         }
         JsonArray jsonArray = JsonParser.parseString(response).getAsJsonArray();
         System.out.println("Student List: \n");
+        System.out.println("0. Search Student");
         int i = 1;
         for (JsonElement element : jsonArray) {
             JsonObject response = element.getAsJsonObject();
@@ -179,7 +264,9 @@ class Index{
         }
         System.out.print("\nEnter the number of the student you want to view: ");
         int index = scanner.nextInt() - 1;
-        if(index >= 0 && index < jsonArray.size()){
+        if(index == 0){
+            //search
+        }else if(index >= 0 && index < jsonArray.size()){
             JsonObject selectedStudent = jsonArray.get(index).getAsJsonObject();
             int studId = selectedStudent.get("stud_id").getAsInt();
             queryParams.put("stud_Id", String.valueOf(studId));
@@ -187,14 +274,14 @@ class Index{
             student = gson.fromJson(response, Student.class);
             clearScreen();
             System.out.println("Student information: \n");
-            System.out.println("Full name: " + student.getStudentFullName());
-            System.out.println("School Id: " + student.getStudentSchoolId());
-            System.out.println("Gender: " + student.getStudentGender());
-            System.out.println("Email: " + student.getStudentEmail());
-            System.out.println("Course Code: " + student.getStudentCourseCode());
-            System.out.println("Year Level: " + student.getStudentYearLevel());
-            System.out.println("Address: " + student.getStudentAddress());
-            System.out.println("Date Enrolled: " + student.getStudentDateEnrolled());
+            System.out.println("Full name: " + student.getStudFullName());
+            System.out.println("School Id: " + student.getStudSchoolId());
+            System.out.println("Gender: " + student.getStudGender());
+            System.out.println("Email: " + student.getStudEmail());
+            System.out.println("Course Code: " + student.getStudCourse());
+            System.out.println("Year Level: " + student.getStudGradeLevel());
+            System.out.println("Address: " + student.getStudAddress());
+            System.out.println("Date Enrolled: " + student.getStudDateEnrolled());
             
         } else {
             clearScreen();
@@ -212,7 +299,7 @@ class Index{
                     updateStudent(student);
                     break; 
                 case 2:
-                    deleteStudent(student.getStudentId(), SessionStorage.userId, student.getStudentFullName());
+                    deleteStudent(student.getStudId(), SessionStorage.userId, student.getStudFullName());
                     break; 
                 case 3:
                     clearScreen();
@@ -232,50 +319,32 @@ class Index{
         clearScreen();
         System.out.println("Edit Student Information:");
         System.out.println("Leave fields blank to keep the current values.\n");
-        System.out.print("Full name [" + studentToUpdate.getStudentFullName() + "]: ");
+        System.out.print("Full name [" + studentToUpdate.getStudFullName() + "]: ");
         String studFullName = scanner.nextLine();
         if(!studFullName.isEmpty()){
-            studentToUpdate.setStudentFullName(studFullName);
+            studentToUpdate.setStudFullName(studFullName);
         }
 
         System.out.print("School Id [" + studentToUpdate.stud_schoolId + "]: ");
         String studSchoolId = scanner.nextLine();
         if(!studSchoolId.isEmpty()){
-            studentToUpdate.setStudentSchoolId(studSchoolId);
+            studentToUpdate.setStudSchoolId(studSchoolId);
         }
 
         System.out.print("Gender [" + studentToUpdate.stud_gender + "]: ");
         String studGender = scanner.nextLine();
         if(!studGender.isEmpty()){
-            studentToUpdate.setStudentGender(studGender);
+            studentToUpdate.setStudGender(studGender);
         }
 
         System.out.print("Email [" + studentToUpdate.stud_email + "]: ");
         String studEmail = scanner.nextLine();
         if(!studEmail.isEmpty()){
-            studentToUpdate.setStudentEmail(studEmail);
-        }
-
-        System.out.print("Course Code [" + studentToUpdate.stud_courseCode + "]: ");
-        String studCourseCode = scanner.nextLine();
-        if(!studCourseCode.isEmpty()){
-            studentToUpdate.setStudentCourseCode(studCourseCode);
-        }
-        System.out.print("Year Level [" + studentToUpdate.stud_yearLevel + "]: ");
-        String studYearLevel = scanner.nextLine();
-        if(!studYearLevel.isEmpty()){
-            int yearLevel = Integer.parseInt(studYearLevel);
-            studentToUpdate.setStudentYearLevel(yearLevel);
-        }
-        
-        System.out.print("Address [" + studentToUpdate.stud_address + "]: ");
-        String studAddress = scanner.nextLine();
-        if(!studAddress.isEmpty()){
-            studentToUpdate.setStudentAddress(studAddress);
+            studentToUpdate.setStudEmail(studEmail);
         }
         
         int userId = SessionStorage.userId;
-        Student student = new Student(studentToUpdate.stud_id, studentToUpdate.stud_schoolId, studentToUpdate.stud_fullName, studentToUpdate.stud_gender, studentToUpdate.stud_email, studentToUpdate.stud_courseCode, studentToUpdate.stud_yearLevel, studentToUpdate.stud_dateEnrolled, studentToUpdate.stud_address, userId);
+        // Student student = new Student(studentToUpdate.stud_id, studentToUpdate.stud_schoolId, studentToUpdate.stud_fullName, studentToUpdate.stud_gender, studentToUpdate.stud_email, studentToUpdate.stud_courseCode, studentToUpdate.stud_yearLevel, studentToUpdate.stud_dateEnrolled, studentToUpdate.stud_address, userId);
         response = HttpUtil.sendPostRequest("updateStudent", student, "users.php");
         clearScreen();
         if (response.equalsIgnoreCase("1")) {
