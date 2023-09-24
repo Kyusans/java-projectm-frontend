@@ -4,9 +4,9 @@ import com.google.gson.Gson;
 
 public class App {
     static Index index = new Index();
+    static Scanner scanner = new Scanner(System.in);
     
     public String begin(){
-        Scanner scanner = new Scanner(System.in);
         boolean loginSuccessful = false;
         String jsonString = "";
 
@@ -31,7 +31,28 @@ public class App {
     }
     public static void main(String[] args) {
         index.clearScreen();
-        String jsonString = new App().begin();
+        String jsonString = "";
+        boolean validChoice = false;
+        while (!validChoice) {
+            System.out.println("MARKETING\nSign in to Explore!");
+            System.out.print("1. Sign in\n2. Exit\nChoice: ");
+            int choice = scanner.nextInt();
+            scanner.nextLine();
+            switch (choice) {
+                case 1:
+                    validChoice = true;
+                    index.clearScreen();
+                    jsonString = new App().begin();
+                    break;
+                case 2:
+                    System.exit(0);
+                    break;
+                default:
+                    index.clearScreen();
+                    System.out.println("Invalid choice\n");
+                    break;
+            }
+        }
         try {
             Gson gson = new Gson();
             User user = gson.fromJson(jsonString, User.class);

@@ -64,7 +64,7 @@ class Index{
             System.out.println("Staff Home Program");
             System.out.println("1. Add Student");
             System.out.println("2. View Student List");
-            System.out.println("3. Exit");
+            System.out.println("3. Sign out");
             System.out.print("Select an option: ");
             int choice = scanner.nextInt();
             scanner.nextLine();
@@ -77,10 +77,7 @@ class Index{
                   viewStudentList();
                   break;
                 case 3:
-                    // Exit
-                    System.out.println("Exiting the program.");
-                    scanner.close();
-                    System.exit(0);
+                    App.main(null);
                     break;
                 default:
                     clearScreen();
