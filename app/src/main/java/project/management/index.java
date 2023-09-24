@@ -314,7 +314,7 @@ class Index{
                     updateStudent(student);
                     break; 
                 case 2:
-                    deleteStudent(student.getStudId(), SessionStorage.userId, student.getStudFullName());
+                    deleteStudent(student, SessionStorage.userId);
                     break; 
                 case 3:
                     clearScreen();
@@ -478,8 +478,8 @@ class Index{
         
         response = HttpUtil.sendPostRequest("updateStudent", student, "users.php");
         clearScreen();
-        String studentJson = new Gson().toJson(student);
-        System.out.println("JSON Sent: " + studentJson);
+        // String studentJson = new Gson().toJson(student);
+        // System.out.println("JSON Sent: " + studentJson);
         if (response.equalsIgnoreCase("1")) {
             System.out.println("\nStudent information has been successfully updated!\n");
             viewStudentList();
@@ -491,10 +491,18 @@ class Index{
         viewStudentList();
     }
 
-    public void deleteStudent(int studId, int userId, String fullName){
-        Student student = new Student(studId, userId, fullName);
+    public void deleteStudent(Student studentToDelete, int userId){
+        Student student = new Student(studentToDelete.stud_schoolId,studentToDelete.stud_id, userId, studentToDelete.stud_fullName, studentToDelete.stud_birthday, studentToDelete.stud_birthplace,
+        studentToDelete.stud_gender, studentToDelete.stud_religion, studentToDelete.stud_address, studentToDelete.stud_email, studentToDelete.stud_contactNumber,
+        studentToDelete.stud_prevSchool, studentToDelete.stud_course, studentToDelete.stud_gradeLevel, studentToDelete.stud_yearGraduated, studentToDelete.stud_fatherName,
+        studentToDelete.stud_fatherOccupation, studentToDelete.stud_fatherContactNumber, studentToDelete.stud_motherName, studentToDelete.stud_motherOccupation, 
+        studentToDelete.stud_motherContactNumber, studentToDelete.stud_emergencyName, studentToDelete.stud_emergencyRelationship, studentToDelete.stud_emergencyPhone,
+        studentToDelete.stud_emergencyAddress, studentToDelete.stud_school_id);
         response = HttpUtil.sendPostRequest("deleteStudent", student, "users.php");
         clearScreen();
+        // String studentJson = new Gson().toJson(student);
+        // System.out.println("JSON Sent: " + studentJson);
+        // System.out.println("response: " + response);
         if (response.equalsIgnoreCase("1")) {
             System.out.println("Student successfully deleted\n");
         }else if(response.equalsIgnoreCase("0")){
