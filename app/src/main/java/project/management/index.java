@@ -308,6 +308,7 @@ class Index{
             clearScreen();
             switch (choice) {
                 case 1:
+                    clearScreen();
                     updateStudent(student);
                     break; 
                 case 2:
@@ -328,7 +329,6 @@ class Index{
     }
 
     public void updateStudent(Student studentToUpdate){
-        clearScreen();
         System.out.println("Edit Student Information:");
         System.out.println("Leave fields blank to keep the current values.\n");
         System.out.print("Full name [" + studentToUpdate.getStudFullName() + "]: ");
@@ -391,10 +391,38 @@ class Index{
             studentToUpdate.setStudPrevSchool(studPrevSchool);
         }
 
-        System.out.print("Course Code [" + studentToUpdate.stud_course + "]: ");
-        String studCourse = scanner.nextLine();
-        if(!studCourse.isEmpty()){
-            studentToUpdate.setStudCourse(studCourse);
+        System.out.println("Course Code [" + studentToUpdate.stud_course + "] ");
+        System.out.print("Enter Course (1)GAS, (2)HUMMS, (3)STEM, (4)ABM: ");
+
+        if (scanner.hasNextInt()) {
+            int studCourse = scanner.nextInt();
+            scanner.nextLine();
+
+            String course = "";
+            switch (studCourse) {
+                case 1:
+                    course = "GAS";
+                    break;
+                case 2:
+                    course = "HUMMS";
+                    break;
+                case 3:
+                    course = "STEM";
+                    break;
+                case 4:
+                    course = "ABM";
+                    break;
+                default:
+                    System.out.println("Invalid option. Please try again.\n");
+                    break;
+            }
+
+            if (!course.isEmpty()) {
+                studentToUpdate.setStudCourse(course);
+            }
+        } else {
+            System.out.println("Invalid input.\n");
+            scanner.nextLine();
         }
         
         System.out.print("Grade Level [" + studentToUpdate.stud_gradeLevel + "]: ");
@@ -446,7 +474,7 @@ class Index{
             studentToUpdate.setStudEmergencyName(studEmergencyName);
         }
 
-        System.out.print("Relationship[" + studentToUpdate.getStudEmergencyRelationship() + "]: ");
+        System.out.print("Relationship [" + studentToUpdate.getStudEmergencyRelationship() + "]: ");
         String studEmergencyRelationship = scanner.nextLine();
         if(!studEmergencyRelationship.isEmpty()){
             studentToUpdate.setStudEmergencyRelationship(studEmergencyRelationship);
