@@ -304,7 +304,7 @@ class Index{
                 getAllStudent();
                 break;
             case 2:
-                //search by strand
+                getAllStudentByStrand();
                 break;
             case 3:
                 searchStudent();
@@ -394,8 +394,70 @@ class Index{
         }
     }
 
+    public void getAllStudentByStrand(){
+        System.out.print("1. GAS\n2. HUMMS\n3. STEM\n4. ABM\nChoice: ");
+        int studCourse = scanner.nextInt();
+        scanner.nextLine();
+        String course = "";
+        switch (studCourse) {
+            case 1:
+                course = "GAS";
+                break;
+            case 2:
+                course = "HUMMS";
+                break;
+            case 3:
+                course = "STEM";
+                break;
+            case 4:
+                course = "ABM";
+                break;
+            default:
+                System.out.println("Invalid option. Please try again.\n");
+                break;
+        }
+        queryParams.put("stud_course", course);
+        response = HttpUtil.sendPostRequest("getAllStudentByStrand", queryParams, "users.php");
+        // String jsonSent = new Gson().toJson(queryParams);
+        // System.out.println("JSON Sent: " + jsonSent);
+        // System.out.println("response: " + response);
+
+        if(response.equalsIgnoreCase("0")){
+            System.out.println("Student list is currently empty.");
+            adminMenu();
+        }else{
+            try {
+                JsonArray jsonArray = JsonParser.parseString(response).getAsJsonArray();
+                System.out.println(course + " Student List: \n");
+                int i = 1;
+                for (JsonElement element : jsonArray) {
+                    JsonObject response = element.getAsJsonObject();
+                    String fullName = response.get("stud_fullName").getAsString();
+                    System.out.println(i + ". " + fullName);
+                    i++;
+                }
+                System.out.print("\nEnter the number of the student you want to view: ");
+                int index = scanner.nextInt() - 1;
+                if(index >= 0 && index < jsonArray.size()){
+                    JsonObject selectedStudent = jsonArray.get(index).getAsJsonObject();
+                    int studId = selectedStudent.get("stud_id").getAsInt();
+                    queryParams.put("stud_Id", String.valueOf(studId));
+                    response = HttpUtil.sendPostRequest("getSelectedStudent", queryParams, "users.php" );
+                    clearScreen();
+                } else {
+                    clearScreen();
+                    System.out.println("Invalid student number.");
+                    viewStudentList();
+                }
+            } catch (Exception e) {
+                System.out.println("Nag error siya " + e.getMessage());
+                JsonObject studentObject = JsonParser.parseString(response).getAsJsonObject();
+            }
+
+        }
+    }
+
     public void searchStudent(){
-        
         try {
             System.out.print("Enter student school Id: ");
             String schoolId = scanner.nextLine();

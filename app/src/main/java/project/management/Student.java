@@ -134,6 +134,10 @@ public class Student {
     this.stud_id = id;
   }
 
+  public Student(String studCourse){
+    this.stud_course = studCourse;
+  }
+
   public Student(){}
 
   public int getStudId() {
