@@ -25,26 +25,29 @@ class Index{
         int choice = 0;
         while (true) {
             System.out.println("Admin Menu:");
-            System.out.println("1. Add student");
-            System.out.println("2. Add staff");
-            System.out.println("3. See history");
-            System.out.println("4. Admin data");
-            System.out.println("5. Sign out");
+            System.out.println("1. View student");
+            System.out.println("2. Add student");
+            System.out.println("3. Add staff");
+            System.out.println("4. See history");
+            System.out.println("5. Admin data");
+            System.out.println("6. Sign out");
             System.out.print("Enter your choice: ");
             choice = scanner.nextInt();
             scanner.nextLine(); 
             clearScreen();
             switch (choice) {
                 case 1:
+                    viewStudentList();
+                case 2:
                     addStudent();
                     break;
-                case 2:
+                case 3:
                     addStaff();
                     break;
-                case 3:
+                case 4:
                     seeHistory();
                     break;
-                case 4:
+                case 5:
                     System.out.println("Admin Data");
                     System.out.println("Username: " + SessionStorage.username);
                     System.out.println("Password: " + SessionStorage.password);
@@ -60,11 +63,13 @@ class Index{
                             break;
                         case 2:
                             adminMenu();
+                            break;
                         default:
                             System.out.println("\nInvalid input");
+                            break;
                     }
                     break;
-                case 5:
+                case 6:
                     // sign out
                     App.main(null);
                     break;
@@ -120,12 +125,18 @@ class Index{
         queryParams.put("user_username", SessionStorage.username);
         queryParams.put("user_password", SessionStorage.password);
         queryParams.put("user_id", userId);
+
+        // String jsonSent = new Gson().toJson(queryParams);
+        // System.out.println("JSON Sent: " + jsonSent);
+        // System.out.println("response: " + response);
+        clearScreen();
         response = HttpUtil.sendPostRequest("updateAdmin", queryParams, "admin.php");
-        if(response == "1"){
-            System.out.println("Successfully updated");
+        if(response.equalsIgnoreCase("1")){
+            System.out.println("Successfully updated!\n");
         }else{
             System.out.println("Failed to update");
         }
+        adminMenu();
     }
 
     public void seeHistory(){
@@ -284,66 +295,49 @@ class Index{
     }
 
     public void viewStudentList() {
-        Student student = new Student();
-        response = HttpUtil.sendPostRequest("getAllStudent", student, "users.php");
-        if(response.equals("0")){
-            System.out.println("Student list is currently empty.");
-            staffMenu();
+        System.out.print("1. View all students\n2. View all students by strand\n3. Search student\nChoice: ");
+        int choiceView = scanner.nextInt();
+        scanner.nextLine();
+        clearScreen();
+        switch(choiceView){
+            case 1:
+                getAllStudent();
+                break;
+            case 2:
+                //search by strand
+                break;
+            case 3:
+                searchStudent();
+                break;
+                
         }
-        JsonArray jsonArray = JsonParser.parseString(response).getAsJsonArray();
-        System.out.println("Student List: \n");
-        System.out.println("0. Search Student");
-        int i = 1;
-        for (JsonElement element : jsonArray) {
-            JsonObject response = element.getAsJsonObject();
-            String fullName = response.get("stud_fullName").getAsString();
-            System.out.println(i + ". " + fullName);
-            i++;
-        }
-        System.out.print("\nEnter the number of the student you want to view: ");
-        int index = scanner.nextInt() - 1;
-        if(index == -1){
-            System.out.println("index : " + index);
-            System.out.println("search ni siya diri");
-        }else if(index >= 0 && index < jsonArray.size()){
-            JsonObject selectedStudent = jsonArray.get(index).getAsJsonObject();
-            int studId = selectedStudent.get("stud_id").getAsInt();
-            queryParams.put("stud_Id", String.valueOf(studId));
-            response = HttpUtil.sendPostRequest("getSelectedStudent", queryParams, "users.php" );
-            student = gson.fromJson(response, Student.class);
-            clearScreen();
-            System.out.println("Student information: \n");
-            System.out.println("Full name: " + student.getStudFullName());
-            System.out.println("School Id: " + student.getStudSchoolId());
-            System.out.println("Date of Birth: " + student.getStudBirthday());
-            System.out.println("Place of Birth: " + student.getStudBirthplace());
-            System.out.println("Gender: " + student.getStudGender());
-            System.out.println("Religion: " + student.getStudReligion());
-            System.out.println("Address: " + student.getStudAddress());
-            System.out.println("Email: " + student.getStudEmail());
-            System.out.println("Contact Number: " + student.getStudContactNumber());
-            System.out.println("Previous School: " + student.getStudPrevSchool());
-            System.out.println("Course Code: " + student.getStudCourse());
-            System.out.println("Grade Level: " + student.getStudGradeLevel());
-            System.out.println("Year Graduated: " + student.getStudYearGraduated());
-            System.out.println("Father Name: " + student.getStudFatherName());
-            System.out.println("Father Occupation: " + student.getStudFatherOccupation());
-            System.out.println("Father Contact Number: " + student.getStudFatherContactNumber());
-            System.out.println("Mother Name: " + student.getStudMotherName());
-            System.out.println("Mother Occupation: " + student.getStudMotherOccupation());
-            System.out.println("Mother Contact Number: " + student.getStudMotherContactNumber());
-            System.out.println("\nPerson to contact in case of emergency:");
-            System.out.println("Name: " + student.getStudEmergencyName());
-            System.out.println("Relationship: " + student.getStudEmergencyRelationship());
-            System.out.println("Contact Number: " + student.getStudEmergencyPhone());
-        } else {
-            clearScreen();
-            System.out.println("Invalid student number.");
-            viewStudentList();
-        }
-
+        student = gson.fromJson(response, Student.class);
+        System.out.println("Student information: \n");
+        System.out.println("Full name: " + student.getStudFullName());
+        System.out.println("School Id: " + student.getStudSchoolId());
+        System.out.println("Date of Birth: " + student.getStudBirthday());
+        System.out.println("Place of Birth: " + student.getStudBirthplace());
+        System.out.println("Gender: " + student.getStudGender());
+        System.out.println("Religion: " + student.getStudReligion());
+        System.out.println("Address: " + student.getStudAddress());
+        System.out.println("Email: " + student.getStudEmail());
+        System.out.println("Contact Number: " + student.getStudContactNumber());
+        System.out.println("Previous School: " + student.getStudPrevSchool());
+        System.out.println("Course Code: " + student.getStudCourse());
+        System.out.println("Grade Level: " + student.getStudGradeLevel());
+        System.out.println("Year Graduated: " + student.getStudYearGraduated());
+        System.out.println("Father Name: " + student.getStudFatherName());
+        System.out.println("Father Occupation: " + student.getStudFatherOccupation());
+        System.out.println("Father Contact Number: " + student.getStudFatherContactNumber());
+        System.out.println("Mother Name: " + student.getStudMotherName());
+        System.out.println("Mother Occupation: " + student.getStudMotherOccupation());
+        System.out.println("Mother Contact Number: " + student.getStudMotherContactNumber());
+        System.out.println("\nPerson to contact in case of emergency:");
+        System.out.println("Name: " + student.getStudEmergencyName());
+        System.out.println("Relationship: " + student.getStudEmergencyRelationship());
+        System.out.println("Contact Number: " + student.getStudEmergencyPhone());
         while (true) {
-            System.out.print("\n1. Edit Information\n2. Delete / Remove file\n3. Back to Student list\n4. Home\nChoice: ");
+            System.out.print("\n1. Edit Information\n2. Delete / Remove file\n3. Back to Student list\n4. Home\n Choice: ");
             int choice = scanner.nextInt();
             scanner.nextLine();
             clearScreen();
@@ -366,6 +360,57 @@ class Index{
                 default:
                     System.out.println("Invalid choice. Please try again.");
             }
+        }
+    }
+
+    public void getAllStudent(){
+        Student student = new Student();
+        response = HttpUtil.sendPostRequest("getAllStudent", student, "users.php");
+        if(response.equals("0")){
+            System.out.println("Student list is currently empty.");
+            staffMenu();
+        }
+        JsonArray jsonArray = JsonParser.parseString(response).getAsJsonArray();
+        System.out.println("Student List: \n");
+        int i = 1;
+        for (JsonElement element : jsonArray) {
+            JsonObject response = element.getAsJsonObject();
+            String fullName = response.get("stud_fullName").getAsString();
+            System.out.println(i + ". " + fullName);
+            i++;
+        }
+        System.out.print("\nEnter the number of the student you want to view: ");
+        int index = scanner.nextInt() - 1;
+        if(index >= 0 && index < jsonArray.size()){
+            JsonObject selectedStudent = jsonArray.get(index).getAsJsonObject();
+            int studId = selectedStudent.get("stud_id").getAsInt();
+            queryParams.put("stud_Id", String.valueOf(studId));
+            response = HttpUtil.sendPostRequest("getSelectedStudent", queryParams, "users.php" );
+            clearScreen();
+        } else {
+            clearScreen();
+            System.out.println("Invalid student number.");
+            viewStudentList();
+        }
+    }
+
+    public void searchStudent(){
+        
+        try {
+            System.out.print("Enter student school Id: ");
+            String schoolId = scanner.nextLine();
+            queryParams.put("stud_schoolId", schoolId);
+            response = HttpUtil.sendPostRequest("searchStudent", queryParams, "users.php");
+            System.out.println("response: " + response);
+            if(response.equalsIgnoreCase("0")){
+                clearScreen();
+                System.out.println("Invalid school id");
+                searchStudent();
+            }
+            clearScreen();
+            
+        } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
         }
     }
 
