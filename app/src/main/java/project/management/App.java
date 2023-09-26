@@ -5,7 +5,6 @@ import com.google.gson.Gson;
 public class App {
     static Index index = new Index();
     static Scanner scanner = new Scanner(System.in);
-    
     public String begin(){
         boolean loginSuccessful = false;
         String jsonString = "";
@@ -30,8 +29,8 @@ public class App {
         return jsonString;
     }
     public static void main(String[] args) {
-        index.clearScreen();
         String jsonString = "";
+        index.clearScreen();
         boolean validChoice = false;
         while (!validChoice) {
             System.out.println("MARKETING\nSign in to Explore!");
@@ -54,10 +53,13 @@ public class App {
             }
         }
         try {
+            Index index = new Index();
             Gson gson = new Gson();
             User user = gson.fromJson(jsonString, User.class);
-            Index index = new Index();
             SessionStorage.userId = user.getUserId();
+            SessionStorage.username = user.getUsername();
+            SessionStorage.password = user.getPassword();
+
             if(user.getLevel() == 100){
                 index.adminMenu();
             }else{

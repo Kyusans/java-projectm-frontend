@@ -14,7 +14,6 @@ class Index{
     App app = new App();
     Gson gson = new Gson();
     Student student = new Student();
-    User user = new User();
     Map<String, String> queryParams = new HashMap<>();
 
     public String login(String username, String password) {
@@ -29,12 +28,12 @@ class Index{
             System.out.println("1. Add student");
             System.out.println("2. Add staff");
             System.out.println("3. See history");
-            System.out.println("4. Sign out");
-            System.out.println("5. Exit");
+            System.out.println("4. Admin data");
+            System.out.println("5. Sign out");
             System.out.print("Enter your choice: ");
             choice = scanner.nextInt();
             scanner.nextLine(); 
-
+            clearScreen();
             switch (choice) {
                 case 1:
                     addStudent();
@@ -46,13 +45,29 @@ class Index{
                     seeHistory();
                     break;
                 case 4:
+                    System.out.println("Admin Data");
+                    System.out.println("Username: " + SessionStorage.username);
+                    System.out.println("Password: " + SessionStorage.password);
+                    System.out.println("\n1. Update Username and Password");
+                    System.out.println("2. Exit");
+                    System.out.print("Select an option: ");
+                    int adminChoice = scanner.nextInt();
+                    scanner.nextLine();
+                    clearScreen();
+                    switch(adminChoice){
+                        case 1:
+                            updateAdminData();
+                            break;
+                        case 2:
+                            adminMenu();
+                        default:
+                            System.out.println("\nInvalid input");
+                    }
+                    break;
+                case 5:
                     // sign out
                     App.main(null);
                     break;
-                case 5:
-                    clearScreen();
-                    System.out.println("Exiting...");
-                    System.exit(0);
                 default:
                     System.out.println("Invalid choice. Please try again.");
             }
@@ -68,6 +83,7 @@ class Index{
             System.out.print("Select an option: ");
             int choice = scanner.nextInt();
             scanner.nextLine();
+            clearScreen();
             switch (choice) {
                 case 1:
                   addStudent();
@@ -84,6 +100,31 @@ class Index{
                     System.out.println("Invalid option. Please try again.\n");
                     break;
             }
+        }
+    }
+
+    public void updateAdminData(){
+        System.out.println("Leave fields blank to keep the current values.\n");
+        System.out.print("Username [" + SessionStorage.username + "]: ");
+        String username = scanner.nextLine();
+        if(!username.isEmpty()){
+            SessionStorage.username = username;
+        }
+
+        System.out.print("Password [" + SessionStorage.password + "]: ");
+        String password = scanner.nextLine();
+        if(!username.isEmpty()){
+            SessionStorage.password = password;
+        }
+        String userId = String.valueOf(SessionStorage.userId);
+        queryParams.put("user_username", SessionStorage.username);
+        queryParams.put("user_password", SessionStorage.password);
+        queryParams.put("user_id", userId);
+        response = HttpUtil.sendPostRequest("updateAdmin", queryParams, "admin.php");
+        if(response == "1"){
+            System.out.println("Successfully updated");
+        }else{
+            System.out.println("Failed to update");
         }
     }
 

@@ -28,6 +28,13 @@ public class User {
     this.user_email = email;
   }
 
+  //para update sa admin
+  public User(String username, String password, int userId){
+    this.user_username = username;
+    this.user_password = password;
+    this.user_id = userId;
+  }
+
   public User(){}
 
   public void setUserId(int userId){
@@ -56,6 +63,14 @@ public class User {
 
   public int getLevel(){
     return this.user_level;
+  }
+
+  public void setUsername(String username){
+    this.user_username = username;
+  }
+
+  public void setPassword(String password){
+    this.user_password = password;
   }
 
 }
