@@ -6,6 +6,8 @@ public class User {
   public int user_id;
   public String user_fullName;
   public String user_email;
+  public String user_contactNumber;
+  public String user_address;
   public int user_level;
 
   public User(String username, String password, int userId, String fullname, int level){
@@ -21,18 +23,13 @@ public class User {
     this.user_password = password;
   }
 
-  public User(String fullName, String username, String password, String email){
+  public User(String fullName, String username, String password, String contactNumber, String address,String email){
     this.user_fullName = fullName;
     this.user_username = username;
     this.user_password = password;
+    this.user_contactNumber = contactNumber;
+    this.user_address = address;
     this.user_email = email;
-  }
-
-  //para update sa admin
-  public User(String username, String password, int userId){
-    this.user_username = username;
-    this.user_password = password;
-    this.user_id = userId;
   }
 
   public User(){}

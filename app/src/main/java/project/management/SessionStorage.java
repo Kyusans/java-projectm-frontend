@@ -4,4 +4,5 @@ public class SessionStorage {
   static int userId = 0;
   static String username = "";
   static String password = "";
+  static int userLevel = 0;
 }

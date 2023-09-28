@@ -35,15 +35,14 @@ public class App {
         while (!validChoice) {
             System.out.println("MARKETING\nSign in to Explore!");
             System.out.print("1. Sign in\n2. Exit\nChoice: ");
-            int choice = scanner.nextInt();
-            scanner.nextLine();
+            String choice = scanner.nextLine();
             switch (choice) {
-                case 1:
+                case "1":
                     validChoice = true;
                     index.clearScreen();
                     jsonString = new App().begin();
                     break;
-                case 2:
+                case "2":
                     System.exit(0);
                     break;
                 default:
@@ -59,7 +58,7 @@ public class App {
             SessionStorage.userId = user.getUserId();
             SessionStorage.username = user.getUsername();
             SessionStorage.password = user.getPassword();
-
+            SessionStorage.userLevel = user.getLevel();
             if(user.getLevel() == 100){
                 index.adminMenu();
             }else{

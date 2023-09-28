@@ -23,67 +23,90 @@ class Index{
 
     public void adminMenu() {
         int choice = 0;
-        while (true) {
-            System.out.println("Admin Menu:");
-            System.out.println("1. View student");
-            System.out.println("2. Add student");
-            System.out.println("3. Add staff");
-            System.out.println("4. See history");
-            System.out.println("5. Admin data");
-            System.out.println("6. Sign out");
-            System.out.print("Enter your choice: ");
-            choice = scanner.nextInt();
-            scanner.nextLine(); 
-            clearScreen();
-            switch (choice) {
-                case 1:
-                    viewStudentList();
-                case 2:
-                    addStudent();
-                    break;
-                case 3:
-                    addStaff();
-                    break;
-                case 4:
-                    seeHistory();
-                    break;
-                case 5:
-                    System.out.println("Admin Data");
-                    System.out.println("Username: " + SessionStorage.username);
-                    System.out.println("Password: " + SessionStorage.password);
-                    System.out.println("\n1. Update Username and Password");
-                    System.out.println("2. Exit");
-                    System.out.print("Select an option: ");
-                    int adminChoice = scanner.nextInt();
-                    scanner.nextLine();
+        boolean validInput = false;
+
+        while (!validInput) {
+            try {
+                System.out.println("Admin Menu:");
+                System.out.println("1. List of Students");
+                System.out.println("2. Add a student");
+                System.out.println("3. Add a staff");
+                System.out.println("4. History");
+                System.out.println("5. Admin data");
+                System.out.println("6. Staff data");
+                System.out.println("7. Sign out");
+                System.out.print("Select an Option: ");
+
+                String input = scanner.nextLine();
+
+                if (input.matches("\\d+")) {
+                    choice = Integer.parseInt(input);
+                    validInput = true;
+                } else {
                     clearScreen();
-                    switch(adminChoice){
-                        case 1:
-                            updateAdminData();
-                            break;
-                        case 2:
-                            adminMenu();
-                            break;
-                        default:
-                            System.out.println("\nInvalid input");
-                            break;
-                    }
-                    break;
-                case 6:
-                    // sign out
-                    App.main(null);
-                    break;
-                default:
-                    System.out.println("Invalid choice. Please try again.");
+                    System.out.println("Invalid input. Please enter a valid number.");
+                }
+
+                clearScreen();
+
+                switch (choice) {
+                    case 1:
+                        viewStudentList();
+                        break;
+                    case 2:
+                        addStudent();
+                        break;
+                    case 3:
+                        addStaff();
+                        break;
+                    case 4:
+                        seeHistory();
+                        break;
+                    case 5:
+                        System.out.println("Admin Data");
+                        System.out.println("Username: " + SessionStorage.username);
+                        System.out.println("Password: " + SessionStorage.password);
+                        System.out.println("\n1. Update Username and Password");
+                        System.out.println("2. Exit");
+                        System.out.print("Select an option: ");
+                        int adminChoice = scanner.nextInt();
+                        scanner.nextLine();
+                        clearScreen();
+                        switch (adminChoice) {
+                            case 1:
+                                updateAdminData();
+                                break;
+                            case 2:
+                                adminMenu();
+                                break;
+                            default:
+                                System.out.println("\nInvalid input");
+                                break;
+                        }
+                        break;
+                    case 6:
+                        // Staff Data. Change data.
+                        break;
+                    case 7:
+                        // Sign out
+                        App.main(null);
+                        break;
+                    default:
+                        System.out.println("Invalid choice. Please try again.");
+                }
+            } catch (NumberFormatException e) {
+                clearScreen();
+                System.out.println("Invalid input. Please enter a valid number.");
+                scanner.nextLine();
             }
         }
     }
-    
+  
     public void staffMenu(){
         while (true) {
             System.out.println("Staff Home Program");
-            System.out.println("1. Add Student");
-            System.out.println("2. View Student List");
+            System.out.println("1. Insert Student");
+            System.out.println("2. List of Student");
             System.out.println("3. Sign out");
             System.out.print("Select an option: ");
             int choice = scanner.nextInt();
@@ -94,14 +117,12 @@ class Index{
                   addStudent();
                   break;
                 case 2:
-                  clearScreen();
                   viewStudentList();
                   break;
                 case 3:
                     App.main(null);
                     break;
                 default:
-                    clearScreen();
                     System.out.println("Invalid option. Please try again.\n");
                     break;
             }
@@ -109,7 +130,7 @@ class Index{
     }
 
     public void updateAdminData(){
-        System.out.println("Leave fields blank to keep the current values.\n");
+        System.out.println("To keep the current values, leave the fields blank..\n");
         System.out.print("Username [" + SessionStorage.username + "]: ");
         String username = scanner.nextLine();
         if(!username.isEmpty()){
@@ -132,19 +153,21 @@ class Index{
         clearScreen();
         response = HttpUtil.sendPostRequest("updateAdmin", queryParams, "admin.php");
         if(response.equalsIgnoreCase("1")){
-            System.out.println("Successfully updated!\n");
+            System.out.println("Updated successfully!\n");
+        }else if(response.equalsIgnoreCase("0")){
+            System.out.println("User information remains unchanged.\n");
         }else{
-            System.out.println("Failed to update");
+            System.out.println("There was an error: " + response);
         }
-        adminMenu();
+        returnHome();
     }
 
     public void seeHistory(){
         clearScreen();
-        System.out.print("Select History\n1. Add student history\n2. Update student history\n3. Delete student history\nChoice: ");
+        System.out.print("History Data\n1. Added student history\n2. Updated student history\n3. Deleted student history\n4. Return to Home\nChoice: ");
         int choice = scanner.nextInt();
         scanner.nextLine();
-
+        clearScreen();
         switch(choice) {
             case 1:
                 getHistory("getAddStudentHistory", "addhist_dateAdded", " added ");
@@ -154,6 +177,9 @@ class Index{
                 break;
             case 3:
                 getHistory("getDeleteHistory", "delhist_dateDeleted", " deleted ");
+                break;
+            case 4:
+                returnHome();
                 break;
         }
     }
@@ -182,37 +208,37 @@ class Index{
         clearScreen();
         System.out.println("Adding Student");
 
-        System.out.print("Enter Student Fullname: ");
+        System.out.print("Student Fullname: ");
         String fullName = scanner.nextLine();
 
-        System.out.print("Enter School ID: ");
+        System.out.print("School ID: ");
         String schoolId = scanner.nextLine();
 
-        System.out.print("Enter Date of Birth: ");
+        System.out.print("Date of Birth: ");
         String dateBirth = scanner.nextLine();
 
-        System.out.print("Enter Place of Birth: ");
+        System.out.print("Place of Birth: ");
         String placeBirth = scanner.nextLine();
 
-        System.out.print("Enter Gender: ");
+        System.out.print("Gender: ");
         String gender = scanner.nextLine();
 
-        System.out.print("Enter Email: ");
+        System.out.print("Email: ");
         String email = scanner.nextLine();
 
-        System.out.print("Enter Religion: ");
+        System.out.print("Religion: ");
         String religion = scanner.nextLine();
 
-        System.out.print("Enter Address: ");
+        System.out.print("Address: ");
         String address = scanner.nextLine();
 
-        System.out.print("Enter Contact Number: ");
+        System.out.print("Contact Number: ");
         String contactNum = scanner.nextLine();
 
-        System.out.print("Enter Previous School: ");
+        System.out.print("Previous School: ");
         String prevSchool = scanner.nextLine();
 
-        System.out.print("Enter Course (1)GAS, (2)HUMMS, (3)STEM, (4)ABM: ");
+        System.out.print("Course (1)GAS, (2)HUMMS, (3)STEM, (4)ABM, (5)TVL: ");
         int courseNum = scanner.nextInt();
         scanner.nextLine(); 
         String course = "";
@@ -229,46 +255,49 @@ class Index{
             case 4:
                 course = "ABM";
                 break;
+            case 5:
+                course = "TVL";
+                break;
             default:
                 System.out.println("Invalid option. Please try again.\n");
                 break;
         }
 
-        System.out.print("Enter Year Level: ");
+        System.out.print("Year Level: ");
         String yearLevel = scanner.nextLine();
 
-        System.out.print("Enter Year Graduated: ");
+        System.out.print("Year Graduated: ");
         String yearGrad = scanner.nextLine();
 
-        System.out.print("Enter Father Fullname: ");
+        System.out.print("Father Fullname: ");
         String fatherName = scanner.nextLine();
 
-        System.out.print("Enter Father Occupation: ");
+        System.out.print("Father Occupation: ");
         String fatherOccup = scanner.nextLine();
 
-        System.out.print("Enter Father Contact Number: ");
+        System.out.print("Father Contact Number: ");
         String fatherContact = scanner.nextLine(); 
 
-        System.out.print("Enter Mother Fullname: ");
+        System.out.print("Mother Fullname: ");
         String motherName = scanner.nextLine();
 
-        System.out.print("Enter Mother Occupation: ");
+        System.out.print("Mother Occupation: ");
         String motherOccup = scanner.nextLine();
 
-        System.out.print("Enter Mother Contact Number: ");
+        System.out.print("Mother Contact Number: ");
         String motherContact = scanner.nextLine(); 
 
         System.out.println("Emergency Contact");
-        System.out.print("Enter Emergency FullName: ");
+        System.out.print("Emergency FullName: ");
         String emergencyName = scanner.nextLine();
 
-        System.out.print("Enter Emergency Relationship: ");
+        System.out.print("Emergency Relationship: ");
         String emergencyRel = scanner.nextLine();
 
-        System.out.print("Enter Emergency Contact Number: ");
+        System.out.print("Emergency Contact Number: ");
         String emergencyContact = scanner.nextLine(); 
 
-        System.out.print("Enter Emergency Address: ");
+        System.out.print("Emergency Address: ");
         String emergencyAdd = scanner.nextLine();
 
         int userId = SessionStorage.userId;
@@ -278,13 +307,12 @@ class Index{
         fatherContact, motherName, motherOccup, motherContact, emergencyName, emergencyRel, emergencyContact, 
         emergencyAdd, userId);
 
-
         response = HttpUtil.sendPostRequest("addStudent", student, "users.php");
         clearScreen();
         // String studentJson = new Gson().toJson(student);
         // System.out.println("JSON Sent: " + studentJson);
 
-        System.out.println("response: " + response);
+        // System.out.println("response: " + response);
         if (response.equalsIgnoreCase("1")) {
             System.out.println("\nStudent added successfully");
         } else if (response.equalsIgnoreCase("0")) {
@@ -295,7 +323,7 @@ class Index{
     }
 
     public void viewStudentList() {
-        System.out.print("1. View all students\n2. View all students by strand\n3. Search student\nChoice: ");
+        System.out.print("1. View all students\n2. View all students organized by strand\n3. Search student\n4. Return to Home\nChoice: ");
         int choiceView = scanner.nextInt();
         scanner.nextLine();
         clearScreen();
@@ -309,10 +337,13 @@ class Index{
             case 3:
                 searchStudent();
                 break;
+            case 4:
+                returnHome();
+                break;    
                 
         }
         student = gson.fromJson(response, Student.class);
-        System.out.println("Student information: \n");
+        System.out.println("Student Data: \n");
         System.out.println("Full name: " + student.getStudFullName());
         System.out.println("School Id: " + student.getStudSchoolId());
         System.out.println("Date of Birth: " + student.getStudBirthday());
@@ -337,7 +368,7 @@ class Index{
         System.out.println("Relationship: " + student.getStudEmergencyRelationship());
         System.out.println("Contact Number: " + student.getStudEmergencyPhone());
         while (true) {
-            System.out.print("\n1. Edit Information\n2. Delete / Remove file\n3. Back to Student list\n4. Home\n Choice: ");
+            System.out.print("\n1. Edit Data\n2. Dele    te / Remove file\n3. Back to Student list\n4. Home\n Choice: ");
             int choice = scanner.nextInt();
             scanner.nextLine();
             clearScreen();
@@ -355,7 +386,7 @@ class Index{
                     viewStudentList();
                     break; 
                 case 4:
-                    staffMenu();
+                    adminMenu();
                     break;
                 default:
                     System.out.println("Invalid choice. Please try again.");
@@ -379,7 +410,7 @@ class Index{
             System.out.println(i + ". " + fullName);
             i++;
         }
-        System.out.print("\nEnter the number of the student you want to view: ");
+        System.out.print("\nEnter the student's code to view.: ");
         int index = scanner.nextInt() - 1;
         if(index >= 0 && index < jsonArray.size()){
             JsonObject selectedStudent = jsonArray.get(index).getAsJsonObject();
@@ -389,13 +420,13 @@ class Index{
             clearScreen();
         } else {
             clearScreen();
-            System.out.println("Invalid student number.");
+            System.out.println("Invalid student code.");
             viewStudentList();
         }
     }
 
     public void getAllStudentByStrand(){
-        System.out.print("1. GAS\n2. HUMMS\n3. STEM\n4. ABM\nChoice: ");
+        System.out.print("1. GAS\n2. HUMMS\n3. STEM\n4. ABM\n5. TVL\n6. Exit\nChoice: ");
         int studCourse = scanner.nextInt();
         scanner.nextLine();
         String course = "";
@@ -411,6 +442,12 @@ class Index{
                 break;
             case 4:
                 course = "ABM";
+                break;
+            case 5:
+                course = "TVL";
+                break;
+            case 6:
+                viewStudentList();
                 break;
             default:
                 System.out.println("Invalid option. Please try again.\n");
@@ -463,7 +500,7 @@ class Index{
             String schoolId = scanner.nextLine();
             queryParams.put("stud_schoolId", schoolId);
             response = HttpUtil.sendPostRequest("searchStudent", queryParams, "users.php");
-            System.out.println("response: " + response);
+            // System.out.println("response: " + response);
             if(response.equalsIgnoreCase("0")){
                 clearScreen();
                 System.out.println("Invalid school id");
@@ -540,7 +577,7 @@ class Index{
         }
 
         System.out.println("Course Code [" + studentToUpdate.stud_course + "] ");
-        System.out.print("Enter Course (1)GAS, (2)HUMMS, (3)STEM, (4)ABM: ");
+        System.out.print("Enter Course (1)GAS, (2)HUMMS, (3)STEM, (4)ABM, (5)TVL: ");
 
         if (scanner.hasNextInt()) {
             int studCourse = scanner.nextInt();
@@ -559,6 +596,9 @@ class Index{
                     break;
                 case 4:
                     course = "ABM";
+                    break;
+                case 5:
+                    course = "TVL";
                     break;
                 default:
                     System.out.println("Invalid option. Please try again.\n");
@@ -688,7 +728,7 @@ class Index{
 
     public void addStaff() {
         clearScreen();
-        String fullName, username, password, email;
+        String fullName, username, password, contact, address, email;
         System.out.println("Adding Staff");
         System.out.print("Enter staff full name: ");
         fullName = scanner.nextLine();
@@ -696,10 +736,14 @@ class Index{
         username = scanner.nextLine();
         System.out.print("Enter staff password: ");
         password = scanner.nextLine();
+        System.out.print("Enter staff contact: ");
+        contact = scanner.nextLine();
+        System.out.print("Enter address: ");
+        address = scanner.nextLine();
         System.out.print("Enter staff email: ");
         email = scanner.nextLine();
 
-        User user = new User(fullName, username, password, email);
+        User user = new User(fullName, username, password, contact, address, email);
         response = HttpUtil.sendPostRequest("addStaff", user, "admin.php");
         clearScreen();
         if (response.equalsIgnoreCase("1")) {
@@ -721,6 +765,14 @@ class Index{
             }
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    public void returnHome(){
+        if(SessionStorage.userLevel == 100){
+            adminMenu();
+        }else{
+            staffMenu();
         }
     }
 }
