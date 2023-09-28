@@ -1,9 +1,9 @@
 package project.management;
 
 public class User {
+  public int user_id;
   public String user_username;
   public String user_password;
-  public int user_id;
   public String user_fullName;
   public String user_email;
   public String user_contactNumber;

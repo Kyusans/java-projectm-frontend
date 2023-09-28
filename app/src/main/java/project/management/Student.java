@@ -62,6 +62,38 @@ public class Student {
     this.user_id = userId;
 }
 
+//retrieve
+  public Student(int studId, String fullName, String schoolId, String dateBirth, String placeBirth, String gender, String religion,
+  String address, String email, String contactNum, String prevSchool, String course, String yearLevel,
+  String yearGrad, String fatherName, String fatherOccup, String fatherContact, String motherName,
+  String motherOccup, String motherContact, String emergencyName, String emergencyRel,
+  String emergencyContact, String emergencyAdd) {
+    this.stud_id = studId;
+    this.stud_fullName = fullName;
+    this.stud_schoolId = schoolId;
+    this.stud_birthday = dateBirth;
+    this.stud_birthplace = placeBirth;
+    this.stud_gender = gender;
+    this.stud_religion = religion;
+    this.stud_address = address;
+    this.stud_email = email;
+    this.stud_contactNumber = contactNum;
+    this.stud_prevSchool = prevSchool;
+    this.stud_course = course;
+    this.stud_gradeLevel = yearLevel;
+    this.stud_yearGraduated = yearGrad;
+    this.stud_fatherName = fatherName;
+    this.stud_fatherOccupation = fatherOccup;
+    this.stud_fatherContactNumber = fatherContact;
+    this.stud_motherName = motherName;
+    this.stud_motherOccupation = motherOccup;
+    this.stud_motherContactNumber = motherContact;
+    this.stud_emergencyName = emergencyName;
+    this.stud_emergencyRelationship = emergencyRel;
+    this.stud_emergencyPhone = emergencyContact;
+    this.stud_emergencyAddress = emergencyAdd;
+}
+
   // pang update student
     public Student(int studId , int user_id, String fullName, String schoolId,String birthday, String birthplace, String gender, String religion,
     String address, String email, String contactNumber, String prevSchool, String course, String gradeLevel, String yearGraduated,
@@ -95,7 +127,7 @@ public class Student {
 
     }
 
-  //delete student og retrieve
+  //delete student
     public Student(String stud_schoolId, int stud_id, int user_id, String stud_fullName, String stud_birthday, String stud_birthplace,
     String stud_gender, String stud_religion, String stud_address, String stud_email, String stud_contactNumber, String stud_prevSchool,
     String stud_course, String stud_gradeLevel, String stud_yearGraduated, String stud_fatherName, String stud_fatherOccupation,

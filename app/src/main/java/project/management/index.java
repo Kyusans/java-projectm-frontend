@@ -22,7 +22,6 @@ class Index{
     }
 
     public void adminMenu() {
-        int choice = 0;
         boolean validInput = false;
 
         while (!validInput) {
@@ -36,33 +35,24 @@ class Index{
                 System.out.println("6. Staff data");
                 System.out.println("7. Sign out");
                 System.out.print("Select an Option: ");
-
-                String input = scanner.nextLine();
-
-                if (input.matches("\\d+")) {
-                    choice = Integer.parseInt(input);
-                    validInput = true;
-                } else {
-                    clearScreen();
-                    System.out.println("Invalid input. Please enter a valid number.");
-                }
+                String choice = scanner.nextLine();
 
                 clearScreen();
 
                 switch (choice) {
-                    case 1:
+                    case "1":
                         viewStudentList();
                         break;
-                    case 2:
+                    case "2":
                         addStudent();
                         break;
-                    case 3:
+                    case "3":
                         addStaff();
                         break;
-                    case 4:
+                    case "4":
                         seeHistory();
                         break;
-                    case 5:
+                    case "5":
                         System.out.println("Admin Data");
                         System.out.println("Username: " + SessionStorage.username);
                         System.out.println("Password: " + SessionStorage.password);
@@ -77,17 +67,17 @@ class Index{
                                 updateAdminData();
                                 break;
                             case 2:
-                                adminMenu();
+                                returnHome();
                                 break;
                             default:
                                 System.out.println("\nInvalid input");
                                 break;
                         }
                         break;
-                    case 6:
+                    case "6":
                         // Staff Data. Change data.
                         break;
-                    case 7:
+                    case "7":
                         // Sign out
                         App.main(null);
                         break;
@@ -184,24 +174,71 @@ class Index{
         }
     }
 
-    public void getHistory(String operation, String dateString, String statusMessage){
-        clearScreen();
-        response = HttpUtil.sendPostRequest(operation, null, "admin.php");
-        if(!response.equalsIgnoreCase("0")){
-            JsonArray jsonArray = JsonParser.parseString(response).getAsJsonArray();
-            int i = 1;
-            for (JsonElement element : jsonArray) {
-                JsonObject response = element.getAsJsonObject();
-                String username = response.get("user_fullName").getAsString();
-                String studname = response.get(operation.equals("getDeleteHistory") ? "delhist_fullName" : "stud_fullName" ).getAsString();
-                String date = response.get(dateString).getAsString();
-                System.out.println(i + ". " + username + statusMessage + studname + " in " + date);
-                i++;
-            }
-        }else{
-            System.out.println("No data found");
+public void getHistory(String operation, String dateString, String statusMessage) {
+    clearScreen();
+    response = HttpUtil.sendPostRequest(operation, null, "admin.php");
+    if (!response.equalsIgnoreCase("0")) {
+        JsonArray jsonArray = JsonParser.parseString(response).getAsJsonArray();
+        int i = 1;
+        for (JsonElement element : jsonArray) {
+            JsonObject response = element.getAsJsonObject();
+            String username = response.get("user_fullName").getAsString();
+            String studname = response.get(operation.equals("getDeleteHistory") ? "delhist_fullName" : "stud_fullName").getAsString();
+            String date = response.get(dateString).getAsString();
+            System.out.println(i + ". " + username + statusMessage + studname + " in " + date);
+            i++;
         }
-        System.out.println("");
+
+        if (operation.equalsIgnoreCase("getDeleteHistory")) {
+            System.out.print("\nEnter the history entry number to view: ");
+            int selectedIndex = scanner.nextInt();
+            scanner.nextLine();
+            if (selectedIndex >= 1 && selectedIndex <= jsonArray.size()) {
+                JsonObject selectedEntry = jsonArray.get(selectedIndex - 1).getAsJsonObject();
+                getSelectedDelStudent(selectedEntry);
+            } else {
+                System.out.println("Invalid selection.");
+            }
+        }
+    } else {
+        System.out.println("No data found");
+    }
+
+    System.out.println("");
+}
+
+    public void getSelectedDelStudent(JsonObject studentEntry){
+        queryParams.put("delhist_id", studentEntry.get("delhist_id").toString());
+        response = HttpUtil.sendPostRequest("getSelectedDeletedStudent", queryParams, "admin.php");
+        JsonObject deletedStudentData = JsonParser.parseString(response).getAsJsonObject();
+        printDeletedStudent(deletedStudentData);
+    }
+
+    public void printDeletedStudent(JsonObject deletedStudent) {
+        System.out.println("Deleted Student Data: \n");
+        System.out.println("Full name: " + deletedStudent.get("delstud_fullName").getAsString());
+        System.out.println("School Id: " + deletedStudent.get("delstud_schoolId").getAsString());
+        System.out.println("Date of Birth: " + deletedStudent.get("delstud_birthday").getAsString());
+        System.out.println("Place of Birth: " + deletedStudent.get("delstud_birthplace").getAsString());
+        System.out.println("Gender: " + deletedStudent.get("delstud_gender").getAsString());
+        System.out.println("Religion: " + deletedStudent.get("delstud_religion").getAsString());
+        System.out.println("Address: " + deletedStudent.get("delstud_address").getAsString());
+        System.out.println("Email: " + deletedStudent.get("delstud_email").getAsString());
+        System.out.println("Contact Number: " + deletedStudent.get("delstud_contactNumber").getAsString());
+        System.out.println("Previous School: " + deletedStudent.get("delstud_prevSchool").getAsString());
+        System.out.println("Course Code: " + deletedStudent.get("delstud_course").getAsString());
+        System.out.println("Grade Level: " + deletedStudent.get("delstud_gradeLevel").getAsString());
+        System.out.println("Year Graduated: " + deletedStudent.get("delstud_yearGraduated").getAsString());
+        System.out.println("Father Name: " + deletedStudent.get("delstud_fatherName").getAsString());
+        System.out.println("Father Occupation: " + deletedStudent.get("delstud_fatherOccupation").getAsString());
+        System.out.println("Father Contact Number: " + deletedStudent.get("delstud_fatherContactNumber").getAsString());
+        System.out.println("Mother Name: " + deletedStudent.get("delstud_motherName").getAsString());
+        System.out.println("Mother Occupation: " + deletedStudent.get("delstud_motherOccupation").getAsString());
+        System.out.println("Mother Contact Number: " + deletedStudent.get("delstud_motherContactNumber").getAsString());
+        System.out.println("\nPerson to contact in case of emergency:");
+        System.out.println("Name: " + deletedStudent.get("delstud_emergencyName").getAsString());
+        System.out.println("Relationship: " + deletedStudent.get("delstud_emergencyRelationship").getAsString());
+        System.out.println("Contact Number: " + deletedStudent.get("delstud_emergencyPhone").getAsString());
     }
 
     public void addStudent() {
@@ -368,7 +405,7 @@ class Index{
         System.out.println("Relationship: " + student.getStudEmergencyRelationship());
         System.out.println("Contact Number: " + student.getStudEmergencyPhone());
         while (true) {
-            System.out.print("\n1. Edit Data\n2. Dele    te / Remove file\n3. Back to Student list\n4. Home\n Choice: ");
+            System.out.print("\n1. Edit Data\n2. Delete / Remove file\n3. Back to Student list\n4. Home\n Choice: ");
             int choice = scanner.nextInt();
             scanner.nextLine();
             clearScreen();
@@ -386,7 +423,7 @@ class Index{
                     viewStudentList();
                     break; 
                 case 4:
-                    adminMenu();
+                    returnHome();
                     break;
                 default:
                     System.out.println("Invalid choice. Please try again.");
@@ -410,7 +447,7 @@ class Index{
             System.out.println(i + ". " + fullName);
             i++;
         }
-        System.out.print("\nEnter the student's code to view.: ");
+        System.out.print("\nEnter the student's code to view: ");
         int index = scanner.nextInt() - 1;
         if(index >= 0 && index < jsonArray.size()){
             JsonObject selectedStudent = jsonArray.get(index).getAsJsonObject();
@@ -458,10 +495,10 @@ class Index{
         // String jsonSent = new Gson().toJson(queryParams);
         // System.out.println("JSON Sent: " + jsonSent);
         // System.out.println("response: " + response);
-
+        clearScreen();
         if(response.equalsIgnoreCase("0")){
-            System.out.println("Student list is currently empty.");
-            adminMenu();
+            System.out.println("Student list is currently empty.\n");
+            returnHome();
         }else{
             try {
                 JsonArray jsonArray = JsonParser.parseString(response).getAsJsonArray();
@@ -578,40 +615,44 @@ class Index{
 
         System.out.println("Course Code [" + studentToUpdate.stud_course + "] ");
         System.out.print("Enter Course (1)GAS, (2)HUMMS, (3)STEM, (4)ABM, (5)TVL: ");
+        String course = "";
+        if (scanner.hasNextLine()) {
+            String input = scanner.nextLine().trim();
+            
+            if (!input.isEmpty()) {
+                try {
+                    int studCourse = Integer.parseInt(input);
 
-        if (scanner.hasNextInt()) {
-            int studCourse = scanner.nextInt();
-            scanner.nextLine();
-
-            String course = "";
-            switch (studCourse) {
-                case 1:
-                    course = "GAS";
-                    break;
-                case 2:
-                    course = "HUMMS";
-                    break;
-                case 3:
-                    course = "STEM";
-                    break;
-                case 4:
-                    course = "ABM";
-                    break;
-                case 5:
-                    course = "TVL";
-                    break;
-                default:
-                    System.out.println("Invalid option. Please try again.\n");
-                    break;
+                    switch (studCourse) {
+                        case 1:
+                            course = "GAS";
+                            break;
+                        case 2:
+                            course = "HUMMS";
+                            break;
+                        case 3:
+                            course = "STEM";
+                            break;
+                        case 4:
+                            course = "ABM";
+                            break;
+                        case 5:
+                            course = "TVL";
+                            break;
+                        default:
+                            System.out.println("Invalid option. Please try again.\n");
+                            break;
+                    }
+                } catch (NumberFormatException e) {
+                    System.out.println("Invalid input. Please enter a valid number.\n");
+                }
             }
 
             if (!course.isEmpty()) {
                 studentToUpdate.setStudCourse(course);
             }
-        } else {
-            System.out.println("Invalid input.\n");
-            scanner.nextLine();
         }
+
         
         System.out.print("Grade Level [" + studentToUpdate.stud_gradeLevel + "]: ");
         String studGradeLevel = scanner.nextLine();
