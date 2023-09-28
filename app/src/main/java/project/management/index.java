@@ -174,45 +174,99 @@ class Index{
         }
     }
 
-public void getHistory(String operation, String dateString, String statusMessage) {
-    clearScreen();
-    response = HttpUtil.sendPostRequest(operation, null, "admin.php");
-    if (!response.equalsIgnoreCase("0")) {
-        JsonArray jsonArray = JsonParser.parseString(response).getAsJsonArray();
-        int i = 1;
-        for (JsonElement element : jsonArray) {
-            JsonObject response = element.getAsJsonObject();
-            String username = response.get("user_fullName").getAsString();
-            String studname = response.get(operation.equals("getDeleteHistory") ? "delhist_fullName" : "stud_fullName").getAsString();
-            String date = response.get(dateString).getAsString();
-            System.out.println(i + ". " + username + statusMessage + studname + " in " + date);
-            i++;
-        }
-
-        if (operation.equalsIgnoreCase("getDeleteHistory")) {
-            System.out.print("\nEnter the history entry number to view: ");
-            int selectedIndex = scanner.nextInt();
-            scanner.nextLine();
-            if (selectedIndex >= 1 && selectedIndex <= jsonArray.size()) {
-                JsonObject selectedEntry = jsonArray.get(selectedIndex - 1).getAsJsonObject();
-                getSelectedDelStudent(selectedEntry);
-            } else {
-                System.out.println("Invalid selection.");
+    public void getHistory(String operation, String dateString, String statusMessage) {
+        clearScreen();
+        response = HttpUtil.sendPostRequest(operation, null, "admin.php");
+        if (!response.equalsIgnoreCase("0")) {
+            JsonArray jsonArray = JsonParser.parseString(response).getAsJsonArray();
+            int i = 1;
+            for (JsonElement element : jsonArray) {
+                JsonObject response = element.getAsJsonObject();
+                String username = response.get("user_fullName").getAsString();
+                String studname = response.get(operation.equals("getDeleteHistory") ? "delhist_fullName" : "stud_fullName").getAsString();
+                String date = response.get(dateString).getAsString();
+                System.out.println(i + ". " + username + statusMessage + studname + " in " + date);
+                i++;
             }
-        }
-    } else {
-        System.out.println("No data found");
-    }
 
-    System.out.println("");
-}
+            if (operation.equalsIgnoreCase("getDeleteHistory")) {
+                System.out.print("\nEnter the history entry number to view: ");
+                int selectedIndex = scanner.nextInt();
+                scanner.nextLine();
+                if (selectedIndex >= 1 && selectedIndex <= jsonArray.size()) {
+                    JsonObject selectedEntry = jsonArray.get(selectedIndex - 1).getAsJsonObject();
+                    getSelectedDelStudent(selectedEntry);
+                } else {
+                    System.out.println("Invalid selection.");
+                }
+            }
+        } else {
+            System.out.println("No data found");
+        }
+
+        System.out.println("");
+    }
 
     public void getSelectedDelStudent(JsonObject studentEntry){
         queryParams.put("delhist_id", studentEntry.get("delhist_id").toString());
         response = HttpUtil.sendPostRequest("getSelectedDeletedStudent", queryParams, "admin.php");
         JsonObject deletedStudentData = JsonParser.parseString(response).getAsJsonObject();
+        clearScreen();
         printDeletedStudent(deletedStudentData);
+        System.out.print("\n1. Retrieve student data\n2. Home\nChoice: ");
+        String choice = scanner.nextLine();
+        clearScreen();
+        switch(choice) {
+            case "1":
+                retrieveStudent(deletedStudentData);
+                break;
+            case "2":
+                returnHome();
+                break;
+            default:
+                System.out.println("Invalid choice: ");
+        }
     }
+
+public void retrieveStudent(JsonObject deletedStudent) {
+    queryParams.put("delstud_id", String.valueOf(deletedStudent.get("delstud_id").getAsInt()));
+    queryParams.put("delstud_fullName", deletedStudent.get("delstud_fullName").getAsString());
+    queryParams.put("delstud_schoolId", deletedStudent.get("delstud_schoolId").getAsString());
+    queryParams.put("delstud_birthday", deletedStudent.get("delstud_birthday").getAsString());
+    queryParams.put("delstud_birthplace", deletedStudent.get("delstud_birthplace").getAsString());
+    queryParams.put("delstud_gender", deletedStudent.get("delstud_gender").getAsString());
+    queryParams.put("delstud_religion", deletedStudent.get("delstud_religion").getAsString());
+    queryParams.put("delstud_address", deletedStudent.get("delstud_address").getAsString());
+    queryParams.put("delstud_email", deletedStudent.get("delstud_email").getAsString());
+    queryParams.put("delstud_contactNumber", deletedStudent.get("delstud_contactNumber").getAsString());
+    queryParams.put("delstud_prevSchool", deletedStudent.get("delstud_prevSchool").getAsString());
+    queryParams.put("delstud_course", deletedStudent.get("delstud_course").getAsString());
+    queryParams.put("delstud_gradeLevel", deletedStudent.get("delstud_gradeLevel").getAsString());
+    queryParams.put("delstud_yearGraduated", deletedStudent.get("delstud_yearGraduated").getAsString());
+    queryParams.put("delstud_fatherName", deletedStudent.get("delstud_fatherName").getAsString());
+    queryParams.put("delstud_fatherOccupation", deletedStudent.get("delstud_fatherOccupation").getAsString());
+    queryParams.put("delstud_fatherContactNumber", deletedStudent.get("delstud_fatherContactNumber").getAsString());
+    queryParams.put("delstud_motherName", deletedStudent.get("delstud_motherName").getAsString());
+    queryParams.put("delstud_motherOccupation", deletedStudent.get("delstud_motherOccupation").getAsString());
+    queryParams.put("delstud_motherContactNumber", deletedStudent.get("delstud_motherContactNumber").getAsString());
+    queryParams.put("delstud_emergencyName", deletedStudent.get("delstud_emergencyName").getAsString());
+    queryParams.put("delstud_emergencyRelationship", deletedStudent.get("delstud_emergencyRelationship").getAsString());
+    queryParams.put("delstud_emergencyPhone", deletedStudent.get("delstud_emergencyPhone").getAsString());
+    queryParams.put("delstud_emergencyAddress", deletedStudent.get("delstud_emergencyAddress").getAsString());
+    response = HttpUtil.sendPostRequest("retrieveStudent", queryParams, "admin.php");
+    String jsonSent = new Gson().toJson(queryParams);
+    System.out.println("JSON Sent: " + jsonSent);
+    System.out.println("response: " + response);
+    if(response.equalsIgnoreCase("1")){
+        System.out.println("Student information has been successfully retrieved.\n");
+    }else if(response.equalsIgnoreCase("0")){
+        System.out.println("No student information found for the given criteria.\n");
+    }else{
+        System.out.println("An unexpected error occurred while retrieving student information.\n");
+    }
+
+
+}
 
     public void printDeletedStudent(JsonObject deletedStudent) {
         System.out.println("Deleted Student Data: \n");
