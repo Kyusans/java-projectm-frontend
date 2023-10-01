@@ -75,6 +75,7 @@ class Index{
                         }
                         break;
                     case "6":
+                        getStaff();
                         // Staff Data. Change data.
                         break;
                     case "7":
@@ -117,6 +118,37 @@ class Index{
                     break;
             }
         }
+    }
+
+    public void getStaff(){
+        response = HttpUtil.sendPostRequest("getAllStaff", null, "admin.php");
+        if(!response.equalsIgnoreCase("0")){
+            JsonArray jsonArray = JsonParser.parseString(response).getAsJsonArray();
+            int i = 1;
+            for (JsonElement element : jsonArray){
+                JsonObject response = element.getAsJsonObject();
+                String fullName = response.get("user_fullName").getAsString();
+                System.out.println(i + ". " + fullName);
+                i++;
+            }
+            System.out.print("\nEnter the student's code to view: ");
+            int index = scanner.nextInt() - 1;
+            scanner.nextLine();
+            if(index >= 0 && index < jsonArray.size()){
+                JsonObject selectedStaff = jsonArray.get(index).getAsJsonObject();
+                int userId = selectedStaff.get("user_id").getAsInt();
+                queryParams.put("user_id", String.valueOf(userId));
+                System.out.println("Request parameters: " + queryParams);
+                response = HttpUtil.sendPostRequest("getSelectedStaff", queryParams, "admin.php");
+                System.out.println("response: " + response);
+                JsonObject selectedUser = JsonParser.parseString(response).getAsJsonObject();
+                getSelectedStaff(selectedUser);
+            }
+        }
+    }
+
+    public void getSelectedStaff(JsonObject selectedStaff){
+
     }
 
     public void updateAdminData(){
@@ -228,45 +260,45 @@ class Index{
         }
     }
 
-public void retrieveStudent(JsonObject deletedStudent) {
-    queryParams.put("delstud_id", String.valueOf(deletedStudent.get("delstud_id").getAsInt()));
-    queryParams.put("delstud_fullName", deletedStudent.get("delstud_fullName").getAsString());
-    queryParams.put("delstud_schoolId", deletedStudent.get("delstud_schoolId").getAsString());
-    queryParams.put("delstud_birthday", deletedStudent.get("delstud_birthday").getAsString());
-    queryParams.put("delstud_birthplace", deletedStudent.get("delstud_birthplace").getAsString());
-    queryParams.put("delstud_gender", deletedStudent.get("delstud_gender").getAsString());
-    queryParams.put("delstud_religion", deletedStudent.get("delstud_religion").getAsString());
-    queryParams.put("delstud_address", deletedStudent.get("delstud_address").getAsString());
-    queryParams.put("delstud_email", deletedStudent.get("delstud_email").getAsString());
-    queryParams.put("delstud_contactNumber", deletedStudent.get("delstud_contactNumber").getAsString());
-    queryParams.put("delstud_prevSchool", deletedStudent.get("delstud_prevSchool").getAsString());
-    queryParams.put("delstud_course", deletedStudent.get("delstud_course").getAsString());
-    queryParams.put("delstud_gradeLevel", deletedStudent.get("delstud_gradeLevel").getAsString());
-    queryParams.put("delstud_yearGraduated", deletedStudent.get("delstud_yearGraduated").getAsString());
-    queryParams.put("delstud_fatherName", deletedStudent.get("delstud_fatherName").getAsString());
-    queryParams.put("delstud_fatherOccupation", deletedStudent.get("delstud_fatherOccupation").getAsString());
-    queryParams.put("delstud_fatherContactNumber", deletedStudent.get("delstud_fatherContactNumber").getAsString());
-    queryParams.put("delstud_motherName", deletedStudent.get("delstud_motherName").getAsString());
-    queryParams.put("delstud_motherOccupation", deletedStudent.get("delstud_motherOccupation").getAsString());
-    queryParams.put("delstud_motherContactNumber", deletedStudent.get("delstud_motherContactNumber").getAsString());
-    queryParams.put("delstud_emergencyName", deletedStudent.get("delstud_emergencyName").getAsString());
-    queryParams.put("delstud_emergencyRelationship", deletedStudent.get("delstud_emergencyRelationship").getAsString());
-    queryParams.put("delstud_emergencyPhone", deletedStudent.get("delstud_emergencyPhone").getAsString());
-    queryParams.put("delstud_emergencyAddress", deletedStudent.get("delstud_emergencyAddress").getAsString());
-    response = HttpUtil.sendPostRequest("retrieveStudent", queryParams, "admin.php");
-    String jsonSent = new Gson().toJson(queryParams);
-    System.out.println("JSON Sent: " + jsonSent);
-    System.out.println("response: " + response);
-    if(response.equalsIgnoreCase("1")){
-        System.out.println("Student information has been successfully retrieved.\n");
-    }else if(response.equalsIgnoreCase("0")){
-        System.out.println("No student information found for the given criteria.\n");
-    }else{
-        System.out.println("An unexpected error occurred while retrieving student information.\n");
+    public void retrieveStudent(JsonObject deletedStudent) {
+        queryParams.put("delstud_id", String.valueOf(deletedStudent.get("delstud_id").getAsInt()));
+        queryParams.put("delstud_fullName", deletedStudent.get("delstud_fullName").getAsString());
+        queryParams.put("delstud_schoolId", deletedStudent.get("delstud_schoolId").getAsString());
+        queryParams.put("delstud_birthday", deletedStudent.get("delstud_birthday").getAsString());
+        queryParams.put("delstud_birthplace", deletedStudent.get("delstud_birthplace").getAsString());
+        queryParams.put("delstud_gender", deletedStudent.get("delstud_gender").getAsString());
+        queryParams.put("delstud_religion", deletedStudent.get("delstud_religion").getAsString());
+        queryParams.put("delstud_address", deletedStudent.get("delstud_address").getAsString());
+        queryParams.put("delstud_email", deletedStudent.get("delstud_email").getAsString());
+        queryParams.put("delstud_contactNumber", deletedStudent.get("delstud_contactNumber").getAsString());
+        queryParams.put("delstud_prevSchool", deletedStudent.get("delstud_prevSchool").getAsString());
+        queryParams.put("delstud_course", deletedStudent.get("delstud_course").getAsString());
+        queryParams.put("delstud_gradeLevel", deletedStudent.get("delstud_gradeLevel").getAsString());
+        queryParams.put("delstud_yearGraduated", deletedStudent.get("delstud_yearGraduated").getAsString());
+        queryParams.put("delstud_fatherName", deletedStudent.get("delstud_fatherName").getAsString());
+        queryParams.put("delstud_fatherOccupation", deletedStudent.get("delstud_fatherOccupation").getAsString());
+        queryParams.put("delstud_fatherContactNumber", deletedStudent.get("delstud_fatherContactNumber").getAsString());
+        queryParams.put("delstud_motherName", deletedStudent.get("delstud_motherName").getAsString());
+        queryParams.put("delstud_motherOccupation", deletedStudent.get("delstud_motherOccupation").getAsString());
+        queryParams.put("delstud_motherContactNumber", deletedStudent.get("delstud_motherContactNumber").getAsString());
+        queryParams.put("delstud_emergencyName", deletedStudent.get("delstud_emergencyName").getAsString());
+        queryParams.put("delstud_emergencyRelationship", deletedStudent.get("delstud_emergencyRelationship").getAsString());
+        queryParams.put("delstud_emergencyPhone", deletedStudent.get("delstud_emergencyPhone").getAsString());
+        queryParams.put("delstud_emergencyAddress", deletedStudent.get("delstud_emergencyAddress").getAsString());
+        response = HttpUtil.sendPostRequest("retrieveStudent", queryParams, "admin.php");
+        String jsonSent = new Gson().toJson(queryParams);
+        System.out.println("JSON Sent: " + jsonSent);
+        System.out.println("response: " + response);
+        if(response.equalsIgnoreCase("1")){
+            System.out.println("Student information has been successfully retrieved.\n");
+        }else if(response.equalsIgnoreCase("0")){
+            System.out.println("No student information found for the given criteria.\n");
+        }else{
+            System.out.println("An unexpected error occurred while retrieving student information.\n");
+        }
+
+
     }
-
-
-}
 
     public void printDeletedStudent(JsonObject deletedStudent) {
         System.out.println("Deleted Student Data: \n");
@@ -831,7 +863,7 @@ public void retrieveStudent(JsonObject deletedStudent) {
         username = scanner.nextLine();
         System.out.print("Enter staff password: ");
         password = scanner.nextLine();
-        System.out.print("Enter staff contact: ");
+        System.out.print("Enter staff contact number: ");
         contact = scanner.nextLine();
         System.out.print("Enter address: ");
         address = scanner.nextLine();
@@ -842,9 +874,9 @@ public void retrieveStudent(JsonObject deletedStudent) {
         response = HttpUtil.sendPostRequest("addStaff", user, "admin.php");
         clearScreen();
         if (response.equalsIgnoreCase("1")) {
-            System.out.println("Staff added successfully");
+            System.out.println("Staff added successfully\n");
         } else if (response.equalsIgnoreCase("0")) {
-            System.out.println("Failed to add staff");
+            System.out.println("Failed to add staff\n");
         } else {
             System.out.println("Unexpected response from the server: " + response);
         }
