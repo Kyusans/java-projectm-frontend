@@ -147,8 +147,28 @@ class Index{
         }
     }
 
-    public void getSelectedStaff(JsonObject selectedStaff){
+    public void getSelectedStaff(JsonObject selectedStaff) {
+        System.out.println("Selected Staff Data:\n");
+        System.out.println("Username: " + selectedStaff.get("user_username").getAsString());
+        System.out.println("Password: " + selectedStaff.get("user_password").getAsString());
+        System.out.println("Full name: " + selectedStaff.get("user_fullName").getAsString());
+        System.out.println("Email: " + selectedStaff.get("user_email").getAsString());
+        System.out.println("Contact Number: " + selectedStaff.get("user_contactNumber").getAsString());
+        System.out.println("Address: " + selectedStaff.get("user_address").getAsString());
 
+        System.out.println("\n1. Update staff\n2. Delete staff\n3. Home");
+        String choice = scanner.nextLine();
+        switch (choice) {
+            case "1":
+                //updateStaff();
+                break;
+            case "2":
+                // deleteStaff(); <are you sure>
+                break;
+            case "3":
+                returnHome();
+                break;
+        }
     }
 
     public void updateAdminData(){
@@ -286,9 +306,9 @@ class Index{
         queryParams.put("delstud_emergencyPhone", deletedStudent.get("delstud_emergencyPhone").getAsString());
         queryParams.put("delstud_emergencyAddress", deletedStudent.get("delstud_emergencyAddress").getAsString());
         response = HttpUtil.sendPostRequest("retrieveStudent", queryParams, "admin.php");
-        String jsonSent = new Gson().toJson(queryParams);
-        System.out.println("JSON Sent: " + jsonSent);
-        System.out.println("response: " + response);
+        // String jsonSent = new Gson().toJson(queryParams);
+        // System.out.println("JSON Sent: " + jsonSent);
+        // System.out.println("response: " + response);
         if(response.equalsIgnoreCase("1")){
             System.out.println("Student information has been successfully retrieved.\n");
         }else if(response.equalsIgnoreCase("0")){
