@@ -160,7 +160,7 @@ class Index{
         System.out.println("Contact Number: " + selectedStaff.get("user_contactNumber").getAsString());
         System.out.println("Address: " + selectedStaff.get("user_address").getAsString());
 
-        System.out.print("\n1. Update staff\n2. Delete staff\n3. Home\nChoice: ");
+        System.out.print("\n1. Update staff\n2. Delete staff\n3. Back\n4. Home\nChoice: ");
         String choice = scanner.nextLine();
         clearScreen();
         switch (choice) {
@@ -168,12 +168,45 @@ class Index{
                 updateStaff(selectedStaff);
                 break;
             case "2":
-                // deleteStaff(); <are you sure>
+                deleteStaff(selectedStaff);
                 break;
             case "3":
+                getStaff();
+                break;
+            case "4":
                 returnHome();
                 break;
         }
+    }
+
+    public void deleteStaff(JsonObject staffToDelete) {
+        String userId = staffToDelete.get("user_id").getAsString();
+        String fullName = staffToDelete.get("user_fullName").getAsString();
+        System.out.print("Are you sure you want to delete " + fullName + "?\nType (Y/N): ");
+        String choice = scanner.nextLine().toLowerCase();
+        clearScreen();
+        switch(choice) {
+            case "y":
+                queryParams.put("user_id", userId);
+                response = HttpUtil.sendPostRequest("deleteStaff", queryParams, "admin.php");
+                if (response.equalsIgnoreCase("1")){
+                    System.out.println("Staff successfully deleted\n");
+                }else if(response.equalsIgnoreCase("0")){
+                    System.out.println("Staff unsuccessfully deleted\n");
+                }else{
+                    System.out.println("There was an unexpected error: " + response);
+                }
+                getStaff();
+                break;
+            case "n":
+                getSelectedStaff(staffToDelete);
+                break;
+            default:
+                System.out.println("Invalid input \n");
+                deleteStaff(staffToDelete);
+                break;
+        }
+        
     }
 
     public void updateStaff(JsonObject staffToUpdate) {
