@@ -1,11 +1,13 @@
 package project.management;
 import java.util.HashMap;
+import java.util.InputMismatchException;
 import java.util.Map;
 import java.util.Scanner;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.google.gson.JsonSyntaxException;
 import com.google.gson.Gson;
 
 //mga gipang skip sa pagvalidate:
@@ -37,7 +39,7 @@ class Index{
                 System.out.println("5. Admin data");
                 System.out.println("6. Staff data");
                 System.out.println("7. Sign out");
-                System.out.print("Select an Option: ");
+                System.out.print("\nSelect an Option: ");
                 String choice = scanner.nextLine();
                 clearScreen();
                 switch (choice) {
@@ -99,11 +101,11 @@ class Index{
   
     public void staffMenu(){
         while (true) {
-            System.out.println("Staff Home Program");
+            System.out.println("Staff Home Program\n");
             System.out.println("1. Insert Student");
             System.out.println("2. List of Student");
             System.out.println("3. Sign out");
-            System.out.print("Select an option: ");
+            System.out.print("\nSelect an option: ");
             String choice = scanner.nextLine();
             clearScreen();
             switch (choice) {
@@ -311,7 +313,7 @@ class Index{
     }
 
     public void seeHistory(){
-        System.out.print("History Data\n1. Added student history\n2. Updated student history\n3. Deleted student history\n4. Return to Home\nChoice: ");
+        System.out.print("History Data\n\n1. Added student history\n2. Updated student history\n3. Deleted student history\n4. Return to Home\n\nChoice: ");
         String choice = scanner.nextLine();
         clearScreen();
         switch(choice) {
@@ -340,6 +342,10 @@ class Index{
         if (!response.equalsIgnoreCase("0")) {
             JsonArray jsonArray = JsonParser.parseString(response).getAsJsonArray();
             int i = 1;
+            if(operation.equalsIgnoreCase("getDeleteHistory")){
+                System.out.println("0. Back\n");
+            }
+
             for (JsonElement element : jsonArray) {
                 JsonObject response = element.getAsJsonObject();
                 String username = response.get("user_fullName").getAsString();
@@ -349,15 +355,22 @@ class Index{
                 i++;
             }
 
-            if (operation.equalsIgnoreCase("getDeleteHistory")) {
-                System.out.print("\nEnter the history entry number to view: ");
-                int selectedIndex = scanner.nextInt();
-                scanner.nextLine();
-                if (selectedIndex >= 1 && selectedIndex <= jsonArray.size()) {
-                    JsonObject selectedEntry = jsonArray.get(selectedIndex - 1).getAsJsonObject();
-                    getSelectedDelStudent(selectedEntry);
-                } else {
-                    System.out.println("Invalid selection.");
+            if (operation.equalsIgnoreCase("getDeleteHistory")) { 
+                boolean validChoice = false;
+                while(!validChoice){
+                    System.out.print("\nEnter the history entry number to view: ");
+                    int selectedIndex = scanner.nextInt();
+                    scanner.nextLine();
+                    clearScreen();
+                    if(selectedIndex == 0){
+                        seeHistory();
+                    }else if (selectedIndex >= 1 && selectedIndex <= jsonArray.size()) {
+                        JsonObject selectedEntry = jsonArray.get(selectedIndex - 1).getAsJsonObject();
+                        validChoice = true;
+                        getSelectedDelStudent(selectedEntry);
+                    } else {
+                        System.out.println("Invalid selection.");
+                    }        
                 }
             }
         } else {
@@ -432,29 +445,29 @@ class Index{
 
     public void printDeletedStudent(JsonObject deletedStudent) {
         System.out.println("Deleted Student Data: \n");
-        System.out.println("Full name: " + deletedStudent.get("delstud_fullName").getAsString());
-        System.out.println("School Id: " + deletedStudent.get("delstud_schoolId").getAsString());
-        System.out.println("Date of Birth: " + deletedStudent.get("delstud_birthday").getAsString());
-        System.out.println("Place of Birth: " + deletedStudent.get("delstud_birthplace").getAsString());
-        System.out.println("Gender: " + deletedStudent.get("delstud_gender").getAsString());
-        System.out.println("Religion: " + deletedStudent.get("delstud_religion").getAsString());
-        System.out.println("Address: " + deletedStudent.get("delstud_address").getAsString());
-        System.out.println("Email: " + deletedStudent.get("delstud_email").getAsString());
-        System.out.println("Contact Number: " + deletedStudent.get("delstud_contactNumber").getAsString());
-        System.out.println("Previous School: " + deletedStudent.get("delstud_prevSchool").getAsString());
-        System.out.println("Course Code: " + deletedStudent.get("delstud_course").getAsString());
-        System.out.println("Grade Level: " + deletedStudent.get("delstud_gradeLevel").getAsString());
-        System.out.println("Year Graduated: " + deletedStudent.get("delstud_yearGraduated").getAsString());
-        System.out.println("Father Name: " + deletedStudent.get("delstud_fatherName").getAsString());
-        System.out.println("Father Occupation: " + deletedStudent.get("delstud_fatherOccupation").getAsString());
-        System.out.println("Father Contact Number: " + deletedStudent.get("delstud_fatherContactNumber").getAsString());
-        System.out.println("Mother Name: " + deletedStudent.get("delstud_motherName").getAsString());
-        System.out.println("Mother Occupation: " + deletedStudent.get("delstud_motherOccupation").getAsString());
-        System.out.println("Mother Contact Number: " + deletedStudent.get("delstud_motherContactNumber").getAsString());
+        System.out.println("Full name: " + deletedStudent.get("delstud_fullName").getAsString()+ "\n");
+        System.out.println("School Id: " + deletedStudent.get("delstud_schoolId").getAsString()+ "\n");
+        System.out.println("Date of Birth: " + deletedStudent.get("delstud_birthday").getAsString()+ "\n");
+        System.out.println("Place of Birth: " + deletedStudent.get("delstud_birthplace").getAsString()+ "\n");
+        System.out.println("Gender: " + deletedStudent.get("delstud_gender").getAsString()+ "\n");
+        System.out.println("Religion: " + deletedStudent.get("delstud_religion").getAsString()+ "\n");
+        System.out.println("Address: " + deletedStudent.get("delstud_address").getAsString()+ "\n");
+        System.out.println("Email: " + deletedStudent.get("delstud_email").getAsString()+ "\n");
+        System.out.println("Contact Number: " + deletedStudent.get("delstud_contactNumber").getAsString()+ "\n");
+        System.out.println("Previous School: " + deletedStudent.get("delstud_prevSchool").getAsString()+ "\n");
+        System.out.println("Course Code: " + deletedStudent.get("delstud_course").getAsString()+ "\n");
+        System.out.println("Grade Level: " + deletedStudent.get("delstud_gradeLevel").getAsString()+ "\n");
+        System.out.println("Year Graduated: " + deletedStudent.get("delstud_yearGraduated").getAsString()+ "\n");
+        System.out.println("Father Name: " + deletedStudent.get("delstud_fatherName").getAsString()+ "\n");
+        System.out.println("Father Occupation: " + deletedStudent.get("delstud_fatherOccupation").getAsString()+ "\n");
+        System.out.println("Father Contact Number: " + deletedStudent.get("delstud_fatherContactNumber").getAsString()+ "\n");
+        System.out.println("Mother Name: " + deletedStudent.get("delstud_motherName").getAsString()+ "\n");
+        System.out.println("Mother Occupation: " + deletedStudent.get("delstud_motherOccupation").getAsString()+ "\n");
+        System.out.println("Mother Contact Number: " + deletedStudent.get("delstud_motherContactNumber").getAsString()+ "\n");
         System.out.println("\nPerson to contact in case of emergency:");
-        System.out.println("Name: " + deletedStudent.get("delstud_emergencyName").getAsString());
-        System.out.println("Relationship: " + deletedStudent.get("delstud_emergencyRelationship").getAsString());
-        System.out.println("Contact Number: " + deletedStudent.get("delstud_emergencyPhone").getAsString());
+        System.out.println("Name: " + deletedStudent.get("delstud_emergencyName").getAsString()+ "\n");
+        System.out.println("Relationship: " + deletedStudent.get("delstud_emergencyRelationship").getAsString()+ "\n");
+        System.out.println("Contact Number: " + deletedStudent.get("delstud_emergencyPhone").getAsString()+ "\n");
     }
 
     public void askToAddStudent(){
@@ -599,7 +612,8 @@ class Index{
         return courseNum;
     }
 
-    public void viewStudentList() {
+    public void viewStudentList() { 
+        // clearScreen();
         System.out.print("1. View all students\n2. View all students organized by strand\n3. Search student\n4. Return to Home\nChoice: ");
         String choiceView = scanner.nextLine();
         clearScreen();
@@ -616,6 +630,10 @@ class Index{
             case "4":
                 returnHome();
                 break;    
+            default:
+                System.out.println("Invalid input. Please try again.ciasd");
+                viewStudentList();
+                break;  
                 
         }
         student = gson.fromJson(response, Student.class);
@@ -625,29 +643,29 @@ class Index{
     public void printStudentInfo(Student student){
         clearScreen();
         System.out.println("Student Data: \n");
-        System.out.println("Full name: " + student.getStudFullName());
-        System.out.println("School Id: " + student.getStudSchoolId());
-        System.out.println("Date of Birth: " + student.getStudBirthday());
-        System.out.println("Place of Birth: " + student.getStudBirthplace());
-        System.out.println("Gender: " + student.getStudGender());
-        System.out.println("Religion: " + student.getStudReligion());
-        System.out.println("Address: " + student.getStudAddress());
-        System.out.println("Email: " + student.getStudEmail());
-        System.out.println("Contact Number: " + student.getStudContactNumber());
-        System.out.println("Previous School: " + student.getStudPrevSchool());
-        System.out.println("Course Code: " + student.getStudCourse());
-        System.out.println("Grade Level: " + student.getStudGradeLevel());
-        System.out.println("Year Graduated: " + student.getStudYearGraduated());
-        System.out.println("Father Name: " + student.getStudFatherName());
-        System.out.println("Father Occupation: " + student.getStudFatherOccupation());
-        System.out.println("Father Contact Number: " + student.getStudFatherContactNumber());
-        System.out.println("Mother Name: " + student.getStudMotherName());
-        System.out.println("Mother Occupation: " + student.getStudMotherOccupation());
-        System.out.println("Mother Contact Number: " + student.getStudMotherContactNumber());
-        System.out.println("\nPerson to contact in case of emergency:");
-        System.out.println("Name: " + student.getStudEmergencyName());
-        System.out.println("Relationship: " + student.getStudEmergencyRelationship());
-        System.out.println("Contact Number: " + student.getStudEmergencyPhone());
+        System.out.println("FULL NAME: " + student.getStudFullName() + "\n");
+        System.out.println("SCHOOL ID: " + student.getStudSchoolId() + "\n");
+        System.out.println("DATE OF BIRTH: " + student.getStudBirthday() + "\n");
+        System.out.println("PLACE OF BIRTH: " + student.getStudBirthplace() + "\n");
+        System.out.println("GENDER: " + student.getStudGender() + "\n");
+        System.out.println("RELIGION: " + student.getStudReligion() + "\n");
+        System.out.println("ADRESS: " + student.getStudAddress() + "\n");
+        System.out.println("EMAIL: " + student.getStudEmail() + "\n");
+        System.out.println("CONTACT NUMBER: " + student.getStudContactNumber() + "\n");
+        System.out.println("PREVIOUS SCHOOL: " + student.getStudPrevSchool() + "\n");
+        System.out.println("COURSE CODE: " + student.getStudCourse() + "\n");
+        System.out.println("GRADE LEVEL: " + student.getStudGradeLevel() + "\n");
+        System.out.println("YEAR GRADUATE: " + student.getStudYearGraduated() + "\n" +"\n");
+        System.out.println("FATHER NAME: " + student.getStudFatherName() + "\n");
+        System.out.println("FATHER OCCUPATION: " + student.getStudFatherOccupation() + "\n");
+        System.out.println("FATHER CONTACT NUMBER: " + student.getStudFatherContactNumber() + "\n" + "\n");
+        System.out.println("MOTHER NAME: " + student.getStudMotherName() + "\n");
+        System.out.println("MOTHER OCCUPATION: " + student.getStudMotherOccupation() + "\n");
+        System.out.println("MOTHER CONTACT NUMBER: " + student.getStudMotherContactNumber() + "\n");
+        System.out.println("\nPERSON TO CONTACT IN CASE OF EMERGENCY:"+"\n");
+        System.out.println("NAME: " + student.getStudEmergencyName() + "\n");
+        System.out.println("RELATIONSHIP: " + student.getStudEmergencyRelationship() + "\n");
+        System.out.println("CONTACT NUMBER: " + student.getStudEmergencyPhone() + "\n");
 
         System.out.print("\n1. Edit Data\n2. Delete / Remove file\n3. Back to Student list\n4. Home\nChoice: ");
         String choice = scanner.nextLine();
@@ -672,43 +690,56 @@ class Index{
         }
     }
     
-    public void getAllStudent(){
+    public void getAllStudent() {
         Student student = new Student();
         response = HttpUtil.sendPostRequest("getAllStudent", student, "users.php");
-        if(response.equals("0")){
+        if (response == null || response.isEmpty() || response.equals("0")) {
             System.out.println("Student list is currently empty.");
             staffMenu();
+            return;
         }
         JsonArray jsonArray = JsonParser.parseString(response).getAsJsonArray();
         System.out.println("Student List: \n");
         int i = 1;
         System.out.println("0. Back");
         for (JsonElement element : jsonArray) {
-            JsonObject response = element.getAsJsonObject();
-            String fullName = response.get("stud_fullName").getAsString();
+            JsonObject studentObject = element.getAsJsonObject();
+            String fullName = studentObject.get("stud_fullName").getAsString();
             System.out.println(i + ". " + fullName);
             i++;
         }
-        System.out.print("\nEnter the student's code to view: ");
-        int index = scanner.nextInt() - 1;
-        if(index == -1){
+        
+        int index = -1;
+        try {
+            System.out.print("\nEnter the student's code to view: ");
+            index = scanner.nextInt();
+            scanner.nextLine(); 
+        } catch (InputMismatchException e) {            
             clearScreen();
+            System.out.println("Invalid input. Please enter a valid number.");
+            scanner.nextLine();
+            getAllStudent();
+            return;
+        }
+        clearScreen();
+        if (index == 0) {
             viewStudentList();
-        }else if(index >= 0 && index < jsonArray.size()){
-            JsonObject selectedStudent = jsonArray.get(index).getAsJsonObject();
+        } else if (index > 0 && index <= jsonArray.size()) {
+            JsonObject selectedStudent = jsonArray.get(index - 1).getAsJsonObject();
             int studId = selectedStudent.get("stud_id").getAsInt();
             queryParams.put("stud_Id", String.valueOf(studId));
-            response = HttpUtil.sendPostRequest("getSelectedStudent", queryParams, "users.php" );
+            response = HttpUtil.sendPostRequest("getSelectedStudent", queryParams, "users.php");
             clearScreen();
         } else {
-            clearScreen();
             System.out.println("Invalid student code.");
-            viewStudentList();
+            getAllStudent();
         }
     }
 
+
     public void getAllStudentByStrand(){
-        System.out.print("Course: \n0. Back\n1. GAS\n2. HUMMS \n3. STEM \n4. ABM\n5. TVL\nChoice:");
+        clearScreen();
+        System.out.print("Course:\n \n0. Back\n\n1. GAS\n2. HUMMS \n3. STEM \n4. ABM\n5. TVL\n\nChoice:");
         String courseSelect = scanner.nextLine();
         String course = "";
         switch(courseSelect){
@@ -750,7 +781,7 @@ class Index{
             try {
                 JsonArray jsonArray = JsonParser.parseString(response).getAsJsonArray();
                 System.out.println(course + " Student List: \n");
-                System.out.println("0. Back");
+                System.out.println("0. Back\n");
                 int i = 1;
                 for (JsonElement element : jsonArray) {
                     JsonObject response = element.getAsJsonObject();
@@ -762,7 +793,7 @@ class Index{
                 int index = scanner.nextInt() - 1;
                 if(index == -1){
                     clearScreen();
-                    viewStudentList();
+                    getAllStudentByStrand();
                 }else if(index >= 0 && index < jsonArray.size()){
                     JsonObject selectedStudent = jsonArray.get(index).getAsJsonObject();
                     int studId = selectedStudent.get("stud_id").getAsInt();

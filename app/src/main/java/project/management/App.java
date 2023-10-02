@@ -1,6 +1,7 @@
 package project.management;
 import java.util.Scanner;
 import com.google.gson.Gson;
+import java.io.Console;
 
 public class App {
     static Index index = new Index();
@@ -9,32 +10,43 @@ public class App {
         boolean loginSuccessful = false;
         String jsonString = "";
 
-        while(!loginSuccessful){
-            System.out.print("Enter username: ");
+        while (!loginSuccessful) {
+            System.out.print("Username: ");
             String username = scanner.nextLine();
-            System.out.print("Enter password: ");
-            String password = scanner.nextLine();
+
+            System.out.print("Password: ");
+            String password = hidePassword();
+
             jsonString = index.login(username, password);
 
             index.clearScreen();
-            if(jsonString.equalsIgnoreCase("0")){
+            if (jsonString.equalsIgnoreCase("0")) {
                 System.out.println("Invalid username or password!\n");
-            }else{
+            } else {
                 System.out.println("Success!\n");
                 loginSuccessful = true;
             }
-            // System.out.println(jsonString);
         }
-    
         return jsonString;
     }
+
+    private static String hidePassword() {
+        Console console = System.console();
+        if (console == null) {
+            return scanner.nextLine();
+        } else {
+            char[] passwordChars = console.readPassword();
+            return new String(passwordChars);
+        }
+    }
+
     public static void main(String[] args) {
         String jsonString = "";
         index.clearScreen();
         boolean validChoice = false;
         while (!validChoice) {
-            System.out.println("MARKETING\nSign in to Explore!");
-            System.out.print("1. Sign in\n2. Exit\nChoice: ");
+            System.out.println("MARKETING\nSign in to Explore!\n");
+            System.out.print("1. Sign in\n2. Exit\n\nChoice: ");
             String choice = scanner.nextLine();
             switch (choice) {
                 case "1":
