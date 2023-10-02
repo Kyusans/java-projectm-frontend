@@ -8,6 +8,9 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.Gson;
 
+//mga gipang skip sa pagvalidate:
+//getStaff()
+
 class Index{
     String response = "";
     Scanner scanner = new Scanner(System.in);
@@ -36,61 +39,61 @@ class Index{
                 System.out.println("7. Sign out");
                 System.out.print("Select an Option: ");
                 String choice = scanner.nextLine();
-
                 clearScreen();
-
                 switch (choice) {
                     case "1":
                         viewStudentList();
                         break;
                     case "2":
-                        addStudent();
+                        askToAddStudent();
                         break;
                     case "3":
-                        addStaff();
+                        askToAddStaff();
                         break;
                     case "4":
                         seeHistory();
                         break;
                     case "5":
-                        System.out.println("Admin Data");
-                        System.out.println("Username: " + SessionStorage.username);
-                        System.out.println("Password: " + SessionStorage.password);
-                        System.out.println("\n1. Update Username and Password");
-                        System.out.println("2. Exit");
-                        System.out.print("Select an option: ");
-                        int adminChoice = scanner.nextInt();
-                        scanner.nextLine();
-                        clearScreen();
-                        switch (adminChoice) {
-                            case 1:
-                                updateAdminData();
-                                break;
-                            case 2:
-                                returnHome();
-                                break;
-                            default:
-                                System.out.println("\nInvalid input");
-                                break;
-                        }
+                        adminData();
                         break;
                     case "6":
                         getStaff();
-                        // Staff Data. Change data.
                         break;
                     case "7":
                         // Sign out
-                        scanner.close();
                         App.main(null);
                         break;
                     default:
-                        System.out.println("Invalid choice. Please try again.");
+                        System.out.println("Invalid choice. Please try again.\n");
                 }
             } catch (NumberFormatException e) {
                 clearScreen();
-                System.out.println("Invalid input. Please enter a valid number.");
+                System.out.println("Invalid input. Please enter a valid number.\n");
                 scanner.nextLine();
             }
+        }
+    }
+
+    public void adminData(){
+        System.out.println("Admin Data");
+        System.out.println("Username: " + SessionStorage.username);
+        System.out.println("Password: " + SessionStorage.password);
+        System.out.println("\n1. Update Username and Password");
+        System.out.println("2. Exit");
+        System.out.print("Select an option: ");
+        String adminChoice = scanner.nextLine();
+        clearScreen();
+        switch (adminChoice) {
+            case "1":
+                updateAdminData();
+                break;
+            case "2":
+                returnHome();
+                break;
+            default:
+                System.out.println("Invalid input\n");
+                adminData();
+                break;
         }
     }
   
@@ -101,17 +104,16 @@ class Index{
             System.out.println("2. List of Student");
             System.out.println("3. Sign out");
             System.out.print("Select an option: ");
-            int choice = scanner.nextInt();
-            scanner.nextLine();
+            String choice = scanner.nextLine();
             clearScreen();
             switch (choice) {
-                case 1:
-                  addStudent();
+                case "1":
+                    askToAddStudent();
                   break;
-                case 2:
+                case "2":
                   viewStudentList();
                   break;
-                case 3:
+                case "3":
                     App.main(null);
                     break;
                 default:
@@ -122,10 +124,12 @@ class Index{
     }
 
     public void getStaff(){
-        System.out.println("Staff: \n");
+        System.out.println("Staff:");
         response = HttpUtil.sendPostRequest("getAllStaff", null, "admin.php");
-        if(!response.equalsIgnoreCase("0")){
+        try {
+            if(!response.equalsIgnoreCase("0")){
             JsonArray jsonArray = JsonParser.parseString(response).getAsJsonArray();
+            System.out.println("0. Home");
             int i = 1;
             for (JsonElement element : jsonArray){
                 JsonObject response = element.getAsJsonObject();
@@ -133,11 +137,13 @@ class Index{
                 System.out.println(i + ". " + fullName);
                 i++;
             }
-            System.out.print("\nEnter the student's code to view: ");
+            System.out.print("\nEnter the staff's code to view: ");
             int index = scanner.nextInt() - 1;
             scanner.nextLine();
             clearScreen();
-            if(index >= 0 && index < jsonArray.size()){
+            if(index == -1){
+                returnHome();
+            }else if(index >= 0 && index < jsonArray.size()){
                 JsonObject selectedStaff = jsonArray.get(index).getAsJsonObject();
                 int userId = selectedStaff.get("user_id").getAsInt();
                 queryParams.put("user_id", String.valueOf(userId));
@@ -149,10 +155,14 @@ class Index{
                 getStaff();
             }
         }
+    
+        } catch (Exception e) {
+            System.out.println("Invalid input. Please try again");
+            getStaff();
+        }
     }
 
     public void getSelectedStaff(JsonObject selectedStaff) {
-        System.out.println("Selected Staff Data:\n");
         System.out.println("Username: " + selectedStaff.get("user_username").getAsString());
         System.out.println("Password: " + selectedStaff.get("user_password").getAsString());
         System.out.println("Full name: " + selectedStaff.get("user_fullName").getAsString());
@@ -175,6 +185,10 @@ class Index{
                 break;
             case "4":
                 returnHome();
+                break;
+            default:
+                System.out.println("Invalid input. Please try again");
+                getSelectedStaff(selectedStaff);
                 break;
         }
     }
@@ -256,6 +270,7 @@ class Index{
             getStaff();
         } else if (response.equalsIgnoreCase("0")) {
             System.out.println("Staff information remains unchanged.\n");
+            getStaff();
         } else {
             System.out.println("Unexpected response from the server: " + response);
         }
@@ -296,23 +311,25 @@ class Index{
     }
 
     public void seeHistory(){
-        clearScreen();
         System.out.print("History Data\n1. Added student history\n2. Updated student history\n3. Deleted student history\n4. Return to Home\nChoice: ");
-        int choice = scanner.nextInt();
-        scanner.nextLine();
+        String choice = scanner.nextLine();
         clearScreen();
         switch(choice) {
-            case 1:
+            case "1":
                 getHistory("getAddStudentHistory", "addhist_dateAdded", " added ");
                 break;
-            case 2:
+            case "2":
                 getHistory("getUpdateHistory", "uphist_dateUpdated", " updated ");
                 break;
-            case 3:
+            case "3":
                 getHistory("getDeleteHistory", "delhist_dateDeleted", " deleted ");
                 break;
-            case 4:
+            case "4":
                 returnHome();
+                break;
+            default:
+                System.out.println("Invalid input. Please try again\n");
+                seeHistory();
                 break;
         }
     }
@@ -368,6 +385,8 @@ class Index{
                 break;
             default:
                 System.out.println("Invalid choice: ");
+                getSelectedDelStudent(studentEntry);
+                break;
         }
     }
 
@@ -438,6 +457,23 @@ class Index{
         System.out.println("Contact Number: " + deletedStudent.get("delstud_emergencyPhone").getAsString());
     }
 
+    public void askToAddStudent(){
+        System.out.print("1. Insert student data\n2. Back\nChoice: ");
+        String choice = scanner.nextLine();
+        clearScreen();
+        switch(choice){
+            case "1":
+                addStudent();
+                break;
+            case "2":
+                returnHome();
+            default:
+                System.out.println("Invalid input. Please try again]\n");
+                askToAddStudent();
+                break;
+        }
+    }
+
     public void addStudent() {
         clearScreen();
         System.out.println("Adding Student");
@@ -463,7 +499,7 @@ class Index{
         System.out.print("Religion: ");
         String religion = scanner.nextLine();
 
-        System.out.print("Address: ");
+        System.out.print("Complete Address: ");
         String address = scanner.nextLine();
 
         System.out.print("Contact Number: ");
@@ -472,30 +508,7 @@ class Index{
         System.out.print("Previous School: ");
         String prevSchool = scanner.nextLine();
 
-        System.out.print("Course (1)GAS, (2)HUMMS, (3)STEM, (4)ABM, (5)TVL: ");
-        int courseNum = scanner.nextInt();
-        scanner.nextLine(); 
-        String course = "";
-        switch(courseNum){
-            case 1:
-                course = "GAS";
-                break;
-            case 2:
-                course = "HUMMS";
-                break;
-            case 3:
-                course = "STEM";
-                break;
-            case 4:
-                course = "ABM";
-                break;
-            case 5:
-                course = "TVL";
-                break;
-            default:
-                System.out.println("Invalid option. Please try again.\n");
-                break;
-        }
+        String course = askStudentCourse();
 
         System.out.print("Year Level: ");
         String yearLevel = scanner.nextLine();
@@ -521,7 +534,7 @@ class Index{
         System.out.print("Mother Contact Number: ");
         String motherContact = scanner.nextLine(); 
 
-        System.out.println("Emergency Contact");
+        System.out.println("Person to contact in case of emergency:\n");
         System.out.print("Emergency FullName: ");
         String emergencyName = scanner.nextLine();
 
@@ -548,35 +561,69 @@ class Index{
 
         // System.out.println("response: " + response);
         if (response.equalsIgnoreCase("1")) {
-            System.out.println("\nStudent added successfully");
+            System.out.println("Student added successfully\n");
         } else if (response.equalsIgnoreCase("0")) {
-            System.out.println("\nStudent failed to add");
+            System.out.println("Student failed to add\n");
         } else {
-            System.out.println("\nUnexpected response from the server: " + response);
+            System.out.println("Unexpected response from the server: " + response);
         }
+        returnHome();
+    }
+
+    public String askStudentCourse(){
+        System.out.print("Course: \n1. GAS\n2. HUMMS \n3. STEM \n4. ABM\n5. TVL\nChoice:");
+        String courseSelect = scanner.nextLine();
+        String courseNum = "";
+        switch(courseSelect){
+            case "1":
+                courseNum = "GAS";
+                break;
+            case "2":
+                courseNum = "HUMMS";
+                break;
+            case "3":
+                courseNum = "STEM";
+                break;
+            case "4":
+                courseNum = "ABM";
+                break;
+            case "5":
+                courseNum = "TVL";
+                break;
+            default:
+                clearScreen();
+                System.out.println("Invalid option. Please try again.\n");
+                askStudentCourse();
+                break;
+        }
+        return courseNum;
     }
 
     public void viewStudentList() {
         System.out.print("1. View all students\n2. View all students organized by strand\n3. Search student\n4. Return to Home\nChoice: ");
-        int choiceView = scanner.nextInt();
-        scanner.nextLine();
+        String choiceView = scanner.nextLine();
         clearScreen();
         switch(choiceView){
-            case 1:
+            case "1":
                 getAllStudent();
                 break;
-            case 2:
+            case "2":
                 getAllStudentByStrand();
                 break;
-            case 3:
+            case "3":
                 searchStudent();
                 break;
-            case 4:
+            case "4":
                 returnHome();
                 break;    
                 
         }
         student = gson.fromJson(response, Student.class);
+        printStudentInfo(student);
+    }
+
+    public void printStudentInfo(Student student){
+        clearScreen();
         System.out.println("Student Data: \n");
         System.out.println("Full name: " + student.getStudFullName());
         System.out.println("School Id: " + student.getStudSchoolId());
@@ -601,33 +648,30 @@ class Index{
         System.out.println("Name: " + student.getStudEmergencyName());
         System.out.println("Relationship: " + student.getStudEmergencyRelationship());
         System.out.println("Contact Number: " + student.getStudEmergencyPhone());
-        while (true) {
-            System.out.print("\n1. Edit Data\n2. Delete / Remove file\n3. Back to Student list\n4. Home\n Choice: ");
-            int choice = scanner.nextInt();
-            scanner.nextLine();
-            clearScreen();
-            switch (choice) {
-                case 1:
-                    clearScreen();
-                    updateStudent(student);
-                    break; 
-                case 2:
-                    deleteStudent(student, SessionStorage.userId);
-                    break; 
-                case 3:
-                    clearScreen();
-                    System.out.println("Returning to student list.\n");
-                    viewStudentList();
-                    break; 
-                case 4:
-                    returnHome();
-                    break;
-                default:
-                    System.out.println("Invalid choice. Please try again.");
-            }
+
+        System.out.print("\n1. Edit Data\n2. Delete / Remove file\n3. Back to Student list\n4. Home\nChoice: ");
+        String choice = scanner.nextLine();
+        clearScreen();
+        switch (choice) {
+            case "1":
+                updateStudent(student);
+                break; 
+            case "2":
+                deleteStudent(student, SessionStorage.userId);
+                break; 
+            case "3":
+                System.out.println("Returning to student list.\n");
+                viewStudentList();
+                break; 
+            case "4":
+                returnHome();
+                break;
+            default:
+                System.out.println("Invalid input. Please try again.");
+                printStudentInfo(student);
         }
     }
-
+    
     public void getAllStudent(){
         Student student = new Student();
         response = HttpUtil.sendPostRequest("getAllStudent", student, "users.php");
@@ -638,6 +682,7 @@ class Index{
         JsonArray jsonArray = JsonParser.parseString(response).getAsJsonArray();
         System.out.println("Student List: \n");
         int i = 1;
+        System.out.println("0. Back");
         for (JsonElement element : jsonArray) {
             JsonObject response = element.getAsJsonObject();
             String fullName = response.get("stud_fullName").getAsString();
@@ -646,7 +691,10 @@ class Index{
         }
         System.out.print("\nEnter the student's code to view: ");
         int index = scanner.nextInt() - 1;
-        if(index >= 0 && index < jsonArray.size()){
+        if(index == -1){
+            clearScreen();
+            viewStudentList();
+        }else if(index >= 0 && index < jsonArray.size()){
             JsonObject selectedStudent = jsonArray.get(index).getAsJsonObject();
             int studId = selectedStudent.get("stud_id").getAsInt();
             queryParams.put("stud_Id", String.valueOf(studId));
@@ -660,31 +708,33 @@ class Index{
     }
 
     public void getAllStudentByStrand(){
-        System.out.print("1. GAS\n2. HUMMS\n3. STEM\n4. ABM\n5. TVL\n6. Exit\nChoice: ");
-        int studCourse = scanner.nextInt();
-        scanner.nextLine();
+        System.out.print("Course: \n0. Back\n1. GAS\n2. HUMMS \n3. STEM \n4. ABM\n5. TVL\nChoice:");
+        String courseSelect = scanner.nextLine();
         String course = "";
-        switch (studCourse) {
-            case 1:
-                course = "GAS";
-                break;
-            case 2:
-                course = "HUMMS";
-                break;
-            case 3:
-                course = "STEM";
-                break;
-            case 4:
-                course = "ABM";
-                break;
-            case 5:
-                course = "TVL";
-                break;
-            case 6:
+        switch(courseSelect){
+            case "0":
+                clearScreen();
                 viewStudentList();
                 break;
+            case "1":
+                course = "GAS";
+                break;
+            case "2":
+                course = "HUMMS";
+                break;
+            case "3":
+                course = "STEM";
+                break;
+            case "4":
+                course = "ABM";
+                break;
+            case "5":
+                course = "TVL";
+                break;
             default:
+                clearScreen();
                 System.out.println("Invalid option. Please try again.\n");
+                getAllStudentByStrand();
                 break;
         }
         queryParams.put("stud_course", course);
@@ -695,11 +745,12 @@ class Index{
         clearScreen();
         if(response.equalsIgnoreCase("0")){
             System.out.println("Student list is currently empty.\n");
-            returnHome();
+            getAllStudentByStrand();
         }else{
             try {
                 JsonArray jsonArray = JsonParser.parseString(response).getAsJsonArray();
                 System.out.println(course + " Student List: \n");
+                System.out.println("0. Back");
                 int i = 1;
                 for (JsonElement element : jsonArray) {
                     JsonObject response = element.getAsJsonObject();
@@ -709,7 +760,10 @@ class Index{
                 }
                 System.out.print("\nEnter the number of the student you want to view: ");
                 int index = scanner.nextInt() - 1;
-                if(index >= 0 && index < jsonArray.size()){
+                if(index == -1){
+                    clearScreen();
+                    viewStudentList();
+                }else if(index >= 0 && index < jsonArray.size()){
                     JsonObject selectedStudent = jsonArray.get(index).getAsJsonObject();
                     int studId = selectedStudent.get("stud_id").getAsInt();
                     queryParams.put("stud_Id", String.valueOf(studId));
@@ -725,7 +779,6 @@ class Index{
                 JsonObject studentObject = JsonParser.parseString(response).getAsJsonObject();
                 System.out.println(studentObject);
             }
-
         }
     }
 
@@ -749,6 +802,20 @@ class Index{
     }
 
     public void updateStudent(Student studentToUpdate){
+        System.out.print("1. Update student\n2. Back\nChoice: ");
+        String choice = scanner.nextLine();
+        clearScreen();
+        switch (choice) {
+            case "1":
+                break;
+            case "2":
+                printStudentInfo(studentToUpdate);
+            default:
+                System.out.println("Invalid input. Please try again.");
+                updateStudent(studentToUpdate);
+                break;
+        }
+
         System.out.println("Edit Student Information:");
         System.out.println("Leave fields blank to keep the current values.\n");
         System.out.print("Full name [" + studentToUpdate.getStudFullName() + "]: ");
@@ -992,6 +1059,25 @@ class Index{
         } else {
             System.out.println("Unexpected response from the server: " + response);
         }
+    }
+
+    public void askToAddStaff(){
+        System.out.print("1. Insert new staff\n2. Back\nChoice: ");
+        String choice = scanner.nextLine();
+        clearScreen();
+        switch (choice){
+            case "1":
+                addStaff();
+                break;
+            case "2":
+                returnHome();
+                break;
+            default:
+                System.out.println("Invalid input. Please try again\n");
+                askToAddStaff();
+                break;
+        }
+
     }
 
     public void clearScreen(){
