@@ -7,7 +7,6 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.google.gson.JsonSyntaxException;
 import com.google.gson.Gson;
 
 //mga gipang skip sa pagvalidate:
@@ -27,52 +26,51 @@ class Index{
     }
 
     public void adminMenu() {
-        boolean validInput = false;
-
-        while (!validInput) {
-            try {
-                System.out.println("Admin Menu:");
-                System.out.println("1. List of Students");
-                System.out.println("2. Add a student");
-                System.out.println("3. Add a staff");
-                System.out.println("4. History");
-                System.out.println("5. Admin data");
-                System.out.println("6. Staff data");
-                System.out.println("7. Sign out");
-                System.out.print("\nSelect an Option: ");
-                String choice = scanner.nextLine();
-                clearScreen();
-                switch (choice) {
-                    case "1":
-                        viewStudentList();
-                        break;
-                    case "2":
-                        askToAddStudent();
-                        break;
-                    case "3":
-                        askToAddStaff();
-                        break;
-                    case "4":
-                        seeHistory();
-                        break;
-                    case "5":
-                        adminData();
-                        break;
-                    case "6":
-                        getStaff();
-                        break;
-                    case "7":
-                        // Sign out
-                        App.main(null);
-                        break;
-                    default:
-                        System.out.println("Invalid choice. Please try again.\n");
-                }
-            } catch (NumberFormatException e) {
-                clearScreen();
-                System.out.println("Invalid input. Please enter a valid number.\n");
-                scanner.nextLine();
+        try {
+            System.out.println("Admin Menu:");
+            System.out.println("1. List of Students");
+            System.out.println("2. Add a student");
+            System.out.println("3. Add a staff");
+            System.out.println("4. History");
+            System.out.println("5. Admin data");
+            System.out.println("6. Staff data");
+            System.out.println("7. Sign out");
+            System.out.print("\nSelect an Option: ");
+            String choice = scanner.nextLine();
+            clearScreen();
+            
+            switch (choice) {
+                case "1":
+                    viewStudentList();
+                    break;
+                case "2":
+                    askToAddStudent();
+                    break;
+                case "3":
+                    askToAddStaff();
+                    break;
+                case "4":
+                    seeHistory();
+                    break;
+                case "5":
+                    adminData();
+                    break;
+                case "6":
+                    getStaff();
+                    break;
+                case "7":
+                    // Sign out
+                    App.main(null);
+                    break;
+                default:
+                    System.out.println("Invalid choice. Please try again.\n");
+                    adminMenu();
             }
+        } catch (NumberFormatException e) {
+            clearScreen();
+            System.out.println("Invalid input. Please enter a valid number.\n");
+            scanner.nextLine();
+            adminMenu();
         }
     }
 
@@ -99,68 +97,74 @@ class Index{
         }
     }
   
-    public void staffMenu(){
-        while (true) {
-            System.out.println("Staff Home Program\n");
-            System.out.println("1. Insert Student");
-            System.out.println("2. List of Student");
-            System.out.println("3. Sign out");
-            System.out.print("\nSelect an option: ");
-            String choice = scanner.nextLine();
-            clearScreen();
-            switch (choice) {
-                case "1":
-                    askToAddStudent();
-                  break;
-                case "2":
-                  viewStudentList();
-                  break;
-                case "3":
-                    App.main(null);
-                    break;
-                default:
-                    System.out.println("Invalid option. Please try again.\n");
-                    break;
-            }
+    public void staffMenu() {
+        System.out.println("Staff Home Program\n");
+        System.out.println("1. Insert Student");
+        System.out.println("2. List of Student");
+        System.out.println("3. Sign out");
+        System.out.print("\nSelect an option: ");
+        String choice = scanner.nextLine();
+        clearScreen();
+        switch (choice) {
+            case "1":
+                askToAddStudent();
+                break;
+            case "2":
+                viewStudentList();
+                break;
+            case "3":
+                App.main(null);
+                break;
+            default:
+                System.out.println("Invalid option. Please try again.\n");
+                staffMenu();
+                break;
         }
     }
 
-    public void getStaff(){
+    public void getStaff() {
         System.out.println("Staff:");
         response = HttpUtil.sendPostRequest("getAllStaff", null, "admin.php");
-        try {
-            if(!response.equalsIgnoreCase("0")){
+
+        if (!response.equalsIgnoreCase("0")) {
             JsonArray jsonArray = JsonParser.parseString(response).getAsJsonArray();
             System.out.println("0. Home");
             int i = 1;
-            for (JsonElement element : jsonArray){
-                JsonObject response = element.getAsJsonObject();
-                String fullName = response.get("user_fullName").getAsString();
+
+            for (JsonElement element : jsonArray) {
+                JsonObject staffObject = element.getAsJsonObject();
+                String fullName = staffObject.get("user_fullName").getAsString();
                 System.out.println(i + ". " + fullName);
                 i++;
             }
+
             System.out.print("\nEnter the staff's code to view: ");
-            int index = scanner.nextInt() - 1;
-            scanner.nextLine();
+            String input = scanner.nextLine();
             clearScreen();
-            if(index == -1){
+
+            if (input.equals("0")) {
                 returnHome();
-            }else if(index >= 0 && index < jsonArray.size()){
-                JsonObject selectedStaff = jsonArray.get(index).getAsJsonObject();
-                int userId = selectedStaff.get("user_id").getAsInt();
-                queryParams.put("user_id", String.valueOf(userId));
-                response = HttpUtil.sendPostRequest("getSelectedStaff", queryParams, "admin.php");
-                JsonObject selectedUser = JsonParser.parseString(response).getAsJsonObject();
-                getSelectedStaff(selectedUser);
-            }else{
-                System.out.println("Invalid input\n");
-                getStaff();
+            } else {
+                try {
+                    int index = Integer.parseInt(input);
+                    if (index > 0 && index <= jsonArray.size()) {
+                        JsonObject selectedStaff = jsonArray.get(index - 1).getAsJsonObject();
+                        int userId = selectedStaff.get("user_id").getAsInt();
+                        queryParams.put("user_id", String.valueOf(userId));
+                        response = HttpUtil.sendPostRequest("getSelectedStaff", queryParams, "admin.php");
+                        JsonObject selectedUser = JsonParser.parseString(response).getAsJsonObject();
+                        getSelectedStaff(selectedUser);
+                    } else {
+                        System.out.println("Invalid input. Please try again.\n");
+                        getStaff();
+                    }
+                } catch (NumberFormatException e) {
+                    System.out.println("Invalid input. Please enter a valid number or '0' to return to Home.\n");
+                    getStaff();
+                }
             }
-        }
-    
-        } catch (Exception e) {
-            System.out.println("Invalid input. Please try again");
-            getStaff();
+        } else {
+            System.out.println("No staff available.\n");
         }
     }
 
@@ -175,6 +179,7 @@ class Index{
         System.out.print("\n1. Update staff\n2. Delete staff\n3. Back\n4. Home\nChoice: ");
         String choice = scanner.nextLine();
         clearScreen();
+
         switch (choice) {
             case "1":
                 updateStaff(selectedStaff);
@@ -189,7 +194,7 @@ class Index{
                 returnHome();
                 break;
             default:
-                System.out.println("Invalid input. Please try again");
+                System.out.println("Invalid input. Please try again\n");
                 getSelectedStaff(selectedStaff);
                 break;
         }
@@ -198,31 +203,31 @@ class Index{
     public void deleteStaff(JsonObject staffToDelete) {
         String userId = staffToDelete.get("user_id").getAsString();
         String fullName = staffToDelete.get("user_fullName").getAsString();
-        System.out.print("Are you sure you want to delete " + fullName + "?\nType (Y/N): ");
-        String choice = scanner.nextLine().toLowerCase();
-        clearScreen();
-        switch(choice) {
-            case "y":
-                queryParams.put("user_id", userId);
-                response = HttpUtil.sendPostRequest("deleteStaff", queryParams, "admin.php");
-                if (response.equalsIgnoreCase("1")){
-                    System.out.println("Staff successfully deleted\n");
-                }else if(response.equalsIgnoreCase("0")){
-                    System.out.println("Staff unsuccessfully deleted\n");
-                }else{
-                    System.out.println("There was an unexpected error: " + response);
-                }
-                getStaff();
-                break;
-            case "n":
-                getSelectedStaff(staffToDelete);
-                break;
-            default:
-                System.out.println("Invalid input \n");
-                deleteStaff(staffToDelete);
-                break;
-        }
         
+        while (true) {
+            System.out.print("Are you sure you want to delete " + fullName + "?\nType (Y/N): ");
+            String choice = scanner.nextLine().toLowerCase();
+            clearScreen();
+            switch (choice) {
+                case "y":
+                    queryParams.put("user_id", userId);
+                    response = HttpUtil.sendPostRequest("deleteStaff", queryParams, "admin.php");
+                    if (response.equalsIgnoreCase("1")) {
+                        System.out.println("Staff successfully deleted\n");
+                    } else if (response.equalsIgnoreCase("0")) {
+                        System.out.println("Staff unsuccessfully deleted\n");
+                    } else {
+                        System.out.println("There was an unexpected error: " + response);
+                    }
+                    getStaff();
+                    return; 
+                case "n":
+                    getSelectedStaff(staffToDelete);
+                    return;
+                default:
+                    System.out.println("Invalid input. Please enter 'Y' or 'N'.\n");
+            }
+        }
     }
 
     public void updateStaff(JsonObject staffToUpdate) {
@@ -312,11 +317,11 @@ class Index{
         returnHome();
     }
 
-    public void seeHistory(){
+    public void seeHistory() {
         System.out.print("History Data\n\n1. Added student history\n2. Updated student history\n3. Deleted student history\n4. Return to Home\n\nChoice: ");
         String choice = scanner.nextLine();
         clearScreen();
-        switch(choice) {
+        switch (choice) {
             case "1":
                 getHistory("getAddStudentHistory", "addhist_dateAdded", " added ");
                 break;
@@ -342,7 +347,7 @@ class Index{
         if (!response.equalsIgnoreCase("0")) {
             JsonArray jsonArray = JsonParser.parseString(response).getAsJsonArray();
             int i = 1;
-            if(operation.equalsIgnoreCase("getDeleteHistory")){
+            if (operation.equalsIgnoreCase("getDeleteHistory")) {
                 System.out.println("0. Back\n");
             }
 
@@ -355,29 +360,36 @@ class Index{
                 i++;
             }
 
-            if (operation.equalsIgnoreCase("getDeleteHistory")) { 
+            if (operation.equalsIgnoreCase("getDeleteHistory")) {
                 boolean validChoice = false;
-                while(!validChoice){
+                while (!validChoice) {
                     System.out.print("\nEnter the history entry number to view: ");
-                    int selectedIndex = scanner.nextInt();
-                    scanner.nextLine();
-                    clearScreen();
-                    if(selectedIndex == 0){
+                    String selectedIndexStr = scanner.nextLine(); 
+                    if (selectedIndexStr.equals("0")) {
+                        clearScreen();
                         seeHistory();
-                    }else if (selectedIndex >= 1 && selectedIndex <= jsonArray.size()) {
-                        JsonObject selectedEntry = jsonArray.get(selectedIndex - 1).getAsJsonObject();
-                        validChoice = true;
-                        getSelectedDelStudent(selectedEntry);
                     } else {
-                        System.out.println("Invalid selection.");
-                    }        
+                        try {
+                            int selectedIndex = Integer.parseInt(selectedIndexStr);
+                            if (selectedIndex >= 1 && selectedIndex <= jsonArray.size()) {
+                                JsonObject selectedEntry = jsonArray.get(selectedIndex - 1).getAsJsonObject();
+                                validChoice = true;
+                                getSelectedDelStudent(selectedEntry);
+                            } else {
+                                System.out.println("Invalid selection.");
+                            }
+                        } catch (NumberFormatException e) {
+                            System.out.println("Invalid input. Please enter a valid number.");
+                        }
+                    }
                 }
+            } else {
+                System.out.println("");
+                seeHistory();
             }
         } else {
             System.out.println("No data found");
         }
-
-        System.out.println("");
     }
 
     public void getSelectedDelStudent(JsonObject studentEntry){
@@ -613,7 +625,6 @@ class Index{
     }
 
     public void viewStudentList() { 
-        // clearScreen();
         System.out.print("1. View all students\n2. View all students organized by strand\n3. Search student\n4. Return to Home\nChoice: ");
         String choiceView = scanner.nextLine();
         clearScreen();
@@ -631,7 +642,7 @@ class Index{
                 returnHome();
                 break;    
             default:
-                System.out.println("Invalid input. Please try again.ciasd");
+                System.out.println("Invalid input. Please try again.\n");
                 viewStudentList();
                 break;  
                 
@@ -736,13 +747,11 @@ class Index{
         }
     }
 
-
-    public void getAllStudentByStrand(){
-        clearScreen();
+    public void getAllStudentByStrand() {
         System.out.print("Course:\n \n0. Back\n\n1. GAS\n2. HUMMS \n3. STEM \n4. ABM\n5. TVL\n\nChoice:");
         String courseSelect = scanner.nextLine();
         String course = "";
-        switch(courseSelect){
+        switch (courseSelect) {
             case "0":
                 clearScreen();
                 viewStudentList();
@@ -766,47 +775,59 @@ class Index{
                 clearScreen();
                 System.out.println("Invalid option. Please try again.\n");
                 getAllStudentByStrand();
-                break;
+                return;
         }
         queryParams.put("stud_course", course);
         response = HttpUtil.sendPostRequest("getAllStudentByStrand", queryParams, "users.php");
-        // String jsonSent = new Gson().toJson(queryParams);
-        // System.out.println("JSON Sent: " + jsonSent);
-        // System.out.println("response: " + response);
         clearScreen();
-        if(response.equalsIgnoreCase("0")){
+        
+        if (response.equalsIgnoreCase("0")) {
             System.out.println("Student list is currently empty.\n");
             getAllStudentByStrand();
-        }else{
+        } else {
             try {
                 JsonArray jsonArray = JsonParser.parseString(response).getAsJsonArray();
                 System.out.println(course + " Student List: \n");
                 System.out.println("0. Back\n");
                 int i = 1;
+                
                 for (JsonElement element : jsonArray) {
-                    JsonObject response = element.getAsJsonObject();
-                    String fullName = response.get("stud_fullName").getAsString();
+                    JsonObject studentObject = element.getAsJsonObject();
+                    String fullName = studentObject.get("stud_fullName").getAsString();
                     System.out.println(i + ". " + fullName);
                     i++;
                 }
+                
                 System.out.print("\nEnter the number of the student you want to view: ");
-                int index = scanner.nextInt() - 1;
-                if(index == -1){
+                String input = scanner.nextLine();
+                
+                if (input.equals("0")) {
                     clearScreen();
                     getAllStudentByStrand();
-                }else if(index >= 0 && index < jsonArray.size()){
-                    JsonObject selectedStudent = jsonArray.get(index).getAsJsonObject();
-                    int studId = selectedStudent.get("stud_id").getAsInt();
-                    queryParams.put("stud_Id", String.valueOf(studId));
-                    response = HttpUtil.sendPostRequest("getSelectedStudent", queryParams, "users.php" );
-                    clearScreen();
                 } else {
-                    clearScreen();
-                    System.out.println("Invalid student number.");
-                    viewStudentList();
+                    try {
+                        int index = Integer.parseInt(input) - 1;
+                        
+                        if (index >= 0 && index < jsonArray.size()) {
+                            JsonObject selectedStudent = jsonArray.get(index).getAsJsonObject();
+                            int studId = selectedStudent.get("stud_id").getAsInt();
+                            queryParams.put("stud_Id", String.valueOf(studId));
+                            response = HttpUtil.sendPostRequest("getSelectedStudent", queryParams, "users.php");
+                            clearScreen();
+                        } else {
+                            clearScreen();
+                            System.out.println("Invalid student number.");
+                            viewStudentList();
+                        }
+                    } catch (NumberFormatException e) {
+                        clearScreen();
+                        System.out.println("Invalid input. Please enter a valid number or '0' to return to Home.\n");
+                        getAllStudentByStrand();
+                    }
                 }
             } catch (Exception e) {
-                System.out.println("Nag error siya " + e.getMessage());
+                clearScreen();
+                System.out.println("An error occurred: " + e.getMessage());
                 JsonObject studentObject = JsonParser.parseString(response).getAsJsonObject();
                 System.out.println(studentObject);
             }
