@@ -9,9 +9,6 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.Gson;
 
-//mga gipang skip sa pagvalidate:
-//getStaff()
-
 class Index{
     String response = "";
     Scanner scanner = new Scanner(System.in);
@@ -65,6 +62,7 @@ class Index{
                 default:
                     System.out.println("Invalid choice. Please try again.\n");
                     adminMenu();
+                    break;
             }
         } catch (NumberFormatException e) {
             clearScreen();
@@ -122,6 +120,22 @@ class Index{
         }
     }
 
+    public void facultyMenu(){
+        System.out.print("Faculty Home Program\n\n1. List of student\n2. Sign out\nSelect an option: ");
+        String choice  = scanner.nextLine();
+        clearScreen();
+        switch(choice){
+            case "1":
+                viewStudentList();
+                break;
+            case "2":
+                App.main(null);
+            default:
+                System.out.println("Invalid input. Please try again\n");
+                facultyMenu();
+                break;
+        }
+    }
     public void updateAdminData(){
         System.out.println("To keep the current values, leave the fields blank..\n");
         System.out.print("Username [" + SessionStorage.username + "]: ");
@@ -517,26 +531,30 @@ class Index{
         System.out.println("RELATIONSHIP: " + student.getStudEmergencyRelationship() + "\n");
         System.out.println("CONTACT NUMBER: " + student.getStudEmergencyPhone() + "\n");
 
-        System.out.print("\n1. Edit Data\n2. Delete / Remove file\n3. Back to Student list\n4. Home\nChoice: ");
-        String choice = scanner.nextLine();
-        clearScreen();
-        switch (choice) {
-            case "1":
-                updateStudent(student);
-                break; 
-            case "2":
-                deleteStudent(student, SessionStorage.userId);
-                break; 
-            case "3":
-                System.out.println("Returning to student list.\n");
-                viewStudentList();
-                break; 
-            case "4":
-                returnHome();
-                break;
-            default:
-                System.out.println("Invalid input. Please try again.");
-                printStudentInfo(student);
+        if(SessionStorage.userLevel > 80){
+            System.out.print("\n1. Edit Data\n2. Delete / Remove file\n3. Back to Student list\n4. Home\nChoice: ");
+            String choice = scanner.nextLine();
+            clearScreen();
+            switch (choice) {
+                case "1":
+                    updateStudent(student);
+                    break; 
+                case "2":
+                    deleteStudent(student, SessionStorage.userId);
+                    break; 
+                case "3":
+                    System.out.println("Returning to student list.\n");
+                    viewStudentList();
+                    break; 
+                case "4":
+                    returnHome();
+                    break;
+                default:
+                    System.out.println("Invalid input. Please try again.");
+                    printStudentInfo(student);
+            }
+        }else{
+            viewStudentList();
         }
     }
     
@@ -1166,8 +1184,10 @@ class Index{
     public void returnHome(){
         if(SessionStorage.userLevel == 100){
             adminMenu();
-        }else{
+        }else if(SessionStorage.userLevel == 90){
             staffMenu();
+        }else{
+            facultyMenu();
         }
     }
 }

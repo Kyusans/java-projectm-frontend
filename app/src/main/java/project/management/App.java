@@ -73,23 +73,13 @@ public class App {
             SessionStorage.userLevel = user.getLevel();
             if(user.getLevel() == 100){
                 index.adminMenu();
-            }else{
+            }else if(user.getLevel() == 90){
                 index.staffMenu();
+            }else{
+                index.facultyMenu();
             }
         } catch (Exception e) {
             System.out.println("Error : " + e.getMessage());
         }
     }
-
-    // private static String hidePassword() {
-    //     Console console = System.console();
-    //     if (console == null) {
-    //         Scanner scanner = new Scanner(System.in);
-    //         return scanner.nextLine();
-    //     } else {
-    //         char[] passwordChars = console.readPassword();
-    //         return new String(passwordChars);
-    //     }
-        
-    // }
 }
