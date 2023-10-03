@@ -122,168 +122,6 @@ class Index{
         }
     }
 
-    public void getStaff() {
-        System.out.println("Staff:");
-        response = HttpUtil.sendPostRequest("getAllStaff", null, "admin.php");
-
-        if (!response.equalsIgnoreCase("0")) {
-            JsonArray jsonArray = JsonParser.parseString(response).getAsJsonArray();
-            System.out.println("0. Home");
-            int i = 1;
-
-            for (JsonElement element : jsonArray) {
-                JsonObject staffObject = element.getAsJsonObject();
-                String fullName = staffObject.get("user_fullName").getAsString();
-                System.out.println(i + ". " + fullName);
-                i++;
-            }
-
-            System.out.print("\nEnter the staff's code to view: ");
-            String input = scanner.nextLine();
-            clearScreen();
-
-            if (input.equals("0")) {
-                returnHome();
-            } else {
-                try {
-                    int index = Integer.parseInt(input);
-                    if (index > 0 && index <= jsonArray.size()) {
-                        JsonObject selectedStaff = jsonArray.get(index - 1).getAsJsonObject();
-                        int userId = selectedStaff.get("user_id").getAsInt();
-                        queryParams.put("user_id", String.valueOf(userId));
-                        response = HttpUtil.sendPostRequest("getSelectedStaff", queryParams, "admin.php");
-                        JsonObject selectedUser = JsonParser.parseString(response).getAsJsonObject();
-                        getSelectedStaff(selectedUser);
-                    } else {
-                        System.out.println("Invalid input. Please try again.\n");
-                        getStaff();
-                    }
-                } catch (NumberFormatException e) {
-                    System.out.println("Invalid input. Please enter a valid number or '0' to return to Home.\n");
-                    getStaff();
-                }
-            }
-        } else {
-            System.out.println("No staff available.\n");
-        }
-    }
-
-    public void getSelectedStaff(JsonObject selectedStaff) {
-        System.out.println("Username: " + selectedStaff.get("user_username").getAsString());
-        System.out.println("Password: " + selectedStaff.get("user_password").getAsString());
-        System.out.println("Full name: " + selectedStaff.get("user_fullName").getAsString());
-        System.out.println("Email: " + selectedStaff.get("user_email").getAsString());
-        System.out.println("Contact Number: " + selectedStaff.get("user_contactNumber").getAsString());
-        System.out.println("Address: " + selectedStaff.get("user_address").getAsString());
-
-        System.out.print("\n1. Update staff\n2. Delete staff\n3. Back\n4. Home\nChoice: ");
-        String choice = scanner.nextLine();
-        clearScreen();
-
-        switch (choice) {
-            case "1":
-                updateStaff(selectedStaff);
-                break;
-            case "2":
-                deleteStaff(selectedStaff);
-                break;
-            case "3":
-                getStaff();
-                break;
-            case "4":
-                returnHome();
-                break;
-            default:
-                System.out.println("Invalid input. Please try again\n");
-                getSelectedStaff(selectedStaff);
-                break;
-        }
-    }
-
-    public void deleteStaff(JsonObject staffToDelete) {
-        String userId = staffToDelete.get("user_id").getAsString();
-        String fullName = staffToDelete.get("user_fullName").getAsString();
-        
-        while (true) {
-            System.out.print("Are you sure you want to delete " + fullName + "?\nType (Y/N): ");
-            String choice = scanner.nextLine().toLowerCase();
-            clearScreen();
-            switch (choice) {
-                case "y":
-                    queryParams.put("user_id", userId);
-                    response = HttpUtil.sendPostRequest("deleteStaff", queryParams, "admin.php");
-                    if (response.equalsIgnoreCase("1")) {
-                        System.out.println("Staff successfully deleted\n");
-                    } else if (response.equalsIgnoreCase("0")) {
-                        System.out.println("Staff unsuccessfully deleted\n");
-                    } else {
-                        System.out.println("There was an unexpected error: " + response);
-                    }
-                    getStaff();
-                    return; 
-                case "n":
-                    getSelectedStaff(staffToDelete);
-                    return;
-                default:
-                    System.out.println("Invalid input. Please enter 'Y' or 'N'.\n");
-            }
-        }
-    }
-
-    public void updateStaff(JsonObject staffToUpdate) {
-        System.out.println("To keep the current values, leave the fields blank..\n");
-        String userId = staffToUpdate.get("user_id").getAsString();
-        String username = staffToUpdate.get("user_username").getAsString();
-        String password = staffToUpdate.get("user_password").getAsString();
-        String fullName = staffToUpdate.get("user_fullName").getAsString();
-        String email = staffToUpdate.get("user_email").getAsString();
-        String contactNumber = staffToUpdate.get("user_contactNumber").getAsString();
-        String address = staffToUpdate.get("user_address").getAsString();
-
-        queryParams.put("user_id", userId);
-
-        System.out.print("Username [" + username + "]: ");
-        String usernametxt = scanner.nextLine();
-        queryParams.put("user_username", !usernametxt.isEmpty() ? usernametxt : username);
-
-        System.out.print("Password [" + password + "]: ");
-        String passwordtxt = scanner.nextLine();
-        queryParams.put("user_password", !passwordtxt.isEmpty() ? passwordtxt : password);
-
-        System.out.print("Full Name [" + fullName + "]: ");
-        String fullNametxt = scanner.nextLine();
-        queryParams.put("user_fullName", !fullNametxt.isEmpty() ? fullNametxt : fullName);
-
-        System.out.print("Email [" + email + "]: ");
-        String emailtxt = scanner.nextLine();
-        queryParams.put("user_email", !emailtxt.isEmpty() ? emailtxt : email);
-
-        System.out.print("Contact Number [" + contactNumber + "]: ");
-        String contactNumbertxt = scanner.nextLine();
-        queryParams.put("user_contactNumber", !contactNumbertxt.isEmpty() ? contactNumbertxt : contactNumber);
-
-        System.out.print("Address [" + address + "]: ");
-        String addresstxt = scanner.nextLine();
-        queryParams.put("user_address", !addresstxt.isEmpty() ? addresstxt : address);
-
-        response = HttpUtil.sendPostRequest("updateStaff", queryParams, "admin.php");
-
-        String jsonSent = new Gson().toJson(queryParams);
-        System.out.println("JSON Sent: " + jsonSent);
-        System.out.println("response: " + response);
-        clearScreen();
-        if (response.equalsIgnoreCase("1")) {
-            System.out.println("\nStaff information has been successfully updated!\n");
-            getStaff();
-        } else if (response.equalsIgnoreCase("0")) {
-            System.out.println("Staff information remains unchanged.\n");
-            getStaff();
-        } else {
-            System.out.println("Unexpected response from the server: " + response);
-        }
-
-    }
-
     public void updateAdminData(){
         System.out.println("To keep the current values, leave the fields blank..\n");
         System.out.print("Username [" + SessionStorage.username + "]: ");
@@ -314,7 +152,7 @@ class Index{
         }else{
             System.out.println("There was an error: " + response);
         }
-        returnHome();
+        adminData();
     }
 
     public void seeHistory() {
@@ -374,6 +212,7 @@ class Index{
                             if (selectedIndex >= 1 && selectedIndex <= jsonArray.size()) {
                                 JsonObject selectedEntry = jsonArray.get(selectedIndex - 1).getAsJsonObject();
                                 validChoice = true;
+                                clearScreen();
                                 getSelectedDelStudent(selectedEntry);
                             } else {
                                 System.out.println("Invalid selection.");
@@ -396,7 +235,6 @@ class Index{
         queryParams.put("delhist_id", studentEntry.get("delhist_id").toString());
         response = HttpUtil.sendPostRequest("getSelectedDeletedStudent", queryParams, "admin.php");
         JsonObject deletedStudentData = JsonParser.parseString(response).getAsJsonObject();
-        clearScreen();
         printDeletedStudent(deletedStudentData);
         System.out.print("\n1. Retrieve student data\n2. Home\nChoice: ");
         String choice = scanner.nextLine();
@@ -409,7 +247,8 @@ class Index{
                 returnHome();
                 break;
             default:
-                System.out.println("Invalid choice: ");
+                clearScreen();
+                System.out.println("Invalid input. Please try again.\n");
                 getSelectedDelStudent(studentEntry);
                 break;
         }
@@ -493,7 +332,7 @@ class Index{
             case "2":
                 returnHome();
             default:
-                System.out.println("Invalid input. Please try again]\n");
+                System.out.println("Invalid input. Please try again\n");
                 askToAddStudent();
                 break;
         }
@@ -652,7 +491,7 @@ class Index{
     }
 
     public void printStudentInfo(Student student){
-        clearScreen();
+        // clearScreen();
         System.out.println("Student Data: \n");
         System.out.println("FULL NAME: " + student.getStudFullName() + "\n");
         System.out.println("SCHOOL ID: " + student.getStudSchoolId() + "\n");
@@ -1063,25 +902,202 @@ class Index{
     }
 
     public void deleteStudent(Student studentToDelete, int userId){
-        Student student = new Student(studentToDelete.stud_schoolId,studentToDelete.stud_id, userId, studentToDelete.stud_fullName, studentToDelete.stud_birthday, studentToDelete.stud_birthplace,
-        studentToDelete.stud_gender, studentToDelete.stud_religion, studentToDelete.stud_address, studentToDelete.stud_email, studentToDelete.stud_contactNumber,
-        studentToDelete.stud_prevSchool, studentToDelete.stud_course, studentToDelete.stud_gradeLevel, studentToDelete.stud_yearGraduated, studentToDelete.stud_fatherName,
-        studentToDelete.stud_fatherOccupation, studentToDelete.stud_fatherContactNumber, studentToDelete.stud_motherName, studentToDelete.stud_motherOccupation, 
-        studentToDelete.stud_motherContactNumber, studentToDelete.stud_emergencyName, studentToDelete.stud_emergencyRelationship, studentToDelete.stud_emergencyPhone,
-        studentToDelete.stud_emergencyAddress, studentToDelete.stud_school_id);
-        response = HttpUtil.sendPostRequest("deleteStudent", student, "users.php");
+
+        System.out.print("Are you sure you want to delete " + studentToDelete.stud_fullName + "?" + "\nEnter (Y/N): ");
+        String choice = scanner.nextLine().toLowerCase();
         clearScreen();
-        // String studentJson = new Gson().toJson(student);
-        // System.out.println("JSON Sent: " + studentJson);
-        // System.out.println("response: " + response);
+        switch (choice) {
+            case "y":
+                Student student = new Student(studentToDelete.stud_schoolId,studentToDelete.stud_id, userId, studentToDelete.stud_fullName, studentToDelete.stud_birthday, studentToDelete.stud_birthplace,
+                studentToDelete.stud_gender, studentToDelete.stud_religion, studentToDelete.stud_address, studentToDelete.stud_email, studentToDelete.stud_contactNumber,
+                studentToDelete.stud_prevSchool, studentToDelete.stud_course, studentToDelete.stud_gradeLevel, studentToDelete.stud_yearGraduated, studentToDelete.stud_fatherName,
+                studentToDelete.stud_fatherOccupation, studentToDelete.stud_fatherContactNumber, studentToDelete.stud_motherName, studentToDelete.stud_motherOccupation, 
+                studentToDelete.stud_motherContactNumber, studentToDelete.stud_emergencyName, studentToDelete.stud_emergencyRelationship, studentToDelete.stud_emergencyPhone,
+                studentToDelete.stud_emergencyAddress, studentToDelete.stud_school_id);
+                response = HttpUtil.sendPostRequest("deleteStudent", student, "users.php");
+                clearScreen();
+                // String studentJson = new Gson().toJson(student);
+                // System.out.println("JSON Sent: " + studentJson);
+                // System.out.println("response: " + response);
+                if (response.equalsIgnoreCase("1")) {
+                    System.out.println("Student successfully deleted\n");
+                }else if(response.equalsIgnoreCase("0")){
+                    System.out.println("Failed to delete student\n");
+                }else{
+                    System.out.println("Unexpected response from the server: " + response);
+                }
+                viewStudentList();
+                break;
+            case "n":
+                printStudentInfo(studentToDelete);
+                break;
+            default:
+                System.out.println("Invalid input. Please try again");
+                deleteStudent(studentToDelete, userId);
+                break;
+        }
+    }
+    
+    public void getStaff() {
+        System.out.println("Staff:");
+        response = HttpUtil.sendPostRequest("getAllStaff", null, "admin.php");
+
+        if (!response.equalsIgnoreCase("0")) {
+            JsonArray jsonArray = JsonParser.parseString(response).getAsJsonArray();
+            System.out.println("0. Home");
+            int i = 1;
+
+            for (JsonElement element : jsonArray) {
+                JsonObject staffObject = element.getAsJsonObject();
+                String fullName = staffObject.get("user_fullName").getAsString();
+                System.out.println(i + ". " + fullName);
+                i++;
+            }
+
+            System.out.print("\nEnter the staff's code to view: ");
+            String input = scanner.nextLine();
+            clearScreen();
+
+            if (input.equals("0")) {
+                returnHome();
+            } else {
+                try {
+                    int index = Integer.parseInt(input);
+                    if (index > 0 && index <= jsonArray.size()) {
+                        JsonObject selectedStaff = jsonArray.get(index - 1).getAsJsonObject();
+                        int userId = selectedStaff.get("user_id").getAsInt();
+                        queryParams.put("user_id", String.valueOf(userId));
+                        response = HttpUtil.sendPostRequest("getSelectedStaff", queryParams, "admin.php");
+                        JsonObject selectedUser = JsonParser.parseString(response).getAsJsonObject();
+                        getSelectedStaff(selectedUser);
+                    } else {
+                        System.out.println("Invalid input. Please try again.\n");
+                        getStaff();
+                    }
+                } catch (NumberFormatException e) {
+                    System.out.println("Invalid input. Please enter a valid number or '0' to return to Home.\n");
+                    getStaff();
+                }
+            }
+        } else {
+            System.out.println("No staff available.\n");
+        }
+    }
+
+    public void getSelectedStaff(JsonObject selectedStaff) {
+        System.out.println("Username: " + selectedStaff.get("user_username").getAsString());
+        System.out.println("Password: " + selectedStaff.get("user_password").getAsString());
+        System.out.println("Full name: " + selectedStaff.get("user_fullName").getAsString());
+        System.out.println("Email: " + selectedStaff.get("user_email").getAsString());
+        System.out.println("Contact Number: " + selectedStaff.get("user_contactNumber").getAsString());
+        System.out.println("Address: " + selectedStaff.get("user_address").getAsString());
+
+        System.out.print("\n1. Update staff\n2. Delete staff\n3. Back\n4. Home\nChoice: ");
+        String choice = scanner.nextLine();
+        clearScreen();
+
+        switch (choice) {
+            case "1":
+                updateStaff(selectedStaff);
+                break;
+            case "2":
+                deleteStaff(selectedStaff);
+                break;
+            case "3":
+                getStaff();
+                break;
+            case "4":
+                returnHome();
+                break;
+            default:
+                System.out.println("Invalid input. Please try again\n");
+                getSelectedStaff(selectedStaff);
+                break;
+        }
+    }
+
+    public void deleteStaff(JsonObject staffToDelete) {
+        String userId = staffToDelete.get("user_id").getAsString();
+        String fullName = staffToDelete.get("user_fullName").getAsString();
+        
+        while (true) {
+            System.out.print("Are you sure you want to delete " + fullName + "?\nType (Y/N): ");
+            String choice = scanner.nextLine().toLowerCase();
+            clearScreen();
+            switch (choice) {
+                case "y":
+                    queryParams.put("user_id", userId);
+                    response = HttpUtil.sendPostRequest("deleteStaff", queryParams, "admin.php");
+                    if (response.equalsIgnoreCase("1")) {
+                        System.out.println("Staff successfully deleted\n");
+                    } else if (response.equalsIgnoreCase("0")) {
+                        System.out.println("Staff unsuccessfully deleted\n");
+                    } else {
+                        System.out.println("There was an unexpected error: " + response);
+                    }
+                    getStaff();
+                    return; 
+                case "n":
+                    getSelectedStaff(staffToDelete);
+                    return;
+                default:
+                    System.out.println("Invalid input. Please enter 'Y' or 'N'.\n");
+            }
+        }
+    }
+
+    public void updateStaff(JsonObject staffToUpdate) {
+        System.out.println("To keep the current values, leave the fields blank..\n");
+        String userId = staffToUpdate.get("user_id").getAsString();
+        String username = staffToUpdate.get("user_username").getAsString();
+        String password = staffToUpdate.get("user_password").getAsString();
+        String fullName = staffToUpdate.get("user_fullName").getAsString();
+        String email = staffToUpdate.get("user_email").getAsString();
+        String contactNumber = staffToUpdate.get("user_contactNumber").getAsString();
+        String address = staffToUpdate.get("user_address").getAsString();
+
+        queryParams.put("user_id", userId);
+
+        System.out.print("Username [" + username + "]: ");
+        String usernametxt = scanner.nextLine();
+        queryParams.put("user_username", !usernametxt.isEmpty() ? usernametxt : username);
+
+        System.out.print("Password [" + password + "]: ");
+        String passwordtxt = scanner.nextLine();
+        queryParams.put("user_password", !passwordtxt.isEmpty() ? passwordtxt : password);
+
+        System.out.print("Full Name [" + fullName + "]: ");
+        String fullNametxt = scanner.nextLine();
+        queryParams.put("user_fullName", !fullNametxt.isEmpty() ? fullNametxt : fullName);
+
+        System.out.print("Email [" + email + "]: ");
+        String emailtxt = scanner.nextLine();
+        queryParams.put("user_email", !emailtxt.isEmpty() ? emailtxt : email);
+
+        System.out.print("Contact Number [" + contactNumber + "]: ");
+        String contactNumbertxt = scanner.nextLine();
+        queryParams.put("user_contactNumber", !contactNumbertxt.isEmpty() ? contactNumbertxt : contactNumber);
+
+        System.out.print("Address [" + address + "]: ");
+        String addresstxt = scanner.nextLine();
+        queryParams.put("user_address", !addresstxt.isEmpty() ? addresstxt : address);
+
+        response = HttpUtil.sendPostRequest("updateStaff", queryParams, "admin.php");
+
+        String jsonSent = new Gson().toJson(queryParams);
+        System.out.println("JSON Sent: " + jsonSent);
+        System.out.println("response: " + response);
+        clearScreen();
         if (response.equalsIgnoreCase("1")) {
-            System.out.println("Student successfully deleted\n");
-        }else if(response.equalsIgnoreCase("0")){
-            System.out.println("Failed to delete student\n");
-        }else{
+            System.out.println("\nStaff information has been successfully updated!\n");
+            getStaff();
+        } else if (response.equalsIgnoreCase("0")) {
+            System.out.println("Staff information remains unchanged.\n");
+            getStaff();
+        } else {
             System.out.println("Unexpected response from the server: " + response);
         }
-        viewStudentList();
+
     }
 
     public void addStaff() {
@@ -1106,8 +1122,10 @@ class Index{
         clearScreen();
         if (response.equalsIgnoreCase("1")) {
             System.out.println("Staff added successfully\n");
+            returnHome();
         } else if (response.equalsIgnoreCase("0")) {
             System.out.println("Failed to add staff\n");
+            returnHome();
         } else {
             System.out.println("Unexpected response from the server: " + response);
         }
