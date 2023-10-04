@@ -136,6 +136,7 @@ class Index{
                 break;
         }
     }
+    
     public void updateAdminData(){
         System.out.println("To keep the current values, leave the fields blank..\n");
         System.out.print("Username [" + SessionStorage.username + "]: ");
@@ -232,7 +233,7 @@ class Index{
                                 System.out.println("Invalid selection.");
                             }
                         } catch (NumberFormatException e) {
-                            System.out.println("Invalid input. Please enter a valid number.");
+                            System.out.println("Invalid input. Please enter a valid number.\n");
                         }
                     }
                 }
@@ -550,7 +551,8 @@ class Index{
                     returnHome();
                     break;
                 default:
-                    System.out.println("Invalid input. Please try again.");
+                    clearScreen();
+                    System.out.println("Invalid input. Please try again.\n");
                     printStudentInfo(student);
             }
         }else{
@@ -584,7 +586,7 @@ class Index{
             scanner.nextLine(); 
         } catch (InputMismatchException e) {            
             clearScreen();
-            System.out.println("Invalid input. Please enter a valid number.");
+            System.out.println("Invalid input. Please enter a valid number.\n");
             scanner.nextLine();
             getAllStudent();
             return;
@@ -605,7 +607,7 @@ class Index{
     }
 
     public void getAllStudentByStrand() {
-        System.out.print("Course:\n \n0. Back\n\n1. GAS\n2. HUMMS \n3. STEM \n4. ABM\n5. TVL\n\nChoice:");
+        System.out.print("Course:\n \n0. Back\n\n1. GAS\n2. HUMMS \n3. STEM \n4. ABM\n5. TVL\n\nChoice: ");
         String courseSelect = scanner.nextLine();
         String course = "";
         switch (courseSelect) {
@@ -647,17 +649,14 @@ class Index{
                 System.out.println(course + " Student List: \n");
                 System.out.println("0. Back\n");
                 int i = 1;
-                
                 for (JsonElement element : jsonArray) {
                     JsonObject studentObject = element.getAsJsonObject();
                     String fullName = studentObject.get("stud_fullName").getAsString();
                     System.out.println(i + ". " + fullName);
                     i++;
                 }
-                
                 System.out.print("\nEnter the number of the student you want to view: ");
                 String input = scanner.nextLine();
-                
                 if (input.equals("0")) {
                     clearScreen();
                     getAllStudentByStrand();
@@ -674,7 +673,7 @@ class Index{
                         } else {
                             clearScreen();
                             System.out.println("Invalid student number.");
-                            viewStudentList();
+                            getAllStudentByStrand();
                         }
                     } catch (NumberFormatException e) {
                         clearScreen();
@@ -692,6 +691,21 @@ class Index{
     }
 
     public void searchStudent(){
+        System.out.print("1. Search student\n2. Back\nChoice: ");
+        String choice = scanner.nextLine();
+        clearScreen();
+        switch(choice){
+            case "1":
+                break;
+            case "2":
+                viewStudentList();
+                return;
+            default:
+                System.out.println("Invalid input. Please try again.\n");
+                searchStudent();
+                return;
+        }
+
         try {
             System.out.print("Enter student school Id: ");
             String schoolId = scanner.nextLine();
@@ -720,7 +734,7 @@ class Index{
             case "2":
                 printStudentInfo(studentToUpdate);
             default:
-                System.out.println("Invalid input. Please try again.");
+                System.out.println("Invalid input. Please try again.\n");
                 updateStudent(studentToUpdate);
                 break;
         }
@@ -950,7 +964,7 @@ class Index{
                 printStudentInfo(studentToDelete);
                 break;
             default:
-                System.out.println("Invalid input. Please try again");
+                System.out.println("Invalid input. Please try again\n");
                 deleteStudent(studentToDelete, userId);
                 break;
         }
