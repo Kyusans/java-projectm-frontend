@@ -207,7 +207,7 @@ class Index{
             for (JsonElement element : jsonArray) {
                 JsonObject response = element.getAsJsonObject();
                 String username = response.get("user_fullName").getAsString();
-                String studname = response.get(operation.equals("getDeleteHistory") ? "delhist_fullName" : "stud_fullName").getAsString();
+                String studname = response.get(operation.equals("getDeleteHistory") ? "delstud_fullName" : "stud_fullName").getAsString();
                 String date = response.get(dateString).getAsString();
                 System.out.println(i + ". " + username + statusMessage + studname + " in " + date);
                 i++;
@@ -242,7 +242,8 @@ class Index{
                 seeHistory();
             }
         } else {
-            System.out.println("No data found");
+            System.out.println("No data found\n");
+            seeHistory();
         }
     }
 
@@ -271,6 +272,7 @@ class Index{
 
     public void retrieveStudent(JsonObject deletedStudent) {
         queryParams.put("delstud_id", String.valueOf(deletedStudent.get("delstud_id").getAsInt()));
+        queryParams.put("delstud_studId", String.valueOf(deletedStudent.get("delstud_studId").getAsInt()));
         queryParams.put("delstud_fullName", deletedStudent.get("delstud_fullName").getAsString());
         queryParams.put("delstud_schoolId", deletedStudent.get("delstud_schoolId").getAsString());
         queryParams.put("delstud_birthday", deletedStudent.get("delstud_birthday").getAsString());
@@ -305,8 +307,7 @@ class Index{
         }else{
             System.out.println("An unexpected error occurred while retrieving student information.\n");
         }
-
-
+        seeHistory();
     }
 
     public void printDeletedStudent(JsonObject deletedStudent) {

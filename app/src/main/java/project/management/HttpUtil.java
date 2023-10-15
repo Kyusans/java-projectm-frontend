@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 
 public class HttpUtil {
     private static final OkHttpClient client = new OkHttpClient();
+    // tig retrieve og send data sa web server
     private static final Gson gson = new Gson();
     
     public static String sendPostRequest(String operation, Object data, String url) {
