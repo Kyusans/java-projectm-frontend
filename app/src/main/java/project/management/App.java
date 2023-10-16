@@ -11,11 +11,14 @@ public class App {
         String jsonString = "";
 
         while (!loginSuccessful) {
+            System.out.println("+---------------------------+");
             System.out.print("Username: ");
             String username = scanner.nextLine();
-
+            System.out.println("+---------------------------+");
+            
             System.out.print("Password: ");
             String password = hidePassword();
+            System.out.println("Logged in...");
 
             jsonString = index.login(username, password);
 
@@ -45,9 +48,16 @@ public class App {
         index.clearScreen();
         boolean validChoice = false;
         while (!validChoice) {
-            System.out.println("MARKETING\nSign in to Explore!\n");
-            System.out.print("1. Sign in\n2. Exit\n\nChoice: ");
+            System.out.println("+---------------------------+");
+            System.out.println("|         MARKETING         |");
+            System.out.println("|     Sign in to Explore!   |");
+            System.out.println("|                           |");
+            System.out.println("| 1. Sign in                |");
+            System.out.println("| 2. Exit                   |");
+            System.out.println("+---------------------------+");
+            System.out.print("Choice: ");
             String choice = scanner.nextLine();
+            
             switch (choice) {
                 case "1":
                     validChoice = true;

@@ -24,15 +24,17 @@ class Index{
 
     public void adminMenu() {
         try {
-            System.out.println("Admin Menu:");
-            System.out.println("1. List of Students");
-            System.out.println("2. Add a student");
-            System.out.println("3. Add a staff");
-            System.out.println("4. History");
-            System.out.println("5. Admin data");
-            System.out.println("6. Staff data");
-            System.out.println("7. Sign out");
-            System.out.print("\nSelect an Option: ");
+            System.out.println("+-----------------------+");
+            System.out.println("| Admin Menu:           |");
+            System.out.println("+-----------------------+"); 
+            System.out.println("|  1. View Student Data |");
+            System.out.println("|  2. Enroll student    |");
+            System.out.println("|  3. Add a staff       |");
+            System.out.println("|  4. History           |");
+            System.out.println("|  5. Admin data        |");
+            System.out.println("|  6. Staff data        |");
+            System.out.println("|  7. Sign out          |");
+            System.out.println("+-----------------------+"); 
             String choice = scanner.nextLine();
             clearScreen();
             
@@ -73,11 +75,15 @@ class Index{
     }
 
     public void adminData(){
-        System.out.println("Admin Data");
-        System.out.println("Username: " + SessionStorage.username);
-        System.out.println("Password: " + SessionStorage.password);
-        System.out.println("\n1. Update Username and Password");
-        System.out.println("2. Exit");
+        System.out.println("+------------------------------------+");
+        System.out.println("| Admin Data                         |");
+        System.out.println("+------------------------------------+");
+        System.out.println("| Username: " + SessionStorage.username+"                    |");
+        System.out.println("| Password: " + SessionStorage.password+"                    |");
+        System.out.println("+------------------------------------+");
+        System.out.println("| 1. Update Username and Password    |");
+        System.out.println("| 2. Exit                            |");  
+        System.out.println("+------------------------------------+");  
         System.out.print("Select an option: ");
         String adminChoice = scanner.nextLine();
         clearScreen();
@@ -96,10 +102,13 @@ class Index{
     }
   
     public void staffMenu() {
-        System.out.println("Staff Home Program\n");
-        System.out.println("1. Insert Student");
-        System.out.println("2. List of Student");
-        System.out.println("3. Sign out");
+        System.out.println("+----------------------+");
+        System.out.println("| Staff Menu:          |");
+        System.out.println("+----------------------+"); 
+        System.out.println("|1. Enroll Student     |");
+        System.out.println("|2. View Student Data  |");
+        System.out.println("|3. Sign out           |");
+        System.out.println("+----------------------+");
         System.out.print("\nSelect an option: ");
         String choice = scanner.nextLine();
         clearScreen();
@@ -171,7 +180,15 @@ class Index{
     }
 
     public void seeHistory() {
-        System.out.print("History Data\n\n1. Added student history\n2. Updated student history\n3. Deleted student history\n4. Return to Home\n\nChoice: ");
+        System.out.println("+-----------------------------+");
+        System.out.println("| History Data                |");
+        System.out.println("+-----------------------------+");
+        System.out.println("| 1. Added student history    |");
+        System.out.println("| 2. Updated student history  |");
+        System.out.println("| 3. Deleted student history  |");
+        System.out.println("| 4. Return to Home Choice:   |");
+        System.out.println("+-----------------------------+");
+        System.out.print("Choices:  ");
         String choice = scanner.nextLine();
         clearScreen();
         switch (choice) {
@@ -311,34 +328,65 @@ class Index{
     }
 
     public void printDeletedStudent(JsonObject deletedStudent) {
-        System.out.println("Deleted Student Data: \n");
-        System.out.println("Full name: " + deletedStudent.get("delstud_fullName").getAsString()+ "\n");
-        System.out.println("School Id: " + deletedStudent.get("delstud_schoolId").getAsString()+ "\n");
-        System.out.println("Date of Birth: " + deletedStudent.get("delstud_birthday").getAsString()+ "\n");
-        System.out.println("Place of Birth: " + deletedStudent.get("delstud_birthplace").getAsString()+ "\n");
-        System.out.println("Gender: " + deletedStudent.get("delstud_gender").getAsString()+ "\n");
-        System.out.println("Religion: " + deletedStudent.get("delstud_religion").getAsString()+ "\n");
-        System.out.println("Address: " + deletedStudent.get("delstud_address").getAsString()+ "\n");
-        System.out.println("Email: " + deletedStudent.get("delstud_email").getAsString()+ "\n");
-        System.out.println("Contact Number: " + deletedStudent.get("delstud_contactNumber").getAsString()+ "\n");
-        System.out.println("Previous School: " + deletedStudent.get("delstud_prevSchool").getAsString()+ "\n");
-        System.out.println("Course Code: " + deletedStudent.get("delstud_course").getAsString()+ "\n");
-        System.out.println("Grade Level: " + deletedStudent.get("delstud_gradeLevel").getAsString()+ "\n");
-        System.out.println("Year Graduated: " + deletedStudent.get("delstud_yearGraduated").getAsString()+ "\n");
-        System.out.println("Father Name: " + deletedStudent.get("delstud_fatherName").getAsString()+ "\n");
-        System.out.println("Father Occupation: " + deletedStudent.get("delstud_fatherOccupation").getAsString()+ "\n");
-        System.out.println("Father Contact Number: " + deletedStudent.get("delstud_fatherContactNumber").getAsString()+ "\n");
-        System.out.println("Mother Name: " + deletedStudent.get("delstud_motherName").getAsString()+ "\n");
-        System.out.println("Mother Occupation: " + deletedStudent.get("delstud_motherOccupation").getAsString()+ "\n");
-        System.out.println("Mother Contact Number: " + deletedStudent.get("delstud_motherContactNumber").getAsString()+ "\n");
-        System.out.println("\nPerson to contact in case of emergency:");
-        System.out.println("Name: " + deletedStudent.get("delstud_emergencyName").getAsString()+ "\n");
-        System.out.println("Relationship: " + deletedStudent.get("delstud_emergencyRelationship").getAsString()+ "\n");
-        System.out.println("Contact Number: " + deletedStudent.get("delstud_emergencyPhone").getAsString()+ "\n");
+        System.out.println("+---------------------------------------------------------------------------+");
+        System.out.println("                            Deleted Student Data                             ");
+        System.out.println("+---------------------------------------------------------------------------+");
+        System.out.println("  Full name: " + deletedStudent.get("delstud_fullName").getAsString());
+        System.out.println("+---------------------------------------------------------------------------+");
+        System.out.println("  School Id: " + deletedStudent.get("delstud_schoolId").getAsString());
+        System.out.println("+---------------------------------------------------------------------------+");
+        System.out.println("  Date of Birth: " + deletedStudent.get("delstud_birthday").getAsString());
+        System.out.println("+---------------------------------------------------------------------------+");
+        System.out.println("  Place of Birth: " + deletedStudent.get("delstud_birthplace").getAsString());
+        System.out.println("+---------------------------------------------------------------------------+");
+        System.out.println("  Gender: " + deletedStudent.get("delstud_gender").getAsString());
+        System.out.println("+---------------------------------------------------------------------------+");
+        System.out.println("  Religion: " + deletedStudent.get("delstud_religion").getAsString());
+        System.out.println("+---------------------------------------------------------------------------+");
+        System.out.println("  Address: " + deletedStudent.get("delstud_address").getAsString());
+        System.out.println("+---------------------------------------------------------------------------+");
+        System.out.println("  Email: " + deletedStudent.get("delstud_email").getAsString());
+        System.out.println("+---------------------------------------------------------------------------+");
+        System.out.println("  Contact Number: " + deletedStudent.get("delstud_contactNumber").getAsString());
+        System.out.println("+---------------------------------------------------------------------------+");
+        System.out.println("  Previous School: " + deletedStudent.get("delstud_prevSchool").getAsString());
+        System.out.println("+---------------------------------------------------------------------------+");
+        System.out.println("  Course Code: " + deletedStudent.get("delstud_course").getAsString());
+        System.out.println("+---------------------------------------------------------------------------+");
+        System.out.println("  Grade Level: " + deletedStudent.get("delstud_gradeLevel").getAsString());
+        System.out.println("+---------------------------------------------------------------------------+");
+        System.out.println("  Year Graduated: " + deletedStudent.get("delstud_yearGraduated").getAsString());
+        System.out.println("+---------------------------------------------------------------------------+");
+        System.out.println("  Father Name: " + deletedStudent.get("delstud_fatherName").getAsString());
+        System.out.println("+---------------------------------------------------------------------------+");
+        System.out.println("  Father Occupation: " + deletedStudent.get("delstud_fatherOccupation").getAsString());
+        System.out.println("+---------------------------------------------------------------------------+");
+        System.out.println("  Father Contact Number: " + deletedStudent.get("delstud_fatherContactNumber").getAsString());
+        System.out.println("+---------------------------------------------------------------------------+");
+        System.out.println("  Mother Name: " + deletedStudent.get("delstud_motherName").getAsString());
+        System.out.println("+---------------------------------------------------------------------------+");
+        System.out.println("  Mother Occupation: " + deletedStudent.get("delstud_motherOccupation").getAsString());
+        System.out.println("+---------------------------------------------------------------------------+");
+        System.out.println("  Mother Contact Number: " + deletedStudent.get("delstud_motherContactNumber").getAsString());
+        System.out.println("+---------------------------------------------------------------------------+");
+        System.out.println("  Person to contact in case of emergency:");
+        System.out.println("+---------------------------------------------------------------------------+");
+        System.out.println("  Name: " + deletedStudent.get("delstud_emergencyName").getAsString());
+        System.out.println("+---------------------------------------------------------------------------+");
+        System.out.println("  Relationship: " + deletedStudent.get("delstud_emergencyRelationship").getAsString());
+        System.out.println("+---------------------------------------------------------------------------+");
+        System.out.println("  Contact Number: " + deletedStudent.get("delstud_emergencyPhone").getAsString());
+        System.out.println("+---------------------------------------------------------------------------+");
     }
 
     public void askToAddStudent(){
-        System.out.print("1. Insert student data\n2. Back\nChoice: ");
+        System.out.println("+-------------------------+");
+        System.out.println("| Enroll Student          |");
+        System.out.println("+-------------------------+");
+        System.out.println("| 1. Insert student data  |");
+        System.out.println("| 2. Back                 |");
+        System.out.println("+-------------------------+");
+        System.out.print("Choice:  ");
         String choice = scanner.nextLine();
         clearScreen();
         switch(choice){
@@ -356,76 +404,113 @@ class Index{
 
     public void addStudent() {
         clearScreen();
-        System.out.println("Adding Student");
+        System.out.println("+----------------------------------------------------------------+");
+        System.out.println("                         Adding Student  ");
+        System.out.println("+----------------------------------------------------------------+");
 
-        System.out.print("Student Fullname: ");
+        System.out.print("  Student Fullname: ");
         String fullName = scanner.nextLine();
+        System.out.println("+----------------------------------------------------------------+");
 
-        System.out.print("School ID: ");
+        System.out.print("  School ID: ");
         String schoolId = scanner.nextLine();
+        System.out.println("+----------------------------------------------------------------+");
 
-        System.out.print("Date of Birth: ");
+        System.out.print("  Date of Birth: ");
         String dateBirth = scanner.nextLine();
+        System.out.println("+----------------------------------------------------------------+");
+        
 
-        System.out.print("Place of Birth: ");
+        System.out.print("  Place of Birth: ");
         String placeBirth = scanner.nextLine();
+        System.out.println("+----------------------------------------------------------------+");
 
-        System.out.print("Gender: ");
+        System.out.print("  Gender: ");
         String gender = scanner.nextLine();
+        System.out.println("+----------------------------------------------------------------+");
 
-        System.out.print("Email: ");
+        System.out.print("  Email: ");
         String email = scanner.nextLine();
+        System.out.println("+----------------------------------------------------------------+");
 
-        System.out.print("Religion: ");
+        System.out.print("  Religion: ");
         String religion = scanner.nextLine();
+        System.out.println("+----------------------------------------------------------------+");
 
-        System.out.print("Complete Address: ");
+        System.out.print("  Complete Address: ");
         String address = scanner.nextLine();
+        System.out.println("+----------------------------------------------------------------+");
 
-        System.out.print("Contact Number: ");
+        System.out.print("  Contact Number: ");
         String contactNum = scanner.nextLine();
+        System.out.println("+----------------------------------------------------------------+");
+        
 
-        System.out.print("Previous School: ");
+        System.out.print("  Previous School: ");
         String prevSchool = scanner.nextLine();
+        System.out.println("+----------------------------------------------------------------+");
+        
 
         String course = askStudentCourse();
 
-        System.out.print("Year Level: ");
+        System.out.print("  Year Level: ");
         String yearLevel = scanner.nextLine();
+        System.out.println("+----------------------------------------------------------------+");
 
-        System.out.print("Year Graduated: ");
+        System.out.print("  Year Graduated: ");
         String yearGrad = scanner.nextLine();
+        System.out.println("+----------------------------------------------------------------+");
+        
 
-        System.out.print("Father Fullname: ");
+        System.out.print("  Father Fullname: ");
         String fatherName = scanner.nextLine();
+        System.out.println("+----------------------------------------------------------------+");
+        
 
-        System.out.print("Father Occupation: ");
+        System.out.print("  Father Occupation: ");
         String fatherOccup = scanner.nextLine();
+        System.out.println("+----------------------------------------------------------------+");
+        
 
-        System.out.print("Father Contact Number: ");
-        String fatherContact = scanner.nextLine(); 
+        System.out.print("  Father Contact Number: ");
+        String fatherContact = scanner.nextLine();
+        System.out.println("+----------------------------------------------------------------+");
 
-        System.out.print("Mother Fullname: ");
+        System.out.print("  Mother Fullname: ");
         String motherName = scanner.nextLine();
+        System.out.println("+----------------------------------------------------------------+");
+        
 
-        System.out.print("Mother Occupation: ");
+        System.out.print("  Mother Occupation: ");
         String motherOccup = scanner.nextLine();
+        System.out.println("+----------------------------------------------------------------+");
+        
 
-        System.out.print("Mother Contact Number: ");
-        String motherContact = scanner.nextLine(); 
+        System.out.print("  Mother Contact Number: ");
+        String motherContact = scanner.nextLine();
+        System.out.println("+----------------------------------------------------------------+");
+        
 
-        System.out.println("Person to contact in case of emergency:\n");
-        System.out.print("Emergency FullName: ");
+        System.out.println("  Person to contact in case of emergency:");
+        System.out.println("+----------------------------------------------------------------+");
+        System.out.print("  Emergency FullName: ");
         String emergencyName = scanner.nextLine();
+        System.out.println("+----------------------------------------------------------------+");
 
-        System.out.print("Emergency Relationship: ");
+        System.out.print("  Emergency Relationship: ");
         String emergencyRel = scanner.nextLine();
+        System.out.println("+----------------------------------------------------------------+");
+        
 
-        System.out.print("Emergency Contact Number: ");
-        String emergencyContact = scanner.nextLine(); 
+        System.out.print("  Emergency Contact Number: ");
+        String emergencyContact = scanner.nextLine();
+        System.out.println("+----------------------------------------------------------------+");
+        
 
-        System.out.print("Emergency Address: ");
+        System.out.print("  Emergency Address: ");
         String emergencyAdd = scanner.nextLine();
+        System.out.println("+----------------------------------------------------------------+");
+        
 
         int userId = SessionStorage.userId;
 
@@ -480,7 +565,15 @@ class Index{
     }
 
     public void viewStudentList() { 
-        System.out.print("1. View all students\n2. View all students organized by strand\n3. Search student\n4. Return to Home\nChoice: ");
+        System.out.println("+------------------------------------------+");
+        System.out.println("| View Student Data                        |");
+        System.out.println("+------------------------------------------+");
+        System.out.println("| 1. View all students                     |");
+        System.out.println("| 2. View all students organized by strand |");
+        System.out.println("| 3. Search student                        |");
+        System.out.println("| 4. Return to Home                        |");
+        System.out.println("+------------------------------------------+");
+        System.out.print("Choice: ");
         String choiceView = scanner.nextLine();
         clearScreen();
         switch(choiceView){
@@ -508,30 +601,55 @@ class Index{
 
     public void printStudentInfo(Student student){
         // clearScreen();
-        System.out.println("Student Data: \n");
-        System.out.println("FULL NAME: " + student.getStudFullName() + "\n");
-        System.out.println("SCHOOL ID: " + student.getStudSchoolId() + "\n");
-        System.out.println("DATE OF BIRTH: " + student.getStudBirthday() + "\n");
-        System.out.println("PLACE OF BIRTH: " + student.getStudBirthplace() + "\n");
-        System.out.println("GENDER: " + student.getStudGender() + "\n");
-        System.out.println("RELIGION: " + student.getStudReligion() + "\n");
-        System.out.println("ADRESS: " + student.getStudAddress() + "\n");
-        System.out.println("EMAIL: " + student.getStudEmail() + "\n");
-        System.out.println("CONTACT NUMBER: " + student.getStudContactNumber() + "\n");
-        System.out.println("PREVIOUS SCHOOL: " + student.getStudPrevSchool() + "\n");
-        System.out.println("COURSE CODE: " + student.getStudCourse() + "\n");
-        System.out.println("GRADE LEVEL: " + student.getStudGradeLevel() + "\n");
-        System.out.println("YEAR GRADUATE: " + student.getStudYearGraduated() + "\n" +"\n");
-        System.out.println("FATHER NAME: " + student.getStudFatherName() + "\n");
-        System.out.println("FATHER OCCUPATION: " + student.getStudFatherOccupation() + "\n");
-        System.out.println("FATHER CONTACT NUMBER: " + student.getStudFatherContactNumber() + "\n" + "\n");
-        System.out.println("MOTHER NAME: " + student.getStudMotherName() + "\n");
-        System.out.println("MOTHER OCCUPATION: " + student.getStudMotherOccupation() + "\n");
-        System.out.println("MOTHER CONTACT NUMBER: " + student.getStudMotherContactNumber() + "\n");
-        System.out.println("\nPERSON TO CONTACT IN CASE OF EMERGENCY:"+"\n");
-        System.out.println("NAME: " + student.getStudEmergencyName() + "\n");
-        System.out.println("RELATIONSHIP: " + student.getStudEmergencyRelationship() + "\n");
-        System.out.println("CONTACT NUMBER: " + student.getStudEmergencyPhone() + "\n");
+        System.out.println("+-----------------------------------------------------------------------------+");
+        System.out.println("+                                 Student Data                                +");
+        System.out.println("+-----------------------------------------------------------------------------+");
+        System.out.println(" FULL NAME: " + student.getStudFullName());
+        System.out.println("+-----------------------------------------------------------------------------+");
+        System.out.println(" SCHOOL ID: " + student.getStudSchoolId());
+        System.out.println("+-----------------------------------------------------------------------------+");
+        System.out.println(" DATE OF BIRTH:  " + student.getStudBirthday());
+        System.out.println("+-----------------------------------------------------------------------------+");
+        System.out.println(" PLACE OF BIRTH:  " + student.getStudBirthplace());
+        System.out.println("+-----------------------------------------------------------------------------+");
+        System.out.println(" GENDER: " + student.getStudGender());
+        System.out.println("+-----------------------------------------------------------------------------+");
+        System.out.println(" RELIGION: " + student.getStudReligion());
+        System.out.println("+-----------------------------------------------------------------------------+");
+        System.out.println(" ADRESS: " + student.getStudAddress());        
+        System.out.println("+-----------------------------------------------------------------------------+");
+        System.out.println(" EMAIL: " + student.getStudEmail());
+        System.out.println("+-----------------------------------------------------------------------------+");
+        System.out.println(" CONTACT NUMBER: " + student.getStudContactNumber());
+        System.out.println("+-----------------------------------------------------------------------------+");
+        System.out.println(" PREVIOUS SCHOOL: " + student.getStudPrevSchool());
+        System.out.println("+-----------------------------------------------------------------------------+");
+        System.out.println(" COURSE CODE: " + student.getStudCourse());
+        System.out.println("+-----------------------------------------------------------------------------+");
+        System.out.println(" GRADE LEVEL: " + student.getStudGradeLevel());
+        System.out.println("+-----------------------------------------------------------------------------+");
+        System.out.println(" YEAR GRADUATE: " + student.getStudYearGraduated());
+        System.out.println("+-----------------------------------------------------------------------------+");
+        System.out.println(" FATHER NAME: " + student.getStudFatherName());
+        System.out.println("+-----------------------------------------------------------------------------+");
+        System.out.println(" FATHER OCCUPATION: " + student.getStudFatherOccupation());
+        System.out.println("+-----------------------------------------------------------------------------+");
+        System.out.println(" FATHER CONTACT NUMBER: " + student.getStudFatherContactNumber());
+        System.out.println("+-----------------------------------------------------------------------------+");
+        System.out.println(" MOTHER NAME: " + student.getStudMotherName());
+        System.out.println("+-----------------------------------------------------------------------------+");
+        System.out.println(" MOTHER OCCUPATION: " + student.getStudMotherOccupation());
+        System.out.println("+-----------------------------------------------------------------------------+");
+        System.out.println(" MOTHER CONTACT NUMBER: " + student.getStudMotherContactNumber());
+        System.out.println("+-----------------------------------------------------------------------------+");
+        System.out.println(" PERSON TO CONTACT IN CASE OF EMERGENCY:"+ student.getStudEmergencyPhone());
+        System.out.println("+-----------------------------------------------------------------------------+");
+        System.out.println(" NAME: " + student.getStudEmergencyName());
+        System.out.println("+-----------------------------------------------------------------------------+");
+        System.out.println(" RELATIONSHIP: " + student.getStudEmergencyRelationship());
+        System.out.println("+-----------------------------------------------------------------------------+");
+        System.out.println(" CONTACT NUMBER: " + student.getStudEmergencyPhone());
+        System.out.println("+-----------------------------------------------------------------------------+");
 
         if(SessionStorage.userLevel > 80){
             System.out.print("\n1. Edit Data\n2. Delete / Remove file\n3. Back to Student list\n4. Home\nChoice: ");
@@ -735,69 +853,82 @@ class Index{
             case "2":
                 printStudentInfo(studentToUpdate);
             default:
-                System.out.println("Invalid input. Please try again.\n");
+                System.out.println("Invalid input. Please try again.");
                 updateStudent(studentToUpdate);
                 break;
         }
 
+        System.out.println("+----------------------------------------------------------------+");
         System.out.println("Edit Student Information:");
         System.out.println("Leave fields blank to keep the current values.\n");
+        System.out.println("+----------------------------------------------------------------+");
         System.out.print("Full name [" + studentToUpdate.getStudFullName() + "]: ");
         String studFullName = scanner.nextLine();
+        System.out.println("+----------------------------------------------------------------+");
+
         if(!studFullName.isEmpty()){
             studentToUpdate.setStudFullName(studFullName);
         }
 
         System.out.print("School Id [" + studentToUpdate.stud_schoolId + "]: ");
         String studSchoolId = scanner.nextLine();
+        System.out.println("+----------------------------------------------------------------+");
         if(!studSchoolId.isEmpty()){
             studentToUpdate.setStudSchoolId(studSchoolId);
         }
         
         System.out.print("Date of Birth [" + studentToUpdate.stud_birthday + "]: ");
         String studBirthday = scanner.nextLine();
+        System.out.println("+----------------------------------------------------------------+");
         if(!studBirthday.isEmpty()){
             studentToUpdate.setStudBirthday(studBirthday);
         }
         
         System.out.print("Place of Birth [" + studentToUpdate.stud_birthplace + "]: ");
         String studBirthplace = scanner.nextLine();
+        System.out.println("+----------------------------------------------------------------+");
         if(!studBirthplace.isEmpty()){
             studentToUpdate.setStudBirthplace(studBirthplace);
         }
         
         System.out.print("Gender [" + studentToUpdate.stud_gender + "]: ");
         String studGender = scanner.nextLine();
+        System.out.println("+----------------------------------------------------------------+");
         if(!studGender.isEmpty()){
             studentToUpdate.setStudGender(studGender);
         }
         
         System.out.print("Religion [" + studentToUpdate.stud_religion + "]: ");
         String studReligion = scanner.nextLine();
+        System.out.println("+----------------------------------------------------------------+");
         if(!studReligion.isEmpty()){
             studentToUpdate.setStudReligion(studReligion);
         }
         
         System.out.print("Address [" + studentToUpdate.stud_address + "]: ");
         String studAddress = scanner.nextLine();
+        System.out.println("+----------------------------------------------------------------+");
         if(!studAddress.isEmpty()){
             studentToUpdate.setStudAddress(studAddress);
         }
 
         System.out.print("Email [" + studentToUpdate.stud_email + "]: ");
         String studEmail = scanner.nextLine();
+        System.out.println("+----------------------------------------------------------------+");
         if(!studEmail.isEmpty()){
             studentToUpdate.setStudEmail(studEmail);
         }
         
         System.out.print("Contact Number [" + studentToUpdate.stud_contactNumber + "]: ");
         String studContactNumber = scanner.nextLine();
+        System.out.println("+----------------------------------------------------------------+");
         if(!studContactNumber.isEmpty()){
             studentToUpdate.setStudContactNumber(studContactNumber);
         }
         
         System.out.print("Previous School [" + studentToUpdate.stud_prevSchool + "]: ");
         String studPrevSchool = scanner.nextLine();
+        System.out.println("+----------------------------------------------------------------+");
         if(!studPrevSchool.isEmpty()){
             studentToUpdate.setStudPrevSchool(studPrevSchool);
         }
@@ -805,9 +936,10 @@ class Index{
         System.out.println("Course Code [" + studentToUpdate.stud_course + "] ");
         System.out.print("Enter Course (1)GAS, (2)HUMMS, (3)STEM, (4)ABM, (5)TVL: ");
         String course = "";
+        
         if (scanner.hasNextLine()) {
             String input = scanner.nextLine().trim();
-            
+            System.out.println("+----------------------------------------------------------------+");
             if (!input.isEmpty()) {
                 try {
                     int studCourse = Integer.parseInt(input);
@@ -845,67 +977,78 @@ class Index{
         
         System.out.print("Grade Level [" + studentToUpdate.stud_gradeLevel + "]: ");
         String studGradeLevel = scanner.nextLine();
+        System.out.println("+----------------------------------------------------------------+");
         if(!studGradeLevel.isEmpty()){
             studentToUpdate.setStudGradeLevel(studGradeLevel);
         }
 
         System.out.print("Year Graduated [" + studentToUpdate.stud_yearGraduated + "]: ");
         String studYearGraduated = scanner.nextLine();
+        System.out.println("+----------------------------------------------------------------+");
         if(!studYearGraduated.isEmpty()){
             studentToUpdate.setStudYearGraduated(studYearGraduated);
         }
 
         System.out.print("Father Name [" + studentToUpdate.stud_fatherName + "]: ");
         String studFatherName = scanner.nextLine();
+        System.out.println("+----------------------------------------------------------------+");
         if(!studFatherName.isEmpty()){
             studentToUpdate.setStudFatherName(studFatherName);
         }
 
         System.out.print("Father Occupation [" + studentToUpdate.stud_fatherOccupation + "]: ");
         String studFatherOccupation = scanner.nextLine();
+        System.out.println("+----------------------------------------------------------------+");
         if(!studFatherOccupation.isEmpty()){
             studentToUpdate.setStudFatherOccupation(studFatherOccupation);
         }
 
         System.out.print("Fahter Contact Number [" + studentToUpdate.getStudFatherContactNumber() + "]: ");
         String studFatherContactNumber = scanner.nextLine();
+        System.out.println("+----------------------------------------------------------------+");
         if(!studFatherContactNumber.isEmpty()){
             studentToUpdate.setStudFatherContactNumber(studFatherContactNumber);
         }
 
         System.out.print("Mother Name [" + studentToUpdate.stud_motherName + "]: ");
         String studMotherName = scanner.nextLine();
+        System.out.println("+----------------------------------------------------------------+");
         if(!studMotherName.isEmpty()){
             studentToUpdate.setStudMotherName(studMotherName);
         }
         
         System.out.print("Mother Occupation [" + studentToUpdate.stud_motherOccupation + "]: ");
         String studMotherOccupation = scanner.nextLine();
+        System.out.println("+----------------------------------------------------------------+");
         if(!studMotherOccupation.isEmpty()){
             studentToUpdate.setStudMotherOccupation(studMotherOccupation);
         }
 
-        System.out.println("\nPerson to contact in case of emergency:");
+        System.out.println("Person to contact in case of emergency:");
         System.out.print("Name [" + studentToUpdate.stud_emergencyName + "]: ");
         String studEmergencyName = scanner.nextLine();
+        System.out.println("+----------------------------------------------------------------+");
         if(!studEmergencyName.isEmpty()){
             studentToUpdate.setStudEmergencyName(studEmergencyName);
         }
 
         System.out.print("Relationship [" + studentToUpdate.getStudEmergencyRelationship() + "]: ");
         String studEmergencyRelationship = scanner.nextLine();
+        System.out.println("+----------------------------------------------------------------+");
         if(!studEmergencyRelationship.isEmpty()){
             studentToUpdate.setStudEmergencyRelationship(studEmergencyRelationship);
         }
         
         System.out.print("Contact Number [" + studentToUpdate.getStudEmergencyPhone() + "]: ");
         String studEmergencyPhone = scanner.nextLine();
+        System.out.println("+----------------------------------------------------------------+");
         if(!studEmergencyPhone.isEmpty()){
             studentToUpdate.setStudEmergencyPhone(studEmergencyPhone);
         }
 
         System.out.print("Address ["+ studentToUpdate.stud_emergencyAddress+"]: ");
         String studEmergencyAddress = scanner.nextLine();
+        System.out.println("+----------------------------------------------------------------+");
         if(!studEmergencyAddress.isEmpty()){
             studentToUpdate.setStudEmergencyAddress(studEmergencyAddress);
         }
@@ -972,7 +1115,9 @@ class Index{
     }
     
     public void getStaff() {
-        System.out.println("Staff:");
+        System.out.println("+---------------------------------------+");
+        System.out.println("| Staff:                                |");
+        System.out.println("+---------------------------------------+");
         response = HttpUtil.sendPostRequest("getAllStaff", null, "admin.php");
 
         if (!response.equalsIgnoreCase("0")) {
@@ -1018,12 +1163,19 @@ class Index{
     }
 
     public void getSelectedStaff(JsonObject selectedStaff) {
-        System.out.println("Username: " + selectedStaff.get("user_username").getAsString());
-        System.out.println("Password: " + selectedStaff.get("user_password").getAsString());
-        System.out.println("Full name: " + selectedStaff.get("user_fullName").getAsString());
-        System.out.println("Email: " + selectedStaff.get("user_email").getAsString());
-        System.out.println("Contact Number: " + selectedStaff.get("user_contactNumber").getAsString());
-        System.out.println("Address: " + selectedStaff.get("user_address").getAsString());
+        System.out.println("+----------------------------------------------------------+");
+        System.out.println(" Username: " + selectedStaff.get("user_username").getAsString());
+        System.out.println("+----------------------------------------------------------+");
+        System.out.println(" Password: " + selectedStaff.get("user_password").getAsString());
+        System.out.println("+----------------------------------------------------------+");
+        System.out.println(" Full name: " + selectedStaff.get("user_fullName").getAsString());
+        System.out.println("+----------------------------------------------------------+");
+        System.out.println(" Email: " + selectedStaff.get("user_email").getAsString());
+        System.out.println("+----------------------------------------------------------+");
+        System.out.println(" Contact Number: " + selectedStaff.get("user_contactNumber").getAsString());
+        System.out.println("+----------------------------------------------------------+");
+        System.out.println(" Address: " + selectedStaff.get("user_address").getAsString());
+        System.out.println("+----------------------------------------------------------+");
 
         System.out.print("\n1. Update staff\n2. Delete staff\n3. Back\n4. Home\nChoice: ");
         String choice = scanner.nextLine();
@@ -1165,7 +1317,13 @@ class Index{
     }
 
     public void askToAddStaff(){
-        System.out.print("1. Insert new staff\n2. Back\nChoice: ");
+        System.out.println("+----------------------+");
+        System.out.println("| Add staff            |");
+        System.out.println("+----------------------+");
+        System.out.println("| 1. Insert new staff  |");
+        System.out.println("| 2. Back              |");
+        System.out.println("+----------------------+");
+        System.out.println("Choice: ");
         String choice = scanner.nextLine();
         clearScreen();
         switch (choice){
@@ -1175,7 +1333,7 @@ class Index{
             case "2":
                 returnHome();
                 break;
-            default:
+            default:    
                 System.out.println("Invalid input. Please try again\n");
                 askToAddStaff();
                 break;
