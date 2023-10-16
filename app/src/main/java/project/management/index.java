@@ -33,8 +33,10 @@ class Index{
             System.out.println("|  4. History           |");
             System.out.println("|  5. Admin data        |");
             System.out.println("|  6. Staff data        |");
-            System.out.println("|  7. Sign out          |");
+            System.out.println("|  7. Faculty data      |");
+            System.out.println("|  8. Sign out          |");
             System.out.println("+-----------------------+"); 
+            System.out.print("Choice:");
             String choice = scanner.nextLine();
             clearScreen();
             
@@ -58,6 +60,9 @@ class Index{
                     getStaff();
                     break;
                 case "7":
+                    // getFaculty();
+                    break;
+                case "8":
                     // Sign out
                     App.main(null);
                     break;
@@ -452,6 +457,7 @@ class Index{
         
 
         String course = askStudentCourse();
+        System.out.println("+----------------------------------------------------------------+");
 
         System.out.print("  Year Level: ");
         String yearLevel = scanner.nextLine();

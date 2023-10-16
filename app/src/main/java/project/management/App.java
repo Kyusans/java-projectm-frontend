@@ -18,7 +18,7 @@ public class App {
             
             System.out.print("Password: ");
             String password = hidePassword();
-            System.out.println("Logged in...");
+            System.out.println("Logging in...");
 
             jsonString = index.login(username, password);
 
