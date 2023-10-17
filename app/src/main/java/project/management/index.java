@@ -112,7 +112,8 @@ class Index{
         System.out.println("+----------------------+"); 
         System.out.println("|1. Enroll Student     |");
         System.out.println("|2. View Student Data  |");
-        System.out.println("|3. Sign out           |");
+        System.out.println("|3. User Manual        |");
+        System.out.println("|4. Sign Out           |");
         System.out.println("+----------------------+");
         System.out.print("\nSelect an option: ");
         String choice = scanner.nextLine();
@@ -125,6 +126,9 @@ class Index{
                 viewStudentList();
                 break;
             case "3":
+                userManual();
+                break;
+            case "4":
                 App.main(null);
                 break;
             default:
@@ -133,9 +137,26 @@ class Index{
                 break;
         }
     }
+    public void userManual(){
+        System.out.println("+---------------------------------+");
+        System.out.println("|  User Manual                    |");
+        System.out.println("+---------------------------------+");
+        System.out.println("| To Insert a Student, Press [1]  |");
+        System.out.println("| To View Student Data, Press [2] |");
+        System.out.println("| To Sign Out, Press [4]          |");
+        System.out.println("+---------------------------------+");
+        returnHome();
+    }
 
     public void facultyMenu(){
-        System.out.print("Faculty Home Program\n\n1. List of student\n2. Sign out\nSelect an option: ");
+        System.out.println("+---------------------------------+");
+        System.out.println("| Faculty Home Program            |");
+        System.out.println("+---------------------------------+");
+        System.out.println("| 1. List of student              |");
+        System.out.println("| 2. Faculty Manual               |");
+        System.out.println("| 3. Sign Out                     |");
+        System.out.println("+---------------------------------+");
+        System.out.print("Choice:");
         String choice  = scanner.nextLine();
         clearScreen();
         switch(choice){
@@ -143,12 +164,25 @@ class Index{
                 viewStudentList();
                 break;
             case "2":
+                facultyManual();
+                break;
+            case "3":
                 App.main(null);
             default:
                 System.out.println("Invalid input. Please try again\n");
                 facultyMenu();
                 break;
         }
+    }
+
+    public void facultyManual(){
+        System.out.println("+---------------------------------+");
+        System.out.println("|  User Manual                    |");
+        System.out.println("+---------------------------------+");
+        System.out.println("| To View a Student, Press [1]    |");
+        System.out.println("| To Sign Out, Press [2]          |");
+        System.out.println("+---------------------------------+");
+        returnHome();
     }
     
     public void updateAdminData(){
@@ -410,7 +444,7 @@ class Index{
     public void addStudent() {
         clearScreen();
         System.out.println("+----------------------------------------------------------------+");
-        System.out.println("                         Adding Student  ");
+        System.out.println("                         Adding Student                           ");
         System.out.println("+----------------------------------------------------------------+");
 
         System.out.print("  Student Fullname: ");
@@ -608,7 +642,7 @@ class Index{
     public void printStudentInfo(Student student){
         // clearScreen();
         System.out.println("+-----------------------------------------------------------------------------+");
-        System.out.println("+                                 Student Data                                +");
+        System.out.println("|                                 Student Data                                |");
         System.out.println("+-----------------------------------------------------------------------------+");
         System.out.println(" FULL NAME: " + student.getStudFullName());
         System.out.println("+-----------------------------------------------------------------------------+");
@@ -648,7 +682,7 @@ class Index{
         System.out.println("+-----------------------------------------------------------------------------+");
         System.out.println(" MOTHER CONTACT NUMBER: " + student.getStudMotherContactNumber());
         System.out.println("+-----------------------------------------------------------------------------+");
-        System.out.println(" PERSON TO CONTACT IN CASE OF EMERGENCY:"+ student.getStudEmergencyPhone());
+        System.out.println(" PERSON TO CONTACT IN CASE OF EMERGENCY");
         System.out.println("+-----------------------------------------------------------------------------+");
         System.out.println(" NAME: " + student.getStudEmergencyName());
         System.out.println("+-----------------------------------------------------------------------------+");
