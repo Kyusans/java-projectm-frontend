@@ -60,7 +60,7 @@ class Index{
                     getStaff();
                     break;
                 case "7":
-                    // getFaculty();
+                    getFaculty();
                     break;
                 case "8":
                     // Sign out
@@ -1098,9 +1098,9 @@ class Index{
                 studentToDelete.stud_emergencyAddress, studentToDelete.stud_school_id);
                 response = HttpUtil.sendPostRequest("deleteStudent", student, "users.php");
                 clearScreen();
-                // String studentJson = new Gson().toJson(student);
-                // System.out.println("JSON Sent: " + studentJson);
-                // System.out.println("response: " + response);
+                String studentJson = new Gson().toJson(student);
+                System.out.println("JSON Sent: " + studentJson);
+                System.out.println("response: " + response);
                 if (response.equalsIgnoreCase("1")) {
                     System.out.println("Student successfully deleted\n");
                 }else if(response.equalsIgnoreCase("0")){
@@ -1288,7 +1288,6 @@ class Index{
         } else {
             System.out.println("Unexpected response from the server: " + response);
         }
-
     }
 
     public void addStaff() {
@@ -1345,6 +1344,57 @@ class Index{
                 break;
         }
 
+    }
+
+    public void getFaculty(){
+        System.out.println("+---------------------------------------+");
+        System.out.println("| Faculty:                              |");
+        System.out.println("+---------------------------------------+");
+        
+        response = HttpUtil.sendPostRequest("getFaculty", null, "admin.php");
+        // String jsonSent = new Gson().toJson(queryParams);
+        // System.out.println("JSON Sent: " + jsonSent);
+        // System.out.println("response: " + response);
+        if (!response.equalsIgnoreCase("0")) {
+            JsonArray jsonArray = JsonParser.parseString(response).getAsJsonArray();
+            System.out.println("0. Home");
+            int i = 1;
+
+            for (JsonElement element : jsonArray) {
+                JsonObject staffObject = element.getAsJsonObject();
+                String fullName = staffObject.get("user_fullNameuser_fullName").getAsString();
+                System.out.println(i + ". " + fullName);
+                i++;
+            }
+
+            System.out.print("\nEnter the faculty's code to view: ");
+            String input = scanner.nextLine();
+            clearScreen();
+
+            if (input.equals("0")) {
+                returnHome();
+            } else {
+                try {
+                    int index = Integer.parseInt(input);
+                    if (index > 0 && index <= jsonArray.size()) {
+                        JsonObject selectedStaff = jsonArray.get(index - 1).getAsJsonObject();
+                        int userId = selectedStaff.get("user_id").getAsInt();
+                        queryParams.put("user_id", String.valueOf(userId));
+                        response = HttpUtil.sendPostRequest("getSelectedStaff", queryParams, "admin.php");
+                        JsonObject selectedUser = JsonParser.parseString(response).getAsJsonObject();
+                        getSelectedStaff(selectedUser);
+                    } else {
+                        System.out.println("Invalid input. Please try again.\n");
+                        getStaff();
+                    }
+                } catch (NumberFormatException e) {
+                    System.out.println("Invalid input. Please enter a valid number or '0' to return to Home.\n");
+                    getStaff();
+                }
+            }
+        } else {
+            System.out.println("No staff available.\n");
+        }
     }
 
     public void clearScreen(){
