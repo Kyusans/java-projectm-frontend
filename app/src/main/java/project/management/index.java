@@ -563,7 +563,6 @@ class Index{
         clearScreen();
         // String studentJson = new Gson().toJson(student);
         // System.out.println("JSON Sent: " + studentJson);
-
         // System.out.println("response: " + response);
         if (response.equalsIgnoreCase("1")) {
             System.out.println("Student added successfully\n");
@@ -1203,6 +1202,7 @@ class Index{
     }
 
     public void getSelectedStaff(JsonObject selectedStaff) {
+        String userLevel = selectedStaff.get("user_level").getAsString();
         System.out.println("+----------------------------------------------------------+");
         System.out.println(" Username: " + selectedStaff.get("user_username").getAsString());
         System.out.println("+----------------------------------------------------------+");
@@ -1217,7 +1217,7 @@ class Index{
         System.out.println(" Address: " + selectedStaff.get("user_address").getAsString());
         System.out.println("+----------------------------------------------------------+");
 
-        System.out.print("\n1. Update staff\n2. Delete staff\n3. Back\n4. Home\nChoice: ");
+        System.out.print("\n1. Update user\n2. Delete user\n3. Back\n4. Home\nChoice: ");
         String choice = scanner.nextLine();
         clearScreen();
 
@@ -1229,7 +1229,11 @@ class Index{
                 deleteStaff(selectedStaff);
                 break;
             case "3":
-                getStaff();
+                if(userLevel.equalsIgnoreCase("90")){
+                    getStaff();
+                }else{
+                    getFaculty();
+                }
                 break;
             case "4":
                 returnHome();
@@ -1244,7 +1248,7 @@ class Index{
     public void deleteStaff(JsonObject staffToDelete) {
         String userId = staffToDelete.get("user_id").getAsString();
         String fullName = staffToDelete.get("user_fullName").getAsString();
-        
+        String userLevel = staffToDelete.get("user_level").getAsString();
         while (true) {
             System.out.print("Are you sure you want to delete " + fullName + "?\nType (Y/N): ");
             String choice = scanner.nextLine().toLowerCase();
@@ -1254,13 +1258,18 @@ class Index{
                     queryParams.put("user_id", userId);
                     response = HttpUtil.sendPostRequest("deleteStaff", queryParams, "admin.php");
                     if (response.equalsIgnoreCase("1")) {
-                        System.out.println("Staff successfully deleted\n");
+                        System.out.println("User successfully deleted\n");
                     } else if (response.equalsIgnoreCase("0")) {
-                        System.out.println("Staff unsuccessfully deleted\n");
+                        System.out.println("User unsuccessfully deleted\n");
                     } else {
                         System.out.println("There was an unexpected error: " + response);
                     }
-                    getStaff();
+
+                    if(userLevel.equalsIgnoreCase("90")){
+                        getStaff();
+                    }else{
+                        getFaculty();
+                    }
                     return; 
                 case "n":
                     getSelectedStaff(staffToDelete);
@@ -1272,6 +1281,7 @@ class Index{
     }
 
     public void updateStaff(JsonObject staffToUpdate) {
+        String userLevel = staffToUpdate.get("user_level").getAsString();
         System.out.println("To keep the current values, leave the fields blank..\n");
         String userId = staffToUpdate.get("user_id").getAsString();
         String username = staffToUpdate.get("user_username").getAsString();
@@ -1309,18 +1319,22 @@ class Index{
 
         response = HttpUtil.sendPostRequest("updateStaff", queryParams, "admin.php");
 
-        String jsonSent = new Gson().toJson(queryParams);
-        System.out.println("JSON Sent: " + jsonSent);
-        System.out.println("response: " + response);
+        // String jsonSent = new Gson().toJson(queryParams);
+        // System.out.println("JSON Sent: " + jsonSent);
+        // System.out.println("response: " + response);
         clearScreen();
         if (response.equalsIgnoreCase("1")) {
-            System.out.println("\nStaff information has been successfully updated!\n");
-            getStaff();
+            System.out.println("\nUser information has been successfully updated!\n");
         } else if (response.equalsIgnoreCase("0")) {
-            System.out.println("Staff information remains unchanged.\n");
-            getStaff();
+            System.out.println("User information remains unchanged.\n");
         } else {
             System.out.println("Unexpected response from the server: " + response);
+        }
+
+        if(userLevel.equalsIgnoreCase("90")){
+            getStaff();
+        }else{
+            getFaculty();
         }
     }
 
@@ -1345,7 +1359,7 @@ class Index{
         response = HttpUtil.sendPostRequest("addStaff", user, "admin.php");
         clearScreen();
         if (response.equalsIgnoreCase("1")) {
-            System.out.println("Staff added successfully\n");
+            System.out.println("User added successfully\n");
             returnHome();
         } else if (response.equalsIgnoreCase("0")) {
             System.out.println("Failed to add staff\n");
@@ -1396,7 +1410,7 @@ class Index{
 
             for (JsonElement element : jsonArray) {
                 JsonObject staffObject = element.getAsJsonObject();
-                String fullName = staffObject.get("user_fullNameuser_fullName").getAsString();
+                String fullName = staffObject.get("user_fullName").getAsString();
                 System.out.println(i + ". " + fullName);
                 i++;
             }
@@ -1419,15 +1433,16 @@ class Index{
                         getSelectedStaff(selectedUser);
                     } else {
                         System.out.println("Invalid input. Please try again.\n");
-                        getStaff();
+                        getFaculty();
                     }
                 } catch (NumberFormatException e) {
                     System.out.println("Invalid input. Please enter a valid number or '0' to return to Home.\n");
-                    getStaff();
+                    getFaculty();
                 }
             }
         } else {
             System.out.println("No staff available.\n");
+            returnHome();
         }
     }
 
