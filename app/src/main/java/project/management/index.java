@@ -722,48 +722,48 @@ class Index{
     }
     
     public void getAllStudent() {
-        Student student = new Student();
-        response = HttpUtil.sendPostRequest("getAllStudent", student, "users.php");
-        if (response == null || response.isEmpty() || response.equals("0")) {
-            System.out.println("Student list is currently empty.");
-            staffMenu();
-            return;
-        }
-        JsonArray jsonArray = JsonParser.parseString(response).getAsJsonArray();
-        System.out.println("Student List: \n");
-        int i = 1;
-        System.out.println("0. Back");
-        for (JsonElement element : jsonArray) {
-            JsonObject studentObject = element.getAsJsonObject();
-            String fullName = studentObject.get("stud_fullName").getAsString();
-            System.out.println(i + ". " + fullName);
-            i++;
-        }
-        
-        int index = -1;
-        try {
-            System.out.print("\nEnter the student's code to view: ");
-            index = scanner.nextInt();
-            scanner.nextLine(); 
-        } catch (InputMismatchException e) {            
+        while(true){
+            response = HttpUtil.sendPostRequest("getAllStudent", null, "users.php");
+            if (response == null || response.isEmpty() || response.equals("0")) {
+                System.out.println("Student list is currently empty.");
+                returnHome();
+                return;
+            }
+            JsonArray jsonArray = JsonParser.parseString(response).getAsJsonArray();
+            System.out.println("Student List: \n");
+            System.out.println("0. Back");
+            for (int i = 0; i < jsonArray.size(); i++) {
+                JsonObject studentObject = jsonArray.get(i).getAsJsonObject();
+                String fullName = studentObject.get("stud_fullName").getAsString();
+                System.out.println((i + 1) + ". " + fullName);
+            }
+            
+            int index = -1;
+            try {
+                System.out.print("\nEnter the student's code to view: ");
+                index = scanner.nextInt();
+                scanner.nextLine(); 
+            } catch (InputMismatchException e) {  
+                clearScreen();
+                clearScreen();
+                clearScreen();
+                System.out.println("Invalid input. Please enter a valid number.\n");
+                scanner.nextLine();
+                continue;
+            }
             clearScreen();
-            System.out.println("Invalid input. Please enter a valid number.\n");
-            scanner.nextLine();
-            getAllStudent();
-            return;
-        }
-        clearScreen();
-        if (index == 0) {
-            viewStudentList();
-        } else if (index > 0 && index <= jsonArray.size()) {
-            JsonObject selectedStudent = jsonArray.get(index - 1).getAsJsonObject();
-            int studId = selectedStudent.get("stud_id").getAsInt();
-            queryParams.put("stud_Id", String.valueOf(studId));
-            response = HttpUtil.sendPostRequest("getSelectedStudent", queryParams, "users.php");
-            clearScreen();
-        } else {
-            System.out.println("Invalid student code.");
-            getAllStudent();
+            if (index == 0) {
+                viewStudentList();
+            } else if (index > 0 && index <= jsonArray.size()) {
+                JsonObject selectedStudent = jsonArray.get(index - 1).getAsJsonObject();
+                int studId = selectedStudent.get("stud_id").getAsInt();
+                queryParams.put("stud_Id", String.valueOf(studId));
+                response = HttpUtil.sendPostRequest("getSelectedStudent", queryParams, "users.php");
+                clearScreen();
+            } else {
+                clearScreen();
+                System.out.println("Invalid student code.");
+            }
         }
     }
 
