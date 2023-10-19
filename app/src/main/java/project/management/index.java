@@ -754,12 +754,14 @@ class Index{
             clearScreen();
             if (index == 0) {
                 viewStudentList();
+                break;
             } else if (index > 0 && index <= jsonArray.size()) {
                 JsonObject selectedStudent = jsonArray.get(index - 1).getAsJsonObject();
                 int studId = selectedStudent.get("stud_id").getAsInt();
                 queryParams.put("stud_Id", String.valueOf(studId));
                 response = HttpUtil.sendPostRequest("getSelectedStudent", queryParams, "users.php");
                 clearScreen();
+                break;
             } else {
                 clearScreen();
                 System.out.println("Invalid student code.");
