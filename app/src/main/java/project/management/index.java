@@ -495,6 +495,7 @@ class Index{
         
 
         String course = askStudentCourse();
+
         System.out.println("+----------------------------------------------------------------+");
 
         System.out.print("  Year Level: ");
@@ -565,9 +566,9 @@ class Index{
 
         response = HttpUtil.sendPostRequest("addStudent", student, "users.php");
         clearScreen();
-        // String studentJson = new Gson().toJson(student);
-        // System.out.println("JSON Sent: " + studentJson);
-        // System.out.println("response: " + response);
+        String studentJson = new Gson().toJson(student);
+        System.out.println("JSON Sent: " + studentJson);
+        System.out.println("response: " + response);
         if (response.equalsIgnoreCase("1")) {
             System.out.println("Student added successfully\n");
         } else if (response.equalsIgnoreCase("0")) {
@@ -578,11 +579,12 @@ class Index{
         returnHome();
     }
 
-    public String askStudentCourse(){
-        System.out.print("Course: \n1. GAS\n2. HUMMS \n3. STEM \n4. ABM\n5. TVL\nChoice: ");
+public String askStudentCourse() {
+    String courseNum = "";
+    while (true) {
+        System.out.print("Course: \n1. GAS\n2. HUMMS\n3. STEM\n4. ABM\n5. TVL\nChoice: ");
         String courseSelect = scanner.nextLine();
-        String courseNum = "";
-        switch(courseSelect){
+        switch (courseSelect) {
             case "1":
                 courseNum = "GAS";
                 break;
@@ -601,11 +603,14 @@ class Index{
             default:
                 clearScreen();
                 System.out.println("Invalid option. Please try again.\n");
-                askStudentCourse();
-                break;
+                continue;
         }
-        return courseNum;
+        if (!courseNum.isEmpty()) {
+            break;
+        }
     }
+    return courseNum;
+}
 
     public void viewStudentList() { 
         System.out.println("+------------------------------------------+");
