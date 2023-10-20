@@ -566,13 +566,21 @@ class Index{
 
         response = HttpUtil.sendPostRequest("addStudent", student, "users.php");
         clearScreen();
-        String studentJson = new Gson().toJson(student);
-        System.out.println("JSON Sent: " + studentJson);
-        System.out.println("response: " + response);
+        // String studentJson = new Gson().toJson(student);
+        // System.out.println("JSON Sent: " + studentJson);
+        // System.out.println("response: " + response);
         if (response.equalsIgnoreCase("1")) {
             System.out.println("Student added successfully\n");
         } else if (response.equalsIgnoreCase("0")) {
             System.out.println("Student failed to add\n");
+        } else if(response.equalsIgnoreCase("-4")){
+            System.out.println("School ID cannot be empty. Please provide a school ID.\n");
+        } else if(response.equalsIgnoreCase("-1")){
+            System.out.println("Student Id is already used\n");
+        } else if(response.equalsIgnoreCase("-2")){
+            System.out.println("Student full name is already used\n");
+        } else if(response.equalsIgnoreCase("-3")){
+            System.out.println("Invalid year graduated");
         } else {
             System.out.println("Unexpected response from the server: " + response);
         }
@@ -582,7 +590,7 @@ class Index{
 public String askStudentCourse() {
     String courseNum = "";
     while (true) {
-        System.out.print("Course: \n1. GAS\n2. HUMMS\n3. STEM\n4. ABM\n5. TVL\nChoice: ");
+        System.out.print("Strand: \n1. GAS\n2. HUMMS\n3. STEM\n4. ABM\n5. TVL\nChoice: ");
         String courseSelect = scanner.nextLine();
         switch (courseSelect) {
             case "1":
@@ -775,7 +783,7 @@ public String askStudentCourse() {
     }
 
     public void getAllStudentByStrand() {
-        System.out.print("Course:\n \n0. Back\n\n1. GAS\n2. HUMMS \n3. STEM \n4. ABM\n5. TVL\n\nChoice: ");
+        System.out.print("Strand:\n \n0. Back\n\n1. GAS\n2. HUMMS \n3. STEM \n4. ABM\n5. TVL\n\nChoice: ");
         String courseSelect = scanner.nextLine();
         String course = "";
         switch (courseSelect) {
@@ -1397,9 +1405,9 @@ public String askStudentCourse() {
         queryParams.put("user_address", address);
 
         response = HttpUtil.sendPostRequest("addFaculty", queryParams, "admin.php");
-        String jsonSent = new Gson().toJson(queryParams);
-        System.out.println("JSON Sent: " + jsonSent);
-        System.out.println("response: " + response);
+        // String jsonSent = new Gson().toJson(queryParams);
+        // System.out.println("JSON Sent: " + jsonSent);
+        // System.out.println("response: " + response);
         clearScreen();
         if (response.equalsIgnoreCase("1")) {
             System.out.println("User added successfully\n");
@@ -1408,7 +1416,7 @@ public String askStudentCourse() {
             System.out.println("Failed to add staff\n");
             returnHome();
         } else {
-            System.out.println("Unexpected response from the server: " + response + "\njson sent: " + jsonSent);
+            System.out.println("Unexpected response from the server: " + response);
         }
     }
 
