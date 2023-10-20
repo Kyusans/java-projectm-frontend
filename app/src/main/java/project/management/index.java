@@ -498,7 +498,7 @@ class Index{
 
         System.out.println("+----------------------------------------------------------------+");
 
-        System.out.print("  Year Level: ");
+        System.out.print("  Grade Level: ");
         String yearLevel = scanner.nextLine();
         System.out.println("+----------------------------------------------------------------+");
 
@@ -993,7 +993,7 @@ public String askStudentCourse() {
             studentToUpdate.setStudPrevSchool(studPrevSchool);
         }
 
-        System.out.println("Course Code [" + studentToUpdate.stud_course + "] ");
+        System.out.println("Strand [" + studentToUpdate.stud_course + "] ");
         System.out.print("Enter Course (1)GAS, (2)HUMMS, (3)STEM, (4)ABM, (5)TVL: ");
         String course = "";
         
@@ -1129,6 +1129,8 @@ public String askStudentCourse() {
         if (response.equalsIgnoreCase("1")) {
             System.out.println("\nStudent information has been successfully updated!\n");
             viewStudentList();
+        } else if (response.equalsIgnoreCase("-1")) {
+            System.out.println("Invalid graduated year\n");
         } else if (response.equalsIgnoreCase("0")) {
             System.out.println("Student information remains unchanged.\n");
         } else {
@@ -1346,6 +1348,14 @@ public String askStudentCourse() {
         clearScreen();
         if (response.equalsIgnoreCase("1")) {
             System.out.println("\nUser information has been successfully updated!\n");
+        } else if (response.equalsIgnoreCase("-1")){
+            System.out.println("Username already exists. Please choose a different username.");
+        } else if (response.equalsIgnoreCase("-2")){
+            System.out.println("Full name already exists. Please use a different full name.");
+        } else if (response.equalsIgnoreCase("-3")){
+            System.out.println("Email already exists. Please use a different email address.");
+        } else if (response.equalsIgnoreCase("-4")) {
+            System.out.println("Contact number already exists. Please use a different contact number.\n");
         } else if (response.equalsIgnoreCase("0")) {
             System.out.println("User information remains unchanged.\n");
         } else {
@@ -1412,11 +1422,33 @@ public String askStudentCourse() {
         if (response.equalsIgnoreCase("1")) {
             System.out.println("User added successfully\n");
             returnHome();
+        } else if (response.equalsIgnoreCase("-1")) {
+            System.out.println("Username already exists. Please choose a different username.\n");
+            returnHome();
+        } else if (response.equalsIgnoreCase("-2")) {
+            System.out.println("Full name cannot be empty. Please provide a full name.\n");
+            returnHome();
+        } else if (response.equalsIgnoreCase("-3")) {
+            System.out.println("Full name already exists. Please use a different full name.\n");
+            returnHome();
+        } else if (response.equalsIgnoreCase("-4")) {
+            System.out.println("Invalid email format. Please provide a valid email address.\n");
+            returnHome();
+        } else if (response.equalsIgnoreCase("-5")) {
+            System.out.println("Invalid username format. It must be 3-20 characters containing only letters, numbers, and underscores.\n");
+            returnHome();
+        } else if (response.equalsIgnoreCase("-6")) {
+            System.out.println("Email already exists. Please use a different email address.\n");
+            returnHome();
+        } else if (response.equalsIgnoreCase("-7")) {
+            System.out.println("Contact number already exists. Please use a different contact number.\n");
+            returnHome();
         } else if (response.equalsIgnoreCase("0")) {
             System.out.println("Failed to add staff\n");
             returnHome();
         } else {
             System.out.println("Unexpected response from the server: " + response);
+            returnHome();
         }
     }
 
@@ -1437,17 +1469,47 @@ public String askStudentCourse() {
         System.out.print("Enter email: ");
         email = scanner.nextLine();
 
-        User user = new User(fullName, username, password, contact, address, email);
-        response = HttpUtil.sendPostRequest("addStaff", user, "admin.php");
+        queryParams.put("user_username", username);
+        queryParams.put("user_password", password);
+        queryParams.put("user_fullName", fullName);
+        queryParams.put("user_email", email);
+        queryParams.put("user_contactNumber", contact);
+        queryParams.put("user_address", address);
+        response = HttpUtil.sendPostRequest("addStaff", queryParams, "admin.php");
         clearScreen();
+        // String jsonSent = new Gson().toJson(queryParams);
+        // System.out.println("JSON Sent: " + jsonSent);
+        // System.out.println("response: " + response);
         if (response.equalsIgnoreCase("1")) {
             System.out.println("User added successfully\n");
+            returnHome();
+        } else if (response.equalsIgnoreCase("-1")) {
+            System.out.println("Username already exists. Please choose a different username.\n");
+            returnHome();
+        } else if (response.equalsIgnoreCase("-2")) {
+            System.out.println("Full name cannot be empty. Please provide a full name.\n");
+            returnHome();
+        } else if (response.equalsIgnoreCase("-3")) {
+            System.out.println("Full name already exists. Please use a different full name.\n");
+            returnHome();
+        } else if (response.equalsIgnoreCase("-4")) {
+            System.out.println("Invalid email format. Please provide a valid email address.\n");
+            returnHome();
+        } else if (response.equalsIgnoreCase("-5")) {
+            System.out.println("Invalid username format. It must be 3-20 characters containing only letters, numbers, and underscores.\n");
+            returnHome();
+        } else if (response.equalsIgnoreCase("-6")) {
+            System.out.println("Email already exists. Please use a different email address.\n");
+            returnHome();
+        } else if (response.equalsIgnoreCase("-7")) {
+            System.out.println("Contact number already exists. Please use a different contact number.\n");
             returnHome();
         } else if (response.equalsIgnoreCase("0")) {
             System.out.println("Failed to add staff\n");
             returnHome();
         } else {
             System.out.println("Unexpected response from the server: " + response);
+            returnHome();
         }
     }
 
